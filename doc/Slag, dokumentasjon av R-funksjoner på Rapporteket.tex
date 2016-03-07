@@ -1,0 +1,266 @@
+\documentclass [norsk,a4paper,twoside]{article}
+\addtolength{\hoffset}{-0.5cm}
+\addtolength{\textwidth}{1cm}
+\addtolength{\voffset}{-1cm}
+\addtolength{\textheight}{2cm}
+
+
+%for nice looking tabs
+\usepackage{booktabs}
+
+\usepackage[norsk]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{textcomp}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{amsmath}
+\usepackage{rotating} %add rotating for plain tables
+\usepackage{pdflscape} %add rotating/landcape for pdf
+
+%add rotating for plain tables
+\usepackage{rotating}
+
+%add rotating/landcape for pdf
+\usepackage{pdflscape}
+
+%bytte font
+\renewcommand{\familydefault}{\sfdefault}
+
+%setter grå skrift fremfort sort
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+%Offentliggjøringsfargene 1-6, lys-mørk, benytter 2-5
+\definecolor{OffBlaa2}{rgb}{0.42, 0.68, 0.84}	%107/255, 174/255, 214/255}
+\definecolor{OffBlaa3}{rgb}{0.26, 0.57, 0.78}	%66/255, 146/255, 198/255}
+\definecolor{OffBlaa4}{rgb}{ 0.13 0.44 0.71}	%33/255, 113/255, 181/255}
+\definecolor{OffBlaa5}{rgb}{0.03 0.27 0.58}		%8/255,  69/255, 148/255}
+%\definecolor{SKDE}{rgb}{0,0.32,0.61}
+%\definecolor{moerkgraa}{rgb}{0.25,0.25,0.25}
+%\color{moerkgraa}
+
+\usepackage[pdftex, colorlinks, linkcolor=OffBlaa3, urlcolor=OffBlaa3]{hyperref}
+\usepackage{enumitem}
+\setlist[itemize]{noitemsep}	%, nolistsep
+%Kan også bruke itemsep=... osv.
+
+%bytte overskrifter 
+\usepackage[compact]{titlesec}
+\titleformat{\section} {\vspace*{10pt}\color{OffBlaa5}\normalfont\Large\bfseries} {\thesection}{}{}
+\titleformat{\subsection} {\color{OffBlaa3}\normalfont\large\bfseries} {\thesection}{}{}
+
+%topptekst og vertikal sidenummer
+\fancyhead{}\fancyfoot{}  % clear all fields
+\fancyheadoffset[LO, RE]{3cm}
+\fancyfootoffset[LO]{1.5cm}
+\fancyfootoffset[RE]{1.5cm}
+%Stripe øverst på sida med registerets navn
+\fancyhead[LO]{\colorbox{OffBlaa5}{\textcolor{white}{\hspace*{2cm}\scshape\small Norsk Intensivregister}}} %Lengde på stripa
+\fancyfoot[LO]{\colorbox{OffBlaa5}{\textcolor{white}{\scshape\small\thepage}}} 
+\fancyfoot[RE]{\colorbox{OffBlaa5}{\textcolor{white}{\scshape\small\thepage}}}
+\renewcommand{\headrulewidth}{0pt} %\iffloatpage{0pt}{0.4pt}
+ \renewcommand{\footrulewidth}{0pt}
+%evt. horisontal sidenummer
+\fancyfoot[LO]{\colorbox{OffBlaa5}{\textcolor{white}{\hspace*{2cm} \small \thepage}}} \fancyfootoffset[LO]{4.4cm}
+\fancyfoot[RE]{\hspace*{2cm}\colorbox{OffBlaa5}{\textcolor{white}{\small \thepage \hspace*{3cm}}}}  \fancyfootoffset[RE]{5.3cm}
+\setcounter{secnumdepth}{-1} 
+
+
+\begin{document}
+\begin{titlepage}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+\center % Center everything on the page
+%	TITLE SECTION
+\HRule \\[0.4cm]
+{ \huge \bfseries Dokumentasjon for R-funksjoner i HJERNESLAG}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+ 
+%	AUTHOR SECTION
+%\author{Lena Ringstad Olsen, SKDE}
+%\Large \emph{Author:}\\
+\Large Utarbeidet av: \\
+\huge{Lena Ringstad Olsen, SKDE}\\[3cm] % Your name
+
+%	DATE SECTION
+{\Large \today}\\[2cm] % Date, change the \today to a set date if you want to be precise
+
+\vspace{5cm}
+
+%	LOGO SECTION
+%\includegraphics[height=2cm]{LogoNIR.jpg}\\[1cm] % Include a department/university logo - this will require the graphicx package
+ 
+ \vfill % Fill the rest of the page with whitespace
+\end{titlepage}
+
+
+\section{Register og data}
+Hjerneslagregisteret har et hovedskjema og et oppfølgingsskjema som fylles ut 3 måneder etter hjerneslaget. På Rapporteket er det gjort ei omstrukturering av dataene, dvs. at hvert opphold er ei linje i datasettet. (I databasen er hver registrering ei linje, dvs. at hovedskjema og oppfølgingsskjema tilhørende samme innleggelse kommer på to rader.)
+Resultatene baserer seg på registreringer fra og med 1.januar 2013. Etter ønske fra registerledelsen er registreringer før den tid, ikke tilgjengliggjort på Rapporteket.
+
+\section{Utvalg av data/inputparametre}
+
+Generelt er det mulig å gjøre utvalg på: 
+\begin{itemize}
+\item Tidsperiode for innleggelser: f.o.m. – t.o.m., alltid angitt 
+\item Alder  min – maks, standard:alle [minald,maksald]
+\item Kjønn [erMann]
+	\subitem 0: kvinner
+	\subitem 1: menn
+	\subitem alt annet enn 0 eller 1: begge (standard)]
+\item diagnose 
+	\subitem	1- Infarkt(I61)
+	\subitem	2- Blødning(I63)
+	\subitem	3-Udefinert(I64) 
+	\subitem	standard: '' (alt annet)
+\item innlagt innen 4 timer [innl4t]
+%	\begin{itemize}
+	\subitem	0: nei, 
+	\subitem	1: ja, 
+	\subitem	standard: '' (alt annet)
+%	\end{itemize}
+\item NIHSS ved innleggelse [NIHSSinn]
+%	\begin{itemize}
+	\subitem	1: 0-5, 	
+	\subitem	2: 6-10, 
+	\subitem	3: 11-15, 
+	\subitem	4: 16-20, 
+	\subitem	5: 21-25, 
+	\subitem	standard: '' (alt annet)
+	\subitem	Velges denne, blir registreringer hvor NIHSS ikke er utført, tatt bort (selvsagt)	
+%	\end{itemize}
+\item Hvilket nivå av data man ønsker å se resultater for [enhetsUtvalg]
+	\subitem 0: Hele landet
+	\subitem 1: Egen enhet mot resten av landet (standard)
+	\subitem 2: Egen enhet
+\item Variabel: Hvilken variabel figuren skal framstille [valgtVar]
+\end{itemize} 
+%\vspace{1cm}
+	
+
+
+Alle utvalg er ikke aktuelle for alle figurer. I tillegg kommer det mer spesifikke valg som f.eks. om en figur skal vise gjennomsnitt (standard) eller median, der dette er akutelt.
+
+I tillegg kommer noen "tekniske" inputparametre:
+\begin{itemize}
+	\item[RegData] Registerdata, dvs. ei datamatrise med variable og registreringer
+	\item[libkat] sti til hvor man finner bibliotekfunksjonene de enkelte figurfunksjonene benytter
+	\item[outfile] angivelse av navn/type figurfil figuren skal skrives til (eks Alder.png)
+	\item[reshID] ID for enheten som ber om data. Dette bestemmer hvilken enhet resultatet vises for
+\end{itemize}
+
+
+\section{Figurfunksjoner}
+
+
+\subsection{Funksjon: SlagFigAntStabel.R}
+Søylediagram som viser antall registreringer per måned, siste 12 hele måneder fra valgt sluttdato av hovedskjema, oppfølgingsskjema og døde.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{../trunk/RAntStabel/Registreringer}
+	\caption{}
+	\label{fig:Registreringer}
+\end{figure}
+
+FigAntReg  <- function(RegData, datoTil='2050-12-31', minald=0, maxald=130, erMann='', diagnose='', innl4t='', NIHSSinn='', libkat, outfile='', reshID, enhetsUtvalg=2)
+
+
+
+\subsection{Funksjon: SlagFigAndeler.R (Fordelinger)}
+Funksjonen viser en figur med fordelinga til valgt variabel (spesifisert ved parameteren "valgtVar"). Andel observasjoner i hver kategori vises horisontalt eller vertikalt. Velger man
+å vise egen avdeling mot resten av landet (enhetsUtvalg=1), kommer resultater for egen avdeling som søyler, mens andelene for resten av landet vises som en "prikk".
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\linewidth]{../trunk/RAndeler/Alder.pdf}
+\caption{Aldersfordeling for egen enhet mot resten av landet.}
+\label{fig:Alder}
+\end{figure}
+
+\subsubsection{Funksjonsdefinisjon}
+FigAndeler  <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil='2050-12-31', 
+minald=0, maxald=130, erMann='', diagnose='', innl4t='', NIHSSinn='', libkat, outfile='', 
+reshID, enhetsUtvalg=1)
+
+Hvilken variabel man vil se fordelinga til, velger man ved å spesifisere parameteren "valgtVar". Figuren er definert for følgende variable:\\
+
+Alder, Transportmetode,
+AntDagerInnl, TidSymptInnlegg, TidSymptTrombolyse, TidInnleggTrombolyse
+NIHSSinnkomst, NIHSSendrTrombolyse, NIHSSendrTrombektomi
+NIHSSpreTrombolyse','NIHSSetterTrombolyse','NIHSSpreTrombektomi', 'NIHSSetterTrombektomi'
+Slagdiagnose, BildediagnostikkHjerne, BildediagnostikkHjerte,
+BildediagnostikkIntraraniell, BildediagnostikkEkstrakranKar, RegistreringHjerterytme
+BoligforholdPre, RoykerPre, Royker3mnd, 'MRSPre', 'MRS3mnd', Tilfredshet,
+SivilstatusPre, BevissthetsgradInnleggelse, 
+AvdForstInnlagtHvilken, AvdUtskrFraHvilken, UtskrTil
+FokaleUtf, FokaleUtfAndre,
+
+
+
+\subsection{Funksjon: SlagFigAndelerKvalInd.R}
+Funksjonen viser oversikt over en rekke kvalitetsindikatorer, angitt med hvor stor andel av pasientene som har fått den aktuelle behandlinga. Figuren er i prinsippet identisk med FigAndeler, men mange spesielle utvalg tvang fram mye "hardkoding" og figuren ble derfor skilt ut i egen funksjon. 
+
+FigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-31', 
+erMann='', NIHSSinn='', libkat, outfile='', enhetsUtvalg=1, reshID)
+
+
+
+\subsection{Funksjon: SlagFigPrePost.R}
+Søylediagram som fordeling av variable målt både før og etter hjerneslaget, evt. sammenlignet med resten av landet. 
+
+
+FigPrePost  <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil='2050-12-31', 
+minald=0, maxald=130, erMann='', diagnose='', innl4t='', NIHSSinn='', libkat, outfile='', 
+reshID, enhetsUtvalg=1)
+
+Figuren er definert for følgende variable: \\
+ "Bilkjoring"       "Boligforh"        "Bosituasjon"      "Forflytning"      "MRS"             
+ "NIHSSTrombektomi" "NIHSSTrombolyse"  "Paakledning"      "Toalett"          "Yrkesaktiv" 
+
+
+
+\subsection{Funksjon: SlagFigAndelerGrVar.R}
+Funksjon som genererer en figur med andeler av en variabel for en valgt grupperingsvariabel,
+f.eks. sykehus.
+Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\linewidth]{Aarsrapp2013/InnlSlagenh}
+\caption{Andel pasienter som ble innlagt direkte i slagenhet, 2013}
+\label{fig:InnlSlagenh}
+\end{figure}
+
+
+FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-12-31', 
+minald=0, maxald=130, erMann='', diagnose='', innl4t='', NIHSSinn='', libkat, outfile='')
+
+Figuren er definert for følgende variable:  \\
+"BehSlagenhet"        "InnlInnen4eSymptom"  "InnlSlagenh"         "LipidI63u80"        
+"SvelgtestUtfort"     "TrombolyseI63"       "UtAntikoagI63atrie"  "UtAntitrombotiskI63"
+"UtBT" 
+
+
+\subsection{Funksjon: SlagFigMeanMed.R}
+Funksjon som genererer en figur med gjennomsnitt/median for hvert sykehus og kan ta inn ulike numeriske variable.
+Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus.
+Figurdefinisjon
+FigMeanMed <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012-04-01', datoTil='2050-12-31', minald=0, maxald=130, erMann='', diagnose='', innl4t='', NIHSSinn='', libkat, outfile='') 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\linewidth]{Aarsrapp2013/AlderGjsn}
+\caption{Gjennomsnittsalder ved hver enhet}
+\label{fig:AlderGjsn}
+\end{figure}
+
+
+Figuren er definert for følgende variable: \\
+Alder, AntDagerInnl, NIHSSinnkomst, NIHSSpreTrombolyse, NIHSSetterTrombolyse, NIHSSpreTrombektomi, NIHSSetterTrombektomi, TidSymptInnlegg, TidSymptTrombolyse, TidInnleggTrombolyse
+
+\section{Bibliotekfunksjoner}
+
+
+\section{Samledokument}
+
+\end{document}
