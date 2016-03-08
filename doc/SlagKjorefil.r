@@ -19,31 +19,26 @@ table(table(SlagData$PatientInRegistryKey[which(SlagData$SkjemaID==1)]))
 #--------------------------------------SAMLERAPPORT-----------------------------------
 
 rm(list=ls())
-library(knitr)
 #Sys.setenv("MYSQL_HOME"="C:/Program Files/MySQL/mysql-cluster")
-#library(RMySQL)
-setwd('C:/Registre/Hjerneslag/trunk/RSamleDok')
 #knit(input, output = NULL, tangle = FALSE, text = NULL, envir = parent.frame())
 
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21ansi.csv', sep=';', header=T) #HjerneSlag2014-04-07
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2013ANSIalle.csv', sep=';', header=T) #HjerneSlag2014-04-07
 #SlagData <- read.table('C:/Registre/Hjerneslag/doc/AarsRapp2013/HjerneSlag2013ANSIshOK.csv', sep=';', header=T) #, 
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2015-05-20.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-SlagData$PreMedikBehHoytBT <- SlagData$PreMedHoytBT 
-SlagData$PreKalsiumanatgonist <- SlagData$PreKalsiumantagonist
+SlagDataALLE <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 #names(SlagData[which(names(SlagData) == 'PreMedHoytBT')]) <- 'PreMedikBehHoytBT'
-RegData <- SlagData
+SlagData <- SlagDataALLE[sample(1:dim(SlagDataALLE)[1], 5000), ]
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/SlagEksempel.csv', sep=';', header=T) #, 
 #Brukes kun for å få med alle potensielle sykehus slik at de som evt. har 0 registreringer også blir med.
-SykehusTab <- read.table('C:/Registre/Hjerneslag/data/SykehuskoderSlag2014-10-21.csv', sep=';', header=T)
-#SykehusTab <- read.table('C:/Registre/Hjerneslag/data/SykehusTabSlag.csv', sep=';', header=T)
 reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
 
-libkat <- 'C:/Registre/Rlib/trunk/'		#del av sti til bibliotekkatalog, før /lib/r/<funksjon.R>
-libkatTex <- libkat
+#libkat <- 'C:/Registre/Rlib/trunk/'		#del av sti til bibliotekkatalog, før /lib/r/<funksjon.R>
+#libkatTex <- libkat
 
-knit('SlagSamleDokLand.Rnw')
-#knit('SlagSamleDok.Rnw')
+setwd('C:/ResultattjenesteGIT/Hjerneslag/inst')
+library(knitr)
+#knit('SlagSamleDokLand.Rnw')
+knit('SlagSamleDok.Rnw')
 #knit('SlagSamleDok_AlleTabOgKomm.Rnw')
 
 #--------------------------------------------------------

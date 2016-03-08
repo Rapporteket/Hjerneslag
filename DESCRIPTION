@@ -10,11 +10,10 @@ Maintainer: Lena Ringstad Olsen <Lena.Olsen@skde.no>
 Description: Pakke for generering av resultatrapporter for Hjerneslag.  
 License: GPL2
 LazyData: TRUE
-Depends: R (>= 3.0.2), rapbase
+Depends: R (>= 3.0.2), rapbase, knitr
 Imports:
   plyr,
   xtable
 RoxygenNote: 5.0.1
-Suggests: knitr,
-    rmarkdown
+Suggests: rmarkdown
 VignetteBuilder: knitr

@@ -106,7 +106,7 @@ if (hentData == 1) {
 
 <<'DatautvalgOgPreProsess',echo=FALSE, eval=T>>=
 # Hvis RegData ikke har blitt preprosessert. 
- RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
+SlagData <- SlagPreprosess(RegData=SlagData, reshID=reshID)
 
 #Felles parametre:
 hentData <- 0
@@ -130,16 +130,16 @@ library(xtable)
 
 #UTVALG
 SlagData <- SlagData[SlagData$erMann %in% 0:1, ]	#Tar ut registreringer som ikke har kjønn
-SlagData <- SlagData[(SlagData$InnDato>=as.POSIXlt(datoFra)) & (SlagData$InnDato<=as.POSIXlt(datoTil)), ] 
+SlagData <- SlagData[(as.Date(SlagData$InnDato)>=as.Date(datoFra)) & (SlagData$InnDato<=as.Date(datoTil)), ] 
 
+SlagData$Aar <- 1900 + strptime(SlagData$Innleggelsestidspunkt, format="%Y")$year
 
-SlagData$Aar <- as.factor(SlagData$InnDato$year+1900)
 N <- dim(SlagData)[1]
 tabKjPst <- round(table(SlagData$erMann)/N*100, digits=1)
 
 ind <- list(Eget = which(SlagData$ReshId == reshID),
 			Alle = 1:N,
-			Fra2014 = which(SlagData$InnDato >= as.POSIXlt('2014-01-01')))
+			Fra2014 = which(SlagData$InnDato >= as.Date('2014-01-01')))
 SlagDataEget <- SlagData[ind$Eget, ]
 Neget <- dim(SlagDataEget)[1]
 #shtxt <- as.character(SykehusTab[which(SykehusTab$AvdRESH == reshID),'Avdeling'])
@@ -147,7 +147,7 @@ shtxt <- as.character(SlagData$Avdeling[match(reshID, SlagData$ReshId)])
 tabKjPstEget <- round(table(SlagDataEget$erMann)/Neget*100, digits=1)
 
 dum <- FigAndelerKvalInd(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, NIHSSinn=NIHSSinn, 
-			reshID=reshID, enhetsUtvalg, libkat=libkat, outfile='FigKvalInd.pdf')
+			reshID=reshID, enhetsUtvalg, preprosess=preprosess, outfile='FigKvalInd.pdf')
 @
 
 \section{Innledning}
@@ -1278,6 +1278,6 @@ dum <-	FigAndeler(RegData=SlagData, valgtVar='Tilfredshet', datoFra=datoFra,
 \end{figure}
 
 \clearpage
-\input{\Sexpr{libkatTex}ansvarsforhold}
+%\input{\Sexpr{libkatTex}ansvarsforhold}
 
 \end{document}

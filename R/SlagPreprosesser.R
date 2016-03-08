@@ -24,7 +24,9 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 	RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
 	RegData$TidInnTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Innleggelsestidspunkt,   
 		units='mins'))
-
+	RegData$PreMedikBehHoytBT <- RegData$PreMedHoytBT 
+	RegData$PreKalsiumanatgonist <- RegData$PreKalsiumantagonist
+	
   #Riktig navn på regions-variabel:
 	RegData$Region <- RegData$RHF
 
