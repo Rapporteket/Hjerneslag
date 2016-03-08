@@ -92,187 +92,25 @@ opts_chunk$set(fig.path='./', fig.align='center', fig.show='hold', out.width='.7
 #options(continue=" ")	#?% supress the '+' continuation prompt
 @
 
-<<'LasteDataOgFunksjoner', echo=FALSE, eval=T>>=
-#Må laste inn SlagData og tabellen SykehuskoderSlag. Lokalt gjøres dette utenfor.
-library(DBI)
-library(RMySQL)
-library(yaml)
-conf <- yaml.load_file('../dbConfig.yml')
-
-con <- dbConnect( dbDriver("MySQL") ,
-	 user=conf$Hjerneslag$user,
-	 password=conf$Hjerneslag$pass,
-	 dbname=conf$Hjerneslag$name,
-	 host=conf$Hjerneslag$host)
-
-query <- "SET NAMES utf8;"
-tmp <- dbGetQuery(con, query)
-
-#Tatt bort:      HjerneSlagPROD.`RelatedID` + '0' AS RelatedID,
-
-query <- "SELECT
-     HjerneSlagPROD.`PasientId` AS PasientId,
-     HjerneSlagPROD.`ReshId` + '0' AS ReshId,
-     HjerneSlagPROD.`RHF` AS RHF,
-     HjerneSlagPROD.`RHFresh` + '0' AS RHFresh,
-     HjerneSlagPROD.`Organisasjon` AS Organisasjon,
-     HjerneSlagPROD.`OrgRESH` + '0' AS OrgRESH,
-     HjerneSlagPROD.`Avdeling` AS Avdeling,
-     HjerneSlagPROD.`Kjonn` AS Kjonn,
-     cast(HjerneSlagPROD.`Innleggelsestidspunkt` as CHAR(19)) AS Innleggelsestidspunkt,
-     cast(HjerneSlagPROD.`Symptomdebut` as CHAR(19)) AS Symptomdebut,
-     cast(HjerneSlagPROD.`TrombolyseStarttid` as CHAR(19)) AS TrombolyseStarttid,
-     cast(HjerneSlagPROD.`TrombektomiStarttidspunkt` as CHAR(19)) AS TrombektomiStarttidspunkt,
-     HjerneSlagPROD.`TidInnTrombolyse` + '0' AS TidInnTrombolyse,
-     HjerneSlagPROD.`Ataksi` + '0' AS Ataksi,
-     HjerneSlagPROD.`Dobbeltsyn` + '0' AS Dobbeltsyn,
-     HjerneSlagPROD.`PreIngenMedikam` + '0' AS PreIngenMedikam,
-     HjerneSlagPROD.`NIHSSikkeUtfort` + '0' AS NIHSSikkeUtfort,
-     HjerneSlagPROD.`Neglekt` + '0' AS Neglekt,
-     HjerneSlagPROD.`Sensibilitetsutfall` + '0' AS Sensibilitetsutfall,
-     HjerneSlagPROD.`Synsfeltutfall` + '0' AS Synsfeltutfall,
-     HjerneSlagPROD.`Vertigo` + '0' AS Vertigo,
-     HjerneSlagPROD.`AntDagerInnl` + '0' AS AntDagerInnl,
-     HjerneSlagPROD.`AkutteFokaleutfallPosBilleddiag` + '0' AS AkutteFokaleutfallPosBilleddiag,
-     HjerneSlagPROD.`AndreFokaleSympt` + '0' AS AndreFokaleSympt,
-     HjerneSlagPROD.`Armparese` + '0' AS Armparese,
-     HjerneSlagPROD.`Atrieflimmer` + '0' AS Atrieflimmer,
-     HjerneSlagPROD.`AvdForstInnlagt` + '0' AS AvdForstInnlagt,
-     HjerneSlagPROD.`AvdForstInnlagtHvilken` + '0' AS AvdForstInnlagtHvilken,
-     HjerneSlagPROD.`AvdUtskrFra` + '0' AS AvdUtskrFra,
-     HjerneSlagPROD.`AvdUtskrFraHvilken` + '0' AS AvdUtskrFraHvilken,
-     HjerneSlagPROD.`Beinparese` + '0' AS Beinparese,
-     HjerneSlagPROD.`BevissthetsgradInnleggelse` + '0' AS BevissthetsgradInnleggelse,
-     HjerneSlagPROD.`BildediagnostikkHjerne` + '0' AS BildediagnostikkHjerne,
-     HjerneSlagPROD.`BildediagnostikkHjerte` + '0' AS BildediagnostikkHjerte,
-     HjerneSlagPROD.`RegistreringHjerterytme` + '0' AS RegistreringHjerterytme,
-     HjerneSlagPROD.`BildediagnostikkIntraraniell` + '0' AS BildediagnostikkIntraraniell,
-     HjerneSlagPROD.`BildediagnostikkEkstrakranKar` + '0' AS BildediagnostikkEkstrakranKar,
-     HjerneSlagPROD.`BoligforholdPre` + '0' AS BoligforholdPre,
-     HjerneSlagPROD.`Boligforhold3mnd` + '0' AS Boligforhold3mnd,
-     HjerneSlagPROD.`BosituasjonPre` + '0' AS BosituasjonPre,
-     HjerneSlagPROD.`Bosituasjon3mnd` + '0' AS Bosituasjon3mnd,
-     HjerneSlagPROD.`CerebralCTInn` + '0' AS CerebralCTInn,
-     HjerneSlagPROD.`PreDiabetes` + '0' AS PreDiabetes,
-     HjerneSlagPROD.`SvelgtestUtfort` + '0' AS SvelgtestUtfort,
-     HjerneSlagPROD.`Facialisparese` + '0' AS Facialisparese,
-     HjerneSlagPROD.`ForflytningPre` + '0' AS ForflytningPre,
-     HjerneSlagPROD.`Forflytning3mnd` + '0' AS Forflytning3mnd,
-     HjerneSlagPROD.`HjerneblodningsstoppBeh` + '0' AS HjerneblodningsstoppBeh,
-     HjerneSlagPROD.`PreA2Antagonist` + '0' AS PreA2Antagonist,
-     HjerneSlagPROD.`PreACEhemmer` + '0' AS PreACEhemmer,
-     HjerneSlagPROD.`PreASA` + '0' AS PreASA,
-     HjerneSlagPROD.`PreBetablokker` + '0' AS PreBetablokker,
-     HjerneSlagPROD.`PreDipyridamol` + '0' AS PreDipyridamol,
-     HjerneSlagPROD.`PreDiuretica` + '0' AS PreDiuretica,
-     HjerneSlagPROD.`PreKalsiumantagonist` + '0' AS PreKalsiumanatgonist,
-     HjerneSlagPROD.`PreKlopidogrel` + '0' AS PreKlopidogrel,
-     HjerneSlagPROD.`PreStatinerLipid` + '0' AS PreStatinerLipid,
-     HjerneSlagPROD.`PreWarfarin` + '0' AS PreWarfarin,
-     HjerneSlagPROD.`PreAndreEnnWarfarin` + '0' AS PreAndreEnnWarfarin,
-	 HjerneSlagPROD.`TverrfagligVurdering` + '0' AS TverrfagligVurdering,
-     HjerneSlagPROD.`MobiliseringInnen24Timer` + '0' AS MobiliseringInnen24Timer,
-     HjerneSlagPROD.`PreMedHoytBT` + '0' AS PreMedikBehHoytBT,
-     HjerneSlagPROD.`OppfolgUtf` + '0' AS OppfolgUtf,
-     HjerneSlagPROD.`PaakledningPre` + '0' AS PaakledningPre,
-     HjerneSlagPROD.`Paakledning3mnd` + '0' AS Paakledning3mnd,
-     HjerneSlagPROD.`MRSPre` + '0' AS MRSPre,
-     HjerneSlagPROD.`MRS3mnd` + '0' AS MRS3mnd,
-     HjerneSlagPROD.`OperertHalspulsaare` + '0' AS OperertHalspulsaare,
-	 HjerneSlagPROD.`ReinnlagtTypeSlag` + '0' AS ReinnlagtTypeSlag,
-     HjerneSlagPROD.`RoykerPre` + '0' AS RoykerPre,
-     HjerneSlagPROD.`Royker3mnd` + '0' AS Royker3mnd,
-     HjerneSlagPROD.`YrkesaktivUnderHjerneslag2` + '0' AS YrkesaktivUnderHjerneslag2,
-     HjerneSlagPROD.`YrkesaktivNaa` + '0' AS YrkesaktivNaa,
-     HjerneSlagPROD.`KjorteBilForHjerneslag` + '0' AS KjorteBilForHjerneslag,
-     HjerneSlagPROD.`KjorerBilNaa` + '0' AS KjorerBilNaa,
-     HjerneSlagPROD.`SivilstatusPre` + '0' AS SivilstatusPre,
-     HjerneSlagPROD.`Sivilstatus3mnd` + '0' AS Sivilstatus3mnd,
-     HjerneSlagPROD.`Slagdiagnose` + '0' AS Slagdiagnose,
-     HjerneSlagPROD.`SpraakTaleproblem` + '0' AS SpraakTaleproblem,
-     HjerneSlagPROD.`SpraakTaleproblEtterHjslag` + '0' AS SpraakTaleproblEtterHjslag,
-     HjerneSlagPROD.`SynsproblEtterHjslag` + '0' AS SynsproblEtterHjslag,
-	 HjerneSlagPROD.`VaaknetMedSymptom` + '0' AS VaaknetMedSymptom,
-     HjerneSlagPROD.`TimerSymptomdebutInnlegg` + '0' AS TimerSymptomdebutInnlegg,
-     HjerneSlagPROD.`TidlHjerneslag` + '0' AS TidlHjerneslag,
-     HjerneSlagPROD.`TidlHjerteinfarkt` + '0' AS TidlHjerteinfarkt,
-     HjerneSlagPROD.`TidlTIA` + '0' AS TidlTIA,
-     HjerneSlagPROD.`TidlHjerneslagType` + '0' AS TidlHjerneslagType,
-	 HjerneSlagPROD.`Tilfredshet` + '0' AS Tilfredshet,
-     HjerneSlagPROD.`ToalettbesokPre` + '0' AS ToalettbesokPre,
-     HjerneSlagPROD.`Toalettbesok3mnd` + '0' AS Toalettbesok3mnd,
-     HjerneSlagPROD.`HjerneblInnen36timer` + '0' AS HjerneblInnen36timer,
-     HjerneSlagPROD.`Trombolyse` + '0' AS Trombolyse,
-     HjerneSlagPROD.`Trombektomi` + '0' AS Trombektomi,
-     HjerneSlagPROD.`Hemikraniektomi` + '0' AS Hemikraniektomi,
-     HjerneSlagPROD.`UtA2Antagonist` + '0' AS UtA2Antagonist,
-     HjerneSlagPROD.`UtACEhemmer` + '0' AS UtACEhemmer,
-     HjerneSlagPROD.`UtASA` + '0' AS UtASA,
-     HjerneSlagPROD.`UtBetablokker` + '0' AS UtBetablokker,
-     HjerneSlagPROD.`UtDipyridamol` + '0' AS UtDipyridamol,
-     HjerneSlagPROD.`UtDiuretica` + '0' AS UtDiuretica,
-     HjerneSlagPROD.`UtKalsiumantagonist` + '0' AS UtKalsiumantagonist,
-     HjerneSlagPROD.`UtKlopidogrel` + '0' AS UtKlopidogrel,
-     HjerneSlagPROD.`UtStatinerLipid` + '0' AS UtStatinerLipid,
-     HjerneSlagPROD.`UtWarfarin` + '0' AS UtWarfarin,
-     HjerneSlagPROD.`UtAndreEnnWarfarin` + '0' AS UtAndreEnnWarfarin,
-     HjerneSlagPROD.`UtPlatehem` + '0' AS UtPlatehem,
-     HjerneSlagPROD.`UtAntikoag` + '0' AS UtAntikoag,
-     HjerneSlagPROD.`UtBTsenk` + '0' AS UtBTsenk,
-     HjerneSlagPROD.`UtskrTil` + '0' AS UtskrTil,
-     HjerneSlagPROD.`AarsakManglendeOppf` + '0' AS AarsakManglendeOppf,
-     HjerneSlagPROD.`HvorOppstoHjerneslaget` + '0' AS HvorOppstoHjerneslaget,
-     HjerneSlagPROD.`Alder` + '0' AS Alder,
-     HjerneSlagPROD.`DagerSymptDebutTilOppf` + '0' AS DagerSymptDebutTilOppf,
-     HjerneSlagPROD.`NIHSSinnkomst` + '0' AS NIHSSinnkomst,
-     HjerneSlagPROD.`NIHSSpreTrombolyse` + '0' AS NIHSSpreTrombolyse,
-     HjerneSlagPROD.`NIHSSetterTrombolyse` + '0' AS NIHSSetterTrombolyse,
-     HjerneSlagPROD.`NIHSSpreTrombektomi` + '0' AS NIHSSpreTrombektomi,
-     HjerneSlagPROD.`NIHSSetterTrombektomi` + '0' AS NIHSSetterTrombektomi,
-     HjerneSlagPROD.`DagerInnleggelseTilDod` + '0' AS DagerInnleggelseTilDod,
-     HjerneSlagPROD.`MindreEnn4tSymptInnlegg` + '0' AS MindreEnn4tSymptInnlegg,
-     HjerneSlagPROD.`Transportmetode` + '0' AS Transportmetode,
-     cast(HjerneSlagPROD.`Updated` as CHAR(10)) AS Updated
-FROM
-     HjerneSlagPROD"
-
-SlagData <- dbGetQuery(con, query)
-
-#Tas med kun for å få med alle potensielle sykehus slik at de som evt. har 0 registreringer også blir med.
-#querySh <- 'select * FROM SykehuskoderSlag'
-#SykehusTab <- dbGetQuery(con, querySh)
-dbstop <- dbDisconnect(con)
-
-libkat <- '../'		#del av sti til bibliotekkatalog, før /lib/r/<funksjon.R>
-libkatTex <- '../'	
-source(paste(libkat, "SlagFigAndelerGrVar.R", sep=''), encoding="UTF-8")
-source(paste(libkat, "SlagFigMeanMed.R", sep=''), encoding="UTF-8")
-source(paste(libkat, "SlagFigAndeler.R", sep=''), encoding="UTF-8")
-source(paste(libkat, "SlagFigAndelerKvalInd.R", sep=''), encoding="UTF-8")
-source(paste(libkat, "SlagFigAntStabel.R", sep=''), encoding="UTF-8")
-source(paste(libkat, "SlagFigAndelerPrePost.R", sep=''), encoding="UTF-8")
-
+<<'LasteData', echo=FALSE, eval=F>>=
+if (hentData == 1) {
+  library(RMySQL)
+  source(paste0(libkat, 'SlagLoadRegData.R'))
+  source(paste0(libkat, 'SlagLoadRegDataMinimal.R'))
+  cat('\nLocal loading of RegData...\n')
+  RegData <- SlagLoadRegDataMinimal()
+}
 @
 
 
-<<'VariabeldefOgDatautvalg',echo=FALSE, eval=T>>=
-datoVar <- 'Innleggelsestidspunkt'	
-SlagData$InnDato <- as.POSIXlt(SlagData[ ,datoVar], format="%Y-%m-%d")	# %H:%M, "%Y-%m-%d" c "%d.%m.%Y %H:%M"
-SlagData <- SlagData[which(SlagData$Innleggelsestidspunkt!=''),]	#Tar ut registreringer som ikke har innleggelsesdato
-SlagData$Symptomdebut <- as.POSIXlt(SlagData$Symptomdebut, format="%Y-%m-%d %H:%M:%S" )
-SlagData$TimerSymptomdebutInnlegg <- as.numeric(difftime(SlagData$Innleggelsestidspunkt, SlagData$Symptomdebut,  
-		units='hours'))
-SlagData$TimerSymptomdebutInnlegg[which(SlagData$VaaknetMedSymptom!=2)] <- NA
-
+<<'DatautvalgOgPreProsess',echo=FALSE, eval=T>>=
+# Hvis RegData ikke har blitt preprosessert. 
+SlagData <- SlagPreprosess(RegData=SlagData, reshID=reshID)
 SlagData$ShNavn <- as.factor(SlagData$Avdeling)	#factor(SlagData$ReshId)
-#levels(SlagData$ShNavn) <- unique(c(levels(SlagData$ShNavn), 
-#					setdiff(levels(as.factor(SykehusTab$Avdeling)),levels(SlagData$ShNavn))))
-SlagData$erMann[SlagData$Kjonn == 'K'] <- 0
-SlagData$erMann[SlagData$Kjonn == 'M'] <- 1
 
 #Felles parametre:
-#egenavd <- 0	#1-Eget sykehus (standard), 0-Hele landet
-#sml <- 0		#Sml med resten av landet eller ikke. (0-ikke sml, 1-sml). Ikke aktiv når hele landet valgt.
+hentData <- 0
+preprosess <- 0
 enhetsUtvalg <- 0
 minald <- 0
 maxald <- 130
@@ -293,21 +131,15 @@ library(xtable)
 
 #UTVALG
 SlagData <- SlagData[SlagData$erMann %in% 0:1, ]	#Tar ut registreringer som ikke har kjønn
-SlagData <- SlagData[(SlagData$InnDato>=as.POSIXlt(datoFra)) & (SlagData$InnDato<=as.POSIXlt(datoTil)), ] 
+SlagData <- SlagData[(SlagData$InnDato>=as.Date(datoFra)) & (SlagData$InnDato<=as.Date(datoTil)), ] 
 
-# Andre tidsvariable...
-#SlagData$TrombolyseStarttid <- as.POSIXlt(SlagData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S")
-#SlagData$Innleggelsestidspunkt <- as.POSIXlt(SlagData$Innleggelsestidspunkt, format="%d.%m.%Y %H:%M")	#"%Y-%m-%d %H:%M:%S")
-#SlagData$TidInnTromb <- as.numeric(difftime(SlagData$TrombolyseStarttid, SlagData$Innleggelsestidspunkt
-#			, units="hours"))
-
-SlagData$Aar <- as.factor(SlagData$InnDato$year+1900)
+SlagData$Aar <- 1900 + strptime(SlagData$Innleggelsestidspunkt, format="%Y")$year
 N <- dim(SlagData)[1]
 tabKjPst <- round(table(SlagData$erMann)/N*100, digits=1)
 indFra2014 <- which(SlagData$InnDato>=as.POSIXlt('2014-01-01'))
 
-dum <- FigAndelerKvalInd(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, NIHSSinn=NIHSSinn, 
-			reshID=reshID, enhetsUtvalg=enhetsUtvalg, libkat=libkat, outfile='FigKvalInd.pdf')
+dum <- FigAndelerKvalInd(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, 
+	NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, outfile='FigKvalInd.pdf')
 
 @
 
@@ -472,7 +304,7 @@ print(Nokkelt)
 
 dum <- FigAndeler(RegData=SlagData, valgtVar='Alder', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, outfile='FigAlder.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigAlder.pdf')
 @
 
 
@@ -516,7 +348,7 @@ print(BoligforhTab)
 
 dum <- 	FigAndeler(RegData=SlagData, valgtVar='SivilstatusPre', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigSivilstatusPre.pdf')
 
 @
@@ -801,47 +633,47 @@ for (d in 1:2) {
 
 InnlSlag <- FigAndelerGrVar(RegData=SlagData, valgtVar='InnlSlagenh', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, outfile='FigInnlSlag.pdf')
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigInnlSlag.pdf')
 
 BehSlagenhet <- FigAndelerGrVar(RegData=SlagData, valgtVar='BehSlagenhet', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, outfile='FigBehSlagenhet.pdf')
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigBehSlagenhet.pdf')
 		
 TrombolyseI63 <- FigAndelerGrVar(RegData=SlagData, valgtVar='TrombolyseI63', datoFra=datoFra, 
 		datoTil=datoTil, minald=18, maxald=80, erMann=erMann, diagnose=2, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, outfile='FigTrombolyseI63.pdf')
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigTrombolyseI63.pdf')
 
 InnlInnen4eSymptom <- FigAndelerGrVar(RegData=SlagData, valgtVar='InnlInnen4eSymptom', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, outfile='FigInnlInnen4eSymptom.pdf')
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigInnlInnen4eSymptom.pdf')
 
 SvelgtestUtfort <- FigAndelerGrVar(RegData=SlagData, valgtVar='SvelgtestUtfort', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, outfile='FigSvelgtestUtfort.pdf')
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigSvelgtestUtfort.pdf')
 		
 UtAntitrombotiskI63 <- FigAndelerGrVar(RegData=SlagData, valgtVar='UtAntitrombotiskI63', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=2, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, outfile='FigUtAntitrombotiskI63.pdf')
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigUtAntitrombotiskI63.pdf')
 		
 UtAntikoagI63atrie <- FigAndelerGrVar(RegData=SlagData, valgtVar='UtAntikoagI63atrie', datoFra=datoFra, 
 		datoTil=datoTil, minald=18, maxald=80, erMann=erMann, diagnose=2, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, outfile='FigUtAntikoagI63atrie.pdf')
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigUtAntikoagI63atrie.pdf')
 
 UtBT <- FigAndelerGrVar(RegData=SlagData, valgtVar='UtBT', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, outfile='FigUtBT.pdf')
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigUtBT.pdf')
 		
 LipidI63u80 <- FigAndelerGrVar(RegData=SlagData, valgtVar='LipidI63u80', datoFra=datoFra, 
 		datoTil=datoTil, minald=18, maxald=80, erMann=erMann, diagnose=2, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, outfile='FigLipidI63u80.pdf')
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigLipidI63u80.pdf')
 		
 AntDagerInnlGjsn <- FigMeanMed(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='mean', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, outfile='FigAntDagerInnlGjsn.pdf')
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigAntDagerInnlGjsn.pdf')
 			
 AntDagerInnlMed <- FigMeanMed(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='Med', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, outfile='FigAntDagerInnlMed.pdf')
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigAntDagerInnlMed.pdf')
 		
 @
 
@@ -927,27 +759,27 @@ Dette avsnittet inneholder resultater fra behandling i akuttfasen. Dette omfatte
 
 dum <- FigAndeler(RegData=SlagData, valgtVar='TidSymptInnlegg', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigTidSymptInnlegg.pdf')
 
 dum <- 	FigAndeler(RegData=SlagData, valgtVar='TidInnleggTrombolyse', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigTidInnTromb.pdf')
 
 dum <- 	FigAndeler(RegData=SlagData, valgtVar='BevissthetsgradInnleggelse', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigBevissthetsgradInn.pdf')
 
 dum <- 	FigAndeler(RegData=SlagData, valgtVar='NIHSSinnkomst', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigNIHSSinnkomst.pdf')
 
 dum <-	FigAndeler(RegData=SlagData, valgtVar='AvdForstInnlagtHvilken', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigAvdForstInnlagt.pdf')
 @
 
@@ -1030,7 +862,7 @@ xtable(AkuttbehI63, digits=c(0,0,1), align=c('l', 'r', 'r'),
 %<<FigNIHSSpreTrombolyse, echo=FALSE, message=FALSE, eval=T>>=
 %	FigAndeler(RegData=SlagData, valgtVar='NIHSSpreTrombolyse', datoFra=datoFra, 
 %		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-%		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, outfile=outfile)
+%		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile=outfile)
 %@
 %\caption{\label{fig:NIHSSpreTrombolyse} NIHSS score før trombolyse.}
 %\end{figure}
@@ -1039,7 +871,7 @@ xtable(AkuttbehI63, digits=c(0,0,1), align=c('l', 'r', 'r'),
 %<<FigNIHSSetterTrombolyse, echo=FALSE, message=FALSE, eval=T>>=
 %	FigAndeler(RegData=SlagData, valgtVar='NIHSSetterTrombolyse', datoFra=datoFra, 
 %		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-%		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, outfile=outfile)
+%		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile=outfile)
 %@
 %\caption{\label{fig:NIHSSetterTrombolyse} NIHSS score etter trombolyse.}
 %\end{figure}
@@ -1085,31 +917,31 @@ print(KritSupplPstTab)
 		
 dum <- FigPrePost(RegData=SlagData, valgtVar='NIHSSTrombolyse', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,libkat=libkat, outfile='FigNIHSSTrombolysePP.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, outfile='FigNIHSSTrombolysePP.pdf')
 
 dum <- 	FigAndeler(RegData=SlagData, valgtVar='NIHSSendrTrombolyse', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, outfile='FigNIHSSendrTrombolyse.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigNIHSSendrTrombolyse.pdf')
 		
 dum <- 	FigAndeler(RegData=SlagData, valgtVar='BildediagnostikkHjerne', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, outfile='FigBildediagnostikkHjerne.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagnostikkHjerne.pdf')
 		
 dum <- 	FigAndeler(RegData=SlagData, valgtVar='BildediagnostikkEkstrakranKar', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, outfile='FigBildediagEksKar.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagEksKar.pdf')
 
 dum <- 	FigAndeler(RegData=SlagData, valgtVar='BildediagnostikkIntraraniell', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, outfile='FigBildediagIntraKar.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagIntraKar.pdf')
 
 dum <- 	FigAndeler(RegData=SlagData, valgtVar='RegistreringHjerterytme', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, outfile='FigHjerterytme.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigHjerterytme.pdf')
 
 dum <- 	FigAndeler(RegData=SlagData, valgtVar='BildediagnostikkHjerte', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, outfile='FigBildediagnostikkHjerte.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagnostikkHjerte.pdf')
 		
 @
 
@@ -1325,15 +1157,15 @@ Dette kapitlet inneholder informasjon om:
 <<FigurerUtskriving, echo=FALSE, message=FALSE, eval=T>>=
 dum <- 	FigAndeler(RegData=SlagData, valgtVar='AntDagerInnl', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, outfile='FigAntDagerInnl.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigAntDagerInnl.pdf')
 
 dum <- 	FigAndeler(RegData=SlagData, valgtVar='AvdUtskrFraHvilken', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, outfile='FigAvdUtskrFraHvilken.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigAvdUtskrFraHvilken.pdf')
 		
 dum <- 	FigAndeler(RegData=SlagData, valgtVar='UtskrTil', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, outfile='FigUtskrTil.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigUtskrTil.pdf')
 		
 		
 @
@@ -1371,37 +1203,37 @@ Dette kapitlet inneholder resultater knyttet til:
 
 <<FigurerBoligforh, echo=FALSE, message=FALSE, eval=T>>=
 dum <-	FigPrePost(RegData=SlagData, valgtVar='Boligforh', datoFra=datoFra, datoTil=datoTil, 
-	minald=minald, maxald=maxald, reshID=reshID, enhetsUtvalg=enhetsUtvalg,libkat=libkat, 
+	minald=minald, maxald=maxald, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 	outfile='FigBoligforh.pdf')
 
 dum <- 	FigPrePost(RegData=SlagData, valgtVar='Bosituasjon', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,libkat=libkat, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigBositPrePost.pdf')
 
 dum <- 	FigPrePost(RegData=SlagData, valgtVar='Toalett', datoFra=datoFra, datoTil=datoTil, 
 		minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,libkat=libkat, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigToalettPrePost.pdf')
 		
 dum <- 	FigPrePost(RegData=SlagData, valgtVar='Forflytning', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,libkat=libkat, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigForflytningPrePost.pdf')
 		
 dum <- 	FigPrePost(RegData=SlagData, valgtVar='Paakledning', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,libkat=libkat, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigPaakledningPrePost.pdf')
 		
 dum <- 	FigPrePost(RegData=SlagData, valgtVar='Bilkjoring', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,libkat=libkat, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigBilkjoringPrePost.pdf')
 
 dum <-	FigAndeler(RegData=SlagData, valgtVar='Tilfredshet', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, libkat=libkat, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigTilfredshet.pdf')
 		
 @
@@ -1446,6 +1278,6 @@ dum <-	FigAndeler(RegData=SlagData, valgtVar='Tilfredshet', datoFra=datoFra,
 \end{figure}
 
 \clearpage
-\input{\Sexpr{libkatTex}ansvarsforhold}
+%\input{\Sexpr{libkatTex}ansvarsforhold}
 
 \end{document}

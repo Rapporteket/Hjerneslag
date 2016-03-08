@@ -37,7 +37,7 @@ reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 70074
 
 setwd('C:/ResultattjenesteGIT/Hjerneslag/inst')
 library(knitr)
-#knit('SlagSamleDokLand.Rnw')
+knit('SlagSamleDokLand.Rnw')
 knit('SlagSamleDok.Rnw')
 #knit('SlagSamleDok_AlleTabOgKomm.Rnw')
 
