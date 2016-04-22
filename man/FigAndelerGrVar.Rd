@@ -36,6 +36,10 @@ UtAntikoagI63atrie: Utskrevet med antikoagulasjon (hjerneinfarktpasienter med at
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
+\item{erMann}{Kjønn, standard: alt annet enn 0/1 gir begge kjønn
+0: Kvinner
+1: Menn}
+
 \item{diagnose}{1: Infarkt(I61), 
 2: Blødning(I63), 
 3: definert(I64), 

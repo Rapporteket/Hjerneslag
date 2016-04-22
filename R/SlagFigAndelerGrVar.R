@@ -17,11 +17,9 @@
 #'          UtBT: Blodtrykksmedikament ved utskriving
 #'          UtAntitrombotiskI63: Utskrevet med antitrombotisk behandling. Innleggelser etter 31.12.2013.
 #'          UtAntikoagI63atrie: Utskrevet med antikoagulasjon (hjerneinfarktpasienter med atrieflimmer)
-#'          
 #' @param enhetsUtvalg Gjør gruppeutvalg for
 #'                 0: Hele landet
 #'				         7: Egen region 
-#'
 #' @return Søylediagram med andeler av valgt variabel for hvert sykehus
 #'
 #' @export
@@ -29,14 +27,10 @@
 FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil='2050-12-31', enhetsUtvalg=0,
 		minald=0, maxald=130, erMann='', diagnose='', innl4t='', NIHSSinn='', hentData=0, preprosess=1, reshID=0, outfile='') {
 
-if (hentData == 1) {
-  library(RMySQL)
-  source(paste0(libkat, 'SlagLoadRegData.R'))
-  source(paste0(libkat, 'SlagLoadRegDataMinimal.R'))
-  cat('\nLocal loading of RegData...\n')
-  RegData <- SlagLoadRegDataMinimal()
-}
-
+  if (hentData == 1) {		
+    RegData <- SlagRegDataSQL(datoFra, datoTil)
+  }
+  
 # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
   if (preprosess){
     RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
@@ -64,7 +58,7 @@ Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
 RegData$Variabel <- 0		
 
 #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
-SlagUtvalg <- SlagLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
+SlagUtvalg <- SlagUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
 		erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn)
 RegData <- SlagUtvalg$RegData
 utvalgTxt <- SlagUtvalg$utvalgTxt
@@ -135,7 +129,7 @@ if (valgtVar == 'UtBT') {
 }
 
 #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
-SlagUtvalg <- SlagLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
+SlagUtvalg <- SlagUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
 		erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn)
 RegData <- SlagUtvalg$RegData
 utvalgTxt <- SlagUtvalg$utvalgTxt

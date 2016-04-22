@@ -6,8 +6,8 @@
 \usage{
 FigPrePost(RegData, valgtVar, datoFra = "2012-04-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, erMann = "",
-  diagnose = "", innl4t = "", NIHSSinn = "", libkat, outfile = "",
-  reshID, enhetsUtvalg = 1, preprosess = 1, hentData = 0)
+  diagnose = "", innl4t = "", NIHSSinn = "", outfile = "", reshID,
+  enhetsUtvalg = 1, preprosess = 1, hentData = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -32,6 +32,10 @@ NIHSSTrombektomi: NIHSS før og etter trombektomi}
 \item{minald}{Alder, fra og med (Standardverdi: 0)}
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
+
+\item{erMann}{Kjønn, standard: alt annet enn 0/1 gir begge kjønn
+0: Kvinner
+1: Menn}
 
 \item{diagnose}{1: Infarkt(I61), 
 2: Blødning(I63), 

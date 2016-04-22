@@ -1,0 +1,149 @@
+
+#' Henter data registrert for Hjerneslag
+#'
+#' Henter data for Hjerneslagregisteret fra "staging"
+#'
+#' @inheritParams FigAndeler
+#'
+#' @return Henter dataramma RegData for Hjerneslag
+#' @export
+#'
+#'
+SlagRegDataSQL <- function(datoFra = '2013-01-01', datoTil = '2099-01-01') {
+  
+  registryName <- "Hjerneslag"
+  dbType <- "mysql"
+  
+  query <- paste0('SELECT
+		AarsakManglendeOppf
+		AkutteFokaleutfallPosBilleddiag
+		Alder
+		AndreFokaleSympt
+		AntDagerInnl
+		Armparese
+		Ataksi
+		Atrieflimmer
+		Avdeling
+		AvdForstInnlagt
+		AvdForstInnlagtHvilken
+		AvdUtskrFra
+		AvdUtskrFraHvilken
+		Beinparese
+		BevissthetsgradInnleggelse
+		BildediagnostikkEkstrakranKar
+		BildediagnostikkHjerne
+		BildediagnostikkHjerte
+		BildediagnostikkIntraraniell
+		Boligforhold3mnd
+		BoligforholdPre
+		Bosituasjon3mnd
+		BosituasjonPre
+		CerebralCTInn
+		DagerInnleggelseTilDod
+		DagerSymptDebutTilOppf
+		Dobbeltsyn
+		Facialisparese
+		Forflytning3mnd
+		ForflytningPre
+		Hemikraniektomi
+		HjerneblInnen36timer
+		HjerneblodningsstoppBeh
+		HvorOppstoHjerneslaget
+		Innleggelsestidspunkt
+		Kjonn
+		KjorerBilNaa
+		KjorteBilForHjerneslag
+		MindreEnn4tSymptInnlegg
+		MobiliseringInnen24Timer
+		MRS3mnd
+		MRSPre
+		Neglekt
+		NIHSSetterTrombektomi
+		NIHSSetterTrombolyse
+		NIHSSikkeUtfort
+		NIHSSinnkomst
+		NIHSSpreTrombektomi
+		NIHSSpreTrombolyse
+		OperertHalspulsaare
+		OppfolgUtf
+		Organisasjon
+		OrgRESH
+		Paakledning3mnd
+		PaakledningPre
+		PasientId
+		PreA2Antagonist
+		PreACEhemmer
+		PreAndreEnnWarfarin
+		PreASA
+		PreBetablokker
+		PreDiabetes
+		PreDipyridamol
+		PreDiuretica
+		PreIngenMedikam
+		PreKalsiumanatgonist
+		PreKlopidogrel
+		PreMedikBehHoytBT
+		PreStatinerLipid
+		PreWarfarin
+		RegistreringHjerterytme
+		ReinnlagtTypeSlag
+		RelatedID
+		ReshId
+		RHF
+		RHFresh
+		Royker3mnd
+		RoykerPre
+		Sensibilitetsutfall
+		Sivilstatus3mnd
+		SivilstatusPre
+		Slagdiagnose
+		SpraakTaleproblem
+		SpraakTaleproblEtterHjslag
+		SvelgtestUtfort
+		Symptomdebut
+		Synsfeltutfall
+		SynsproblEtterHjslag
+		TidInnTrombolyse
+		TidlHjerneslag
+		TidlHjerneslagType
+		TidlHjerteinfarkt
+		TidlTIA
+		Tilfredshet
+		TimerSymptomdebutInnlegg
+		Toalettbesok3mnd
+		ToalettbesokPre
+		Transportmetode
+		Trombektomi
+		TrombektomiStarttidspunkt
+		Trombolyse
+		TrombolyseStarttid
+		TverrfagligVurdering
+		Updated
+		UtA2Antagonist
+		UtACEhemmer
+		UtAndreEnnWarfarin
+		UtAntikoag
+		UtASA
+		UtBetablokker
+		UtBTsenk
+		UtDipyridamol
+		UtDiuretica
+		UtKalsiumantagonist
+		UtKlopidogrel
+		UtPlatehem
+		UtskrTil
+		UtStatinerLipid
+		UtWarfarin
+		VaaknetMedSymptom
+		Vertigo
+		YrkesaktivNaa
+		YrkesaktivUnderHjerneslag2
+FROM
+     HjerneSlagPROD
+                 WHERE Innleggelsestidspunkt >= \'', datoFra, '\' AND Innleggelsestidspunkt <= \'', datoTil, '\'')
+  
+  
+  RegData <- rapbase::LoadRegData(registryName, query, dbType)
+  
+  return(RegData)
+}

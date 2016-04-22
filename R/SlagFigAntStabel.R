@@ -6,7 +6,6 @@
 #' Detajer: Her bør man liste opp hvilke variable funksjonen benytter...
 #'
 #' @inheritParams FigAndeler 
-#'          
 #' @param enhetsUtvalg Gjør gruppeutvalg for
 #'                 0: Hele landet
 #'                 2: Egen enhet
@@ -21,13 +20,9 @@ FigAntReg  <- function(RegData, datoTil='2050-12-31',
 {
 
 
-if (hentData == 1) {
-  library(RMySQL)
-  source(paste0(libkat, 'SlagLoadRegData.R'))
-  source(paste0(libkat, 'SlagLoadRegDataMinimal.R'))
-  cat('\nLocal loading of RegData...\n')
-  RegData <- SlagLoadRegDataMinimal()
-}
+  if (hentData == 1) {		
+    RegData <- SlagRegDataSQL(datoFra, datoTil)
+  }
   
 # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
 if (preprosess){
@@ -53,7 +48,7 @@ datoFra <- as.POSIXlt(paste(DagensDato$year-1+1900,'-',(DagensDato$mon+1),'-',1,
 datoTil <- as.POSIXlt(paste(DagensDato$year+1900,'-',(DagensDato$mon+1),'-',1, sep='')) - 60*60*24
 
 #Gjør utvalg (siste 12 hele mnd)
-SlagUtvalg <- SlagLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
+SlagUtvalg <- SlagUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
 		erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn)
 RegData <- SlagUtvalg$RegData
 utvalgTxt <- SlagUtvalg$utvalgTxt

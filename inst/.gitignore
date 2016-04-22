@@ -6,5 +6,4 @@
 *.lof
 *.toc
 *.synctex.gz
-SlagSamleDok.tex
-SlagSamleDokLand.tex
+*.tex

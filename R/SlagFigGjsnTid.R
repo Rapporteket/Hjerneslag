@@ -6,6 +6,9 @@
 #' Detajer: Her bør man liste opp hvilke variable funksjonen benytter...
 #'
 #' @inheritParams FigAndeler 
+#' @param valgtMaal
+#'        'Gjsn': gir middelverdi (standard)
+#'        'Med': gir median
 #' @param valgtVar Hvilken variabel som skal visualiseres
 #'          Alder: Alder
 #'          AntDagerInnl: liggetid
@@ -24,13 +27,9 @@ FigGjsnTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3000-12
                     enhetsUtvalg=1, valgtMaal='', preprosess=1, hentData=0){
 
   
-if (hentData == 1) {
-  library(RMySQL)
-  source(paste0(libkat, 'SlagLoadRegData.R'))
-  source(paste0(libkat, 'SlagLoadRegDataMinimal.R'))
-  cat('\nLocal loading of RegData...\n')
-  RegData <- SlagLoadRegDataMinimal()
-}
+  if (hentData == 1) {		
+    RegData <- SlagRegDataSQL(datoFra, datoTil)
+  }
   
 # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
   if (preprosess){
@@ -97,7 +96,7 @@ if (valgtVar %in% c('Alder', 'AntDagerInnl', 'TidSymptInnlegg',
 
 
 #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
-SlagUtvalg <- SlagLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
+SlagUtvalg <- SlagUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
                             erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn)
 RegData <- SlagUtvalg$RegData
 utvalgTxt <- SlagUtvalg$utvalgTxt

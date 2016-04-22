@@ -3,7 +3,7 @@
 #' Denne funksjonen lager et søylediagram som viser andeler (fordeling) av valgt variabel
 #' filtrert på de utvalg som er gjort.
 #'
-#'#' Detajer: Her bør man liste opp hvilke variable funksjonen benytter.
+#' Detajer: Her bør man liste opp hvilke variable funksjonen benytter.
 #'
 #' @param RegData En dataramme med alle nødvendige variabler fra registeret
 #' @param valgtVar Hvilken variabel som skal visualiseres
@@ -12,6 +12,9 @@
 #'		OSV...
 #' @param datoFra Tidligste dato i utvalget (vises alltid i figuren).
 #' @param datoTil Seneste dato i utvalget (vises alltid i figuren).
+#' @param erMann Kjønn, standard: alt annet enn 0/1 gir begge kjønn
+#'          0: Kvinner
+#'          1: Menn
 #' @param minald Alder, fra og med (Standardverdi: 0)
 #' @param maxald Alder, til og med (Standardverdi: 130)
 #' @param outfile Navn på fil figuren skrives til. Standard: '' (Figur skrives
@@ -53,8 +56,7 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil='2050-1
 
 
 if (hentData == 1) {		
-  cat('\nLocal loading of RegData...\n')
-  RegData <- SlagLoadRegDataMinimal()
+  RegData <- SlagRegDataSQL(datoFra, datoTil)
 }
 
 # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
@@ -389,7 +391,7 @@ if (valgtVar %in% c('Boligforhold3mnd','MRS3mnd', 'Royker3mnd', 'Sivilstatus3mnd
 	datoTil <- min(datoTil, as.character(Sys.Date()-90))}
 	
 #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
-SlagUtvalg <- SlagLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
+SlagUtvalg <- SlagUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
 		erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn)
 RegData <- SlagUtvalg$RegData
 utvalgTxt <- SlagUtvalg$utvalgTxt

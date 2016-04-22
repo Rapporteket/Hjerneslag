@@ -13,14 +13,21 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
   #Kun ferdigstilte registreringer:
   # Rapporteket får kun levert ferdigstilte registreringer
   #Kjønn
-	RegData$erMann <- 0
-	RegData$erMann[RegData$Kjonn == 'M'] <- 1	#kjVar <- 'Kjonn'
-	#Riktig format på datovariable:
+  SlagData$erMann[SlagData$Kjonn == 'K'] <- 0
+  SlagData$erMann[SlagData$Kjonn == 'M'] <- 1
+  #RegData$erMann <- 0
+	#RegData$erMann[RegData$Kjonn == 'M'] <- 1	#kjVar <- 'Kjonn'
+
+  #Riktig format på datovariable:
 	RegData$InnDato <- as.Date(RegData$Innleggelsestidspunkt, format="%Y-%m-%d") # %H:%M:%S" )	#"%d.%m.%Y"	"%Y-%m-%d"
+	RegData <- RegData[which(SlagData$Innleggelsestidspunkt!=''),]	#Tar ut registreringer som ikke har innleggelsesdato
 	RegData$Innleggelsestidspunkt <- as.POSIXlt(RegData$Innleggelsestidspunkt, format="%Y-%m-%d %H:%M:%S" )
 	RegData$Symptomdebut <- as.POSIXlt(RegData$Symptomdebut, format="%Y-%m-%d %H:%M:%S" )
 	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut,  
 			units='hours'))
+	#RegData$TimerSymptomdebutInnlegg <- as.numeric(difftime(SlagData$Innleggelsestidspunkt, SlagData$Symptomdebut,  
+	#                                                         units='hours'))
+	#SlagData$TimerSymptomdebutInnlegg[which(SlagData$VaaknetMedSymptom!=2)] <- NA
 	RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
 	RegData$TidInnTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Innleggelsestidspunkt,   
 		units='mins'))
@@ -33,3 +40,7 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 
   return(invisible(RegData))
 }
+
+
+# SlagData$ShNavn <- SlagData$Avdeling	#factor(SlagData$ReshId)
+

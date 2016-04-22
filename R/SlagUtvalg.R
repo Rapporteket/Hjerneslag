@@ -7,7 +7,7 @@
 #'
 #' @export
 
-SlagLibUtvalg <- function(RegData, datoFra, datoTil, minald, maxald, erMann, diagnose, innl4t, NIHSSinn, fargepalett='BlaaRapp')
+SlagUtvalg <- function(RegData, datoFra, datoTil, minald, maxald, erMann, diagnose, innl4t, NIHSSinn, fargepalett='BlaaRapp')
 {
     # Definer intersect-operator
     "%i%" <- intersect

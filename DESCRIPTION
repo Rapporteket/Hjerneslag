@@ -1,19 +1,18 @@
 Package: Hjerneslag
 Type: Package
 Title: Resultatrapporter for Hjerneslag
-Version: 0.1
-Date: 2016-03-04
-Author: Authors@R: c(person("Nilsen", "Sara Marie", email = "saramarie@stolav.no", role = c("cre", "aut")),
-  person("Edvardsen", "Torunn", email = "torunn@stolav..no", role = "aut"),
+Version: 0.9.0
+Date: 2016-04-20
+Author: Authors@R: c(person("Varmdal", "Torunn", email = "Torunn.Varmdal@stolav.no", role = "aut"),
   person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no", role = c("cre", "aut"))
-Maintainer: Lena Ringstad Olsen <Lena.Olsen@skde.no>
-Description: Pakke for generering av resultatrapporter for Hjerneslag.  
+Maintainer: Torunn Varmdal <Lena.Olsen@skde.no>
+Description: Pakke for generering av resultatrapporter fra Norsk Hjerneslagregister.  
 License: GPL2
 LazyData: TRUE
-Depends: R (>= 3.0.2), rapbase, knitr
+Depends: R (>= 3.0.2), rapbase (>= 1.0.0) 
 Imports:
   plyr,
   xtable
 RoxygenNote: 5.0.1
-Suggests: rmarkdown
+Suggests: rmarkdown, knitr
 VignetteBuilder: knitr

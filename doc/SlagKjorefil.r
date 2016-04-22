@@ -71,7 +71,7 @@ FigAntReg(RegData=SlagData,
 rm(list=ls())
 #load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21ansi.csv', sep=';', header=T) #, 
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-04-05.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 RegData <- SlagData
 # Inndata til funksjon:
@@ -87,7 +87,6 @@ enhetsUtvalg <-1 #0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 				#6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 NIHSSinn <- ''	#NIHSS grupper: 1-6, tilsv. verdi: 0-5,6-10,11-15,..., standard: '' (alt annet)
 				#Velges denne, blir registreringer hvor NIHSS ikke er utført, tatt bort.
-libkat <- 'C:/ResultattjenesteGIT/Hjerneslag/'	
 valgtVar <- 'Alder'	#Må velge... Alder, Transportmetode,
 		#AntDagerInnl, TidSymptInnlegg, TidSymptTrombolyse, TidInnleggTrombolyse
 		#NIHSSinnkomst, NIHSSendrTrombolyse, NIHSSendrTrombektomi
