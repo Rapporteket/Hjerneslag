@@ -68,8 +68,7 @@ FigAntReg(RegData=SlagData,
 rm(list=ls())
 #load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21ansi.csv', sep=';', header=T) #, 
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-04-05.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-RegData <- SlagData
+RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-04-05.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 # Inndata til funksjon:
 reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
@@ -98,7 +97,7 @@ valgtVar <- 'Alder'	#Må velge... Alder, Transportmetode,
 outfile <- paste(valgtVar, '_ford.pdf', sep='')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/Hjerneslag")
 
-FigAndeler(RegData=SlagData, datoFra=datoFra, valgtVar=valgtVar,
+FigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 
