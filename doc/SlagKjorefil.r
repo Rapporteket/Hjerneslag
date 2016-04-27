@@ -32,9 +32,6 @@ SlagData <- SlagDataALLE[sample(1:dim(SlagDataALLE)[1], 5000), ]
 #Brukes kun for å få med alle potensielle sykehus slik at de som evt. har 0 registreringer også blir med.
 reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
 
-#libkat <- 'C:/Registre/Rlib/trunk/'		#del av sti til bibliotekkatalog, før /lib/r/<funksjon.R>
-#libkatTex <- libkat
-
 setwd('C:/ResultattjenesteGIT/Hjerneslag/inst')
 library(knitr)
 knit('SlagSamleDokLand.Rnw')
@@ -72,8 +69,8 @@ rm(list=ls())
 #load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21ansi.csv', sep=';', header=T) #, 
 SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-04-05.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-
 RegData <- SlagData
+
 # Inndata til funksjon:
 reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
 minald <- 0	#alder, fra og med
@@ -98,7 +95,7 @@ valgtVar <- 'Alder'	#Må velge... Alder, Transportmetode,
 		#AvdForstInnlagtHvilken, AvdUtskrFraHvilken, UtskrTil
 		#FokaleUtf, FokaleUtfAndre,
 		#Tatt ut til egen: 'KvalInd', 
-outfile <- ''	#paste(valgtVar, '.pdf', sep='')	#Navn angis av Jasper
+outfile <- paste(valgtVar, '_ford.pdf', sep='')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/Hjerneslag")
 
 FigAndeler(RegData=SlagData, datoFra=datoFra, valgtVar=valgtVar,

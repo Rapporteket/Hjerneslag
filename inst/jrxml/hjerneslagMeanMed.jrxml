@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-04-27T14:45:56 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MeanMed" language="groovy" pageWidth="600" pageHeight="842" columnWidth="600" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" scriptletClass="HjerneslagCommonScriptletRPackage" uuid="eaf89f49-3441-4791-a6f6-a6eb19af8125">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.jasperserver.url" value="http://tos-hreg-app-06.nreg.no:8080/rapporteket_test/"/>
+	<property name="ireport.jasperserver.report.resource" value="/organizations/hjerne/Reports/hjerneslagMeanMed_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/organizations/hjerne/Reports/hjerneslagMeanMed"/>
+	<property name="ireport.jasperserver.user" value="superuser"/>
+	<parameter name="LoggedInUser" class="com.jaspersoft.jasperserver.api.metadata.user.domain.User" isForPrompting="false">
+		<parameterDescription><![CDATA[At server side, gets the User object from the JRS logged in user]]></parameterDescription>
+	</parameter>
+	<parameter name="LoggedInUserFullName" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[Full name of JRS logged in user. Depends on the LoggedInUser parameter]]></parameterDescription>
+		<defaultValueExpression><![CDATA[$P{LoggedInUser}.getFullName()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LoggedInUserAttribute_AVD_RESH" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="LoggedInUserAVD_RESH" class="java.lang.String">
+		<parameterDescription><![CDATA[Provides the AVD_RESH user attribute. Relevant only for users externally defined by helseregister]]></parameterDescription>
+		<defaultValueExpression><![CDATA[$P{LoggedInUserAttribute_AVD_RESH}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="reportName" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new String("MeanMed")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="rScriptName" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new String("SlagFigMeanMed.R")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new String("FigMeanMed(RegData=RegData, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, enhetsUtvalg=enhetsUtvalg, reshID=reshID, outfile=outfile, hentData=1)")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="varName" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("alder")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="statMeasureMethod" class="java.lang.String"/>
+	<parameter name="minAge" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="maxAge" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(130)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="beginDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").parse("2013-01-01")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="endDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="erMann" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(99)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="diagnose" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("99")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="innl4t" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("9")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="NIHSSinn" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("99")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="orgUnitSelection" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT '1' as Dummy]]>
+	</queryString>
+	<field name="Dummy" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="800" splitType="Stretch">
+			<image hAlign="Center" vAlign="Top">
+				<reportElement x="0" y="0" width="600" height="800" uuid="08afac1f-f724-4feb-8744-59bbc2c8ad40"/>
+				<imageExpression><![CDATA["file:" + $P{REPORT_SCRIPTLET}.getFileName()]]></imageExpression>
+			</image>
+		</band>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

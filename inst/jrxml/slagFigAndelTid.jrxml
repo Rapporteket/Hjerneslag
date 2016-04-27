@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-04-27T14:46:22 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SlagFigAndelTid" language="groovy" pageWidth="600" pageHeight="842" columnWidth="600" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" scriptletClass="HjerneslagCommonScriptletRPackage" uuid="eaf89f49-3441-4791-a6f6-a6eb19af8125">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.jasperserver.url" value="https://test.helseregister.no/test.rapporteket/"/>
+	<property name="ireport.jasperserver.report.resource" value="/organizations/hjerne/Reports/slagAndelTid_files/MainJrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/organizations/hjerne/Reports/slagAndelTid"/>
+	<parameter name="LoggedInUser" class="com.jaspersoft.jasperserver.api.metadata.user.domain.User" isForPrompting="false">
+		<parameterDescription><![CDATA[At server side, gets the User object from the JRS logged in user]]></parameterDescription>
+	</parameter>
+	<parameter name="LoggedInUserFullName" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[Full name of JRS logged in user. Depends on the LoggedInUser parameter]]></parameterDescription>
+		<defaultValueExpression><![CDATA[$P{LoggedInUser}.getFullName()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LoggedInUserAttribute_AVD_RESH" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="LoggedInUserAVD_RESH" class="java.lang.String">
+		<parameterDescription><![CDATA[Provides the AVD_RESH user attribute. Relevant only for users externally defined by helseregister]]></parameterDescription>
+		<defaultValueExpression><![CDATA[$P{LoggedInUserAttribute_AVD_RESH}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="reportName" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new String("SlagFigAndelTid")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="rScriptName" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("SlagFigAndelTid.R")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("FigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, libkat=libkat, outfile=outfile)")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="varName" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("TidInnTrombolyse30min")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="minAge" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="maxAge" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(130)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="beginDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").parse("2013-01-01")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="endDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="erMann" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(99)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="diagnose" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("99")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="innl4t" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("9")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="NIHSSinn" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="orgUnitSelection" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(1)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     HjerneSlagPROD.`PasientId` AS PasientId,
+     HjerneSlagPROD.`PatientInRegistryKey` AS PatientInRegistryKey,
+     HjerneSlagPROD.`ReshId` + '0' AS ReshId,
+     HjerneSlagPROD.`RHF` AS RHF,
+     HjerneSlagPROD.`RHFresh` + '0' AS RHFresh,
+     HjerneSlagPROD.`Organisasjon` AS Organisasjon,
+     HjerneSlagPROD.`OrgRESH` + '0' AS OrgRESH,
+     HjerneSlagPROD.`Avdeling` AS Avdeling,
+     HjerneSlagPROD.`DataSett` + '0' AS DataSett,
+     HjerneSlagPROD.`RelatedID` + '0' AS RelatedID,
+     1 AS Oppfolgning,
+     HjerneSlagPROD.`SorteringsParameterVerdi` AS SorteringsParameterVerdi,
+     cast(HjerneSlagPROD.`OpprettetDato` as CHAR(19)) AS OpprettetDato,
+     HjerneSlagPROD.`RapportgrunnlagID` + '0' AS RapportgrunnlagID,
+     HjerneSlagPROD.`KontaktID` + '0' AS KontaktID,
+     HjerneSlagPROD.`KontaktNavn` AS KontaktNavn,
+     cast(HjerneSlagPROD.`KontaktFraDato` as CHAR(19)) AS KontaktFraDato,
+     cast(HjerneSlagPROD.`KontaktTilDato` as CHAR(19)) AS KontaktTilDato,
+     HjerneSlagPROD.`DataSettID` + '0' AS DataSettID,
+     cast(HjerneSlagPROD.`FraDato` as CHAR(19)) AS FraDato,
+     cast(HjerneSlagPROD.`Tildato` as CHAR(19)) AS Tildato,
+     HjerneSlagPROD.`DSPasientnummer` AS DSPasientnummer,
+     HjerneSlagPROD.`OverflyttetFraSykehusHvilket` AS OverflyttetFraSykehusHvilket,
+     HjerneSlagPROD.`ADLAndrespesifisert` AS ADLAndrespesifisert,
+     HjerneSlagPROD.`BesvartAvAndreSpesifiser` AS BesvartAvAndreSpesifiser,
+     HjerneSlagPROD.`Dodsaarsak` AS Dodsaarsak,
+     HjerneSlagPROD.`Fodselsaar` AS Fodselsaar,
+     HjerneSlagPROD.`Helseforetak` AS Helseforetak,
+     HjerneSlagPROD.`Kjonn` AS Kjonn,
+     HjerneSlagPROD.`Kommunenummer` AS Kommunenummer,
+     HjerneSlagPROD.`Pasientnummer` AS Pasientnummer,
+     HjerneSlagPROD.`Postnummer` AS Postnummer,
+     HjerneSlagPROD.`Poststed` AS Poststed,
+     HjerneSlagPROD.`Region` AS Region,
+     HjerneSlagPROD.`Registreringsavdeling` AS Registreringsavdeling,
+     HjerneSlagPROD.`RehabAnnetSpes` AS RehabAnnetSpes,
+     HjerneSlagPROD.`Skjematype` AS Skjematype,
+     HjerneSlagPROD.`Sykehus` AS Sykehus,
+     HjerneSlagPROD.`UtskrTilAnnet` AS UtskrTilAnnet,
+     HjerneSlagPROD.`Yrke` AS Yrke,
+     HjerneSlagPROD.`AarsakManglendeOppfAnnen` AS AarsakManglendeOppfAnnen,
+     HjerneSlagPROD.`TrombolyseHvilketSykehus` AS TrombolyseHvilketSykehus,
+     HjerneSlagPROD.`TrombektomiHvilketSykehus` AS TrombektomiHvilketSykehus,
+     HjerneSlagPROD.`HemikraniektomiHvilketSykehus` AS HemikraniektomiHvilketSykehus,
+     cast(HjerneSlagPROD.`BlodningsstoppBehKlokkeslett` as CHAR(19)) AS BlodningsstoppBehKlokkeslett,
+     cast(HjerneSlagPROD.`Innleggelsestidspunkt` as CHAR(19)) AS Innleggelsestidspunkt,
+     cast(HjerneSlagPROD.`Morsdato` as CHAR(19)) AS Morsdato,
+     cast(HjerneSlagPROD.`OppfolgDato` as CHAR(19)) AS OppfolgDato,
+     cast(HjerneSlagPROD.`Symptomdebut` as CHAR(19)) AS Symptomdebut,
+     cast(HjerneSlagPROD.`TrombolyseStarttid` as CHAR(19)) AS TrombolyseStarttid,
+     cast(HjerneSlagPROD.`TrombektomiStarttidspunkt` as CHAR(19)) AS TrombektomiStarttidspunkt,
+     cast(HjerneSlagPROD.`HemikraniektomiStarttidspunkt` as CHAR(19)) AS HemikraniektomiStarttidspunkt,
+     HjerneSlagPROD.`TidInnTrombolyse` + '0' AS TidInnTrombolyse,
+     cast(HjerneSlagPROD.`Utskrivingsdato` as CHAR(19)) AS Utskrivingsdato,
+     cast(HjerneSlagPROD.`Varslingstidspunkt` as CHAR(19)) AS Varslingstidspunkt,
+     HjerneSlagPROD.`ADLAndre` + '0' AS ADLAndre,
+     HjerneSlagPROD.`ADLFamilie` + '0' AS ADLFamilie,
+     HjerneSlagPROD.`ADLHjemmehjelp` + '0' AS ADLHjemmehjelp,
+     HjerneSlagPROD.`ADLHjemmesykepleien` + '0' AS ADLHjemmesykepleien,
+     HjerneSlagPROD.`ADLIngen` + '0' AS ADLIngen,
+     HjerneSlagPROD.`ADLInstitusjon` + '0' AS ADLInstitusjon,
+     HjerneSlagPROD.`Ataksi` + '0' AS Ataksi,
+     HjerneSlagPROD.`BesvartAvAndre` + '0' AS BesvartAvAndre,
+     HjerneSlagPROD.`BesvartAvFamilie` + '0' AS BesvartAvFamilie,
+     HjerneSlagPROD.`BesvartAvHelsepersonell` + '0' AS BesvartAvHelsepersonell,
+     HjerneSlagPROD.`BesvartAvPasient` + '0' AS BesvartAvPasient,
+     HjerneSlagPROD.`Dobbeltsyn` + '0' AS Dobbeltsyn,
+     HjerneSlagPROD.`PreIngenMedikam` + '0' AS PreIngenMedikam,
+     HjerneSlagPROD.`RisikofaktorerIngen` + '0' AS RisikofaktorerIngen,
+     HjerneSlagPROD.`NIHSSikkeUtfort` + '0' AS NIHSSikkeUtfort,
+     HjerneSlagPROD.`Neglekt` + '0' AS Neglekt,
+     HjerneSlagPROD.`RehabAnnet` + '0' AS RehabAnnet,
+     HjerneSlagPROD.`RehabDag` + '0' AS RehabDag,
+     HjerneSlagPROD.`RehabDogn` + '0' AS RehabDogn,
+     HjerneSlagPROD.`RehabSykehjem` + '0' AS RehabSykehjem,
+     HjerneSlagPROD.`RehabHjemme` + '0' AS RehabHjemme,
+     HjerneSlagPROD.`RehabIngen` + '0' AS RehabIngen,
+     HjerneSlagPROD.`RehabOpptreninngssenter` + '0' AS RehabOpptreninngssenter,
+     HjerneSlagPROD.`RehabFysInst` + '0' AS RehabFysInst,
+     HjerneSlagPROD.`RehabUkjent` + '0' AS RehabUkjent,
+     HjerneSlagPROD.`Sensibilitetsutfall` + '0' AS Sensibilitetsutfall,
+     HjerneSlagPROD.`SupplerendeUndersIngen` + '0' AS SupplerendeUndersIngen,
+     HjerneSlagPROD.`Synsfeltutfall` + '0' AS Synsfeltutfall,
+     HjerneSlagPROD.`HemikraniektomiIngen` + '0' AS HemikraniektomiIngen,
+     HjerneSlagPROD.`TrombektomiIngen` + '0' AS TrombektomiIngen,
+     HjerneSlagPROD.`TrombolyseIngen` + '0' AS TrombolyseIngen,
+     HjerneSlagPROD.`OpphIngenAntikoagulasjon` + '0' AS OpphIngenAntikoagulasjon,
+     HjerneSlagPROD.`UtIngenMedikam` + '0' AS UtIngenMedikam,
+     HjerneSlagPROD.`Vertigo` + '0' AS Vertigo,
+     HjerneSlagPROD.`AMKIkkeVarslet` + '0' AS AMKIkkeVarslet,
+     HjerneSlagPROD.`AntDagerInnl` + '0' AS AntDagerInnl,
+     HjerneSlagPROD.`AkutteFokaleutfallPosBilleddiag` + '0' AS AkutteFokaleutfallPosBilleddiag,
+     HjerneSlagPROD.`AkutteFokaleUtfallUtenBilleddiag` + '0' AS AkutteFokaleUtfallUtenBilleddiag,
+     HjerneSlagPROD.`AndreFokaleSympt` + '0' AS AndreFokaleSympt,
+     HjerneSlagPROD.`Armparese` + '0' AS Armparese,
+     HjerneSlagPROD.`Atrieflimmer` + '0' AS Atrieflimmer,
+     HjerneSlagPROD.`AvdForstInnlagt` + '0' AS AvdForstInnlagt,
+     HjerneSlagPROD.`AvdForstInnlagtHvilken` + '0' AS AvdForstInnlagtHvilken,
+     HjerneSlagPROD.`AvdUtskrFra` + '0' AS AvdUtskrFra,
+     HjerneSlagPROD.`AvdUtskrFraHvilken` + '0' AS AvdUtskrFraHvilken,
+     HjerneSlagPROD.`BedringEtterHjerneslag` + '0' AS BedringEtterHjerneslag,
+     HjerneSlagPROD.`Beinparese` + '0' AS Beinparese,
+     HjerneSlagPROD.`BevissthetsgradInnleggelse` + '0' AS BevissthetsgradInnleggelse,
+     HjerneSlagPROD.`BildediagnostikkHjerne` + '0' AS BildediagnostikkHjerne,
+     HjerneSlagPROD.`BildediagnostikkHjerte` + '0' AS BildediagnostikkHjerte,
+     HjerneSlagPROD.`RegistreringHjerterytme` + '0' AS RegistreringHjerterytme,
+     HjerneSlagPROD.`BildediagnostikkIntraraniell` + '0' AS BildediagnostikkIntraraniell,
+     HjerneSlagPROD.`BildediagnostikkEkstrakranKar` + '0' AS BildediagnostikkEkstrakranKar,
+     HjerneSlagPROD.`BoligforholdPre` + '0' AS BoligforholdPre,
+     HjerneSlagPROD.`Boligforhold3mnd` + '0' AS Boligforhold3mnd,
+     HjerneSlagPROD.`BosituasjonPre` + '0' AS BosituasjonPre,
+     HjerneSlagPROD.`Bosituasjon3mnd` + '0' AS Bosituasjon3mnd,
+     HjerneSlagPROD.`CerebralCTInn` + '0' AS CerebralCTInn,
+     HjerneSlagPROD.`PreDiabetes` + '0' AS PreDiabetes,
+     HjerneSlagPROD.`SvelgtestUtfort` + '0' AS SvelgtestUtfort,
+     HjerneSlagPROD.`Facialisparese` + '0' AS Facialisparese,
+     HjerneSlagPROD.`ForflytningPre` + '0' AS ForflytningPre,
+     HjerneSlagPROD.`Forflytning3mnd` + '0' AS Forflytning3mnd,
+     HjerneSlagPROD.`HjerneblodningsstoppBeh` + '0' AS HjerneblodningsstoppBeh,
+     HjerneSlagPROD.`HjerneblodningsstoppBehHvilken` + '0' AS HjerneblodningsstoppBehHvilken,
+     HjerneSlagPROD.`PreA2Antagonist` + '0' AS PreA2Antagonist,
+     HjerneSlagPROD.`PreACEhemmer` + '0' AS PreACEhemmer,
+     HjerneSlagPROD.`PreASA` + '0' AS PreASA,
+     HjerneSlagPROD.`PreKombinasjonsbeh` + '0' AS PreKombinasjonsbeh,
+     HjerneSlagPROD.`PreBetablokker` + '0' AS PreBetablokker,
+     HjerneSlagPROD.`PreDipyridamol` + '0' AS PreDipyridamol,
+     HjerneSlagPROD.`PreDiuretica` + '0' AS PreDiuretica,
+     HjerneSlagPROD.`PreKalsiumanatgonist` + '0' AS PreKalsiumanatgonist,
+     HjerneSlagPROD.`PreKlopidogrel` + '0' AS PreKlopidogrel,
+     HjerneSlagPROD.`PreStatinerLipid` + '0' AS PreStatinerLipid,
+     HjerneSlagPROD.`PreWarfarin` + '0' AS PreWarfarin,
+     HjerneSlagPROD.`PreAndreEnnWarfarin` + '0' AS PreAndreEnnWarfarin,
+     HjerneSlagPROD.`PreHjerteKarintervensj` + '0' AS PreHjerteKarintervensj,
+     HjerneSlagPROD.`PreHjerteKarintervensjTidsinterv` + '0' AS PreHjerteKarintervensjTidsinterv,
+     HjerneSlagPROD.`TverrfagligVurdering` + '0' AS TverrfagligVurdering,
+     HjerneSlagPROD.`HjelpEtterHjerneslag` + '0' AS HjelpEtterHjerneslag,
+     HjerneSlagPROD.`PreMedikBehLipidsenkning` + '0' AS PreMedikBehLipidsenkning,
+     HjerneSlagPROD.`InnlagtSykehusEtterUtskr` + '0' AS InnlagtSykehusEtterUtskr,
+     HjerneSlagPROD.`MobiliseringInnen24Timer` + '0' AS MobiliseringInnen24Timer,
+     HjerneSlagPROD.`LegekontrollEtterHjerneslag` + '0' AS LegekontrollEtterHjerneslag,
+     HjerneSlagPROD.`PreMedikBehHoytBT` + '0' AS PreMedikBehHoytBT,
+     HjerneSlagPROD.`MedisinMotBlodpropp` + '0' AS MedisinMotBlodpropp,
+     HjerneSlagPROD.`MedisinHoytBlodtrykk3mnd` + '0' AS MedisinHoytBlodtrykk3mnd,
+     HjerneSlagPROD.`MedisinHoytKolesterol` + '0' AS MedisinHoytKolesterol,
+     HjerneSlagPROD.`Obdusert` + '0' AS Obdusert,
+     HjerneSlagPROD.`OppfolgUtf` + '0' AS OppfolgUtf,
+     HjerneSlagPROD.`OverflyttetFraSykehus` + '0' AS OverflyttetFraSykehus,
+     HjerneSlagPROD.`Pasientstatus` + '0' AS Pasientstatus,
+     HjerneSlagPROD.`PaakledningPre` + '0' AS PaakledningPre,
+     HjerneSlagPROD.`Paakledning3mnd` + '0' AS Paakledning3mnd,
+     HjerneSlagPROD.`MRSPre` + '0' AS MRSPre,
+     HjerneSlagPROD.`MRS3mnd` + '0' AS MRS3mnd,
+     HjerneSlagPROD.`OperertHalspulsaare` + '0' AS OperertHalspulsaare,
+     HjerneSlagPROD.`ReinnlagtTypeSlag` + '0' AS ReinnlagtTypeSlag,
+     HjerneSlagPROD.`RoykerPre` + '0' AS RoykerPre,
+     HjerneSlagPROD.`Royker3mnd` + '0' AS Royker3mnd,
+     HjerneSlagPROD.`YrkesaktivUnderHjerneslag2` + '0' AS YrkesaktivUnderHjerneslag2,
+     HjerneSlagPROD.`YrkesaktivNaa` + '0' AS YrkesaktivNaa,
+     HjerneSlagPROD.`KjorteBilForHjerneslag` + '0' AS KjorteBilForHjerneslag,
+     HjerneSlagPROD.`KjorerBilNaa` + '0' AS KjorerBilNaa,
+     HjerneSlagPROD.`Sidelokasjon` + '0' AS Sidelokasjon,
+     HjerneSlagPROD.`SivilstatusPre` + '0' AS SivilstatusPre,
+     HjerneSlagPROD.`Sivilstatus3mnd` + '0' AS Sivilstatus3mnd,
+     HjerneSlagPROD.`Slagdiagnose` + '0' AS Slagdiagnose,
+     HjerneSlagPROD.`SpraakTaleproblem` + '0' AS SpraakTaleproblem,
+     HjerneSlagPROD.`SpraakTaleproblEtterHjslag` + '0' AS SpraakTaleproblEtterHjslag,
+     HjerneSlagPROD.`SynsproblEtterHjslag` + '0' AS SynsproblEtterHjslag,
+     HjerneSlagPROD.`Status` + '0' AS Status,
+     HjerneSlagPROD.`SykehusIRegionen` + '0' AS SykehusIRegionen,
+     HjerneSlagPROD.`VaaknetMedSymptom` + '0' AS VaaknetMedSymptom,
+     HjerneSlagPROD.`TimerSymptomdebutInnlegg` + '0' AS TimerSymptomdebutInnlegg,
+     HjerneSlagPROD.`TidlHjerneslag` + '0' AS TidlHjerneslag,
+     HjerneSlagPROD.`TidlHjerteinfarkt` + '0' AS TidlHjerteinfarkt,
+     HjerneSlagPROD.`TidlTIA` + '0' AS TidlTIA,
+     HjerneSlagPROD.`TidlHjerneslagType` + '0' AS TidlHjerneslagType,
+     HjerneSlagPROD.`TidlTIANaar` + '0' AS TidlTIANaar,
+     HjerneSlagPROD.`Tilfredshet` + '0' AS Tilfredshet,
+     HjerneSlagPROD.`ToalettbesokPre` + '0' AS ToalettbesokPre,
+     HjerneSlagPROD.`Toalettbesok3mnd` + '0' AS Toalettbesok3mnd,
+     HjerneSlagPROD.`TreningEtterHjerneslag` + '0' AS TreningEtterHjerneslag,
+     HjerneSlagPROD.`OpphAntikoagulasjon` + '0' AS OpphAntikoagulasjon,
+     HjerneSlagPROD.`OpphAntikoagProfylakseBeh` + '0' AS OpphAntikoagProfylakseBeh,
+     HjerneSlagPROD.`HjerneblInnen36timer` + '0' AS HjerneblInnen36timer,
+     HjerneSlagPROD.`Trombolyse` + '0' AS Trombolyse,
+     HjerneSlagPROD.`Trombektomi` + '0' AS Trombektomi,
+     HjerneSlagPROD.`Hemikraniektomi` + '0' AS Hemikraniektomi,
+     HjerneSlagPROD.`UtA2Antagonist` + '0' AS UtA2Antagonist,
+     HjerneSlagPROD.`UtACEhemmer` + '0' AS UtACEhemmer,
+     HjerneSlagPROD.`UtASA` + '0' AS UtASA,
+     HjerneSlagPROD.`UtKombinasjonsbeh` + '0' AS UtKombinasjonsbeh,
+     HjerneSlagPROD.`UtBetablokker` + '0' AS UtBetablokker,
+     HjerneSlagPROD.`UtDipyridamol` + '0' AS UtDipyridamol,
+     HjerneSlagPROD.`UtDiuretica` + '0' AS UtDiuretica,
+     HjerneSlagPROD.`UtKalsiumantagonist` + '0' AS UtKalsiumantagonist,
+     HjerneSlagPROD.`UtKlopidogrel` + '0' AS UtKlopidogrel,
+     HjerneSlagPROD.`UtStatinerLipid` + '0' AS UtStatinerLipid,
+     HjerneSlagPROD.`UtWarfarin` + '0' AS UtWarfarin,
+     HjerneSlagPROD.`UtAndreEnnWarfarin` + '0' AS UtAndreEnnWarfarin,
+     HjerneSlagPROD.`UtPlatehem` + '0' AS UtPlatehem,
+     HjerneSlagPROD.`UtAntikoag` + '0' AS UtAntikoag,
+     HjerneSlagPROD.`UtBTsenk` + '0' AS UtBTsenk,
+     HjerneSlagPROD.`UtskrTil` + '0' AS UtskrTil,
+     HjerneSlagPROD.`AarsakManglendeOppf` + '0' AS AarsakManglendeOppf,
+     HjerneSlagPROD.`HvorOppstoHjerneslaget` + '0' AS HvorOppstoHjerneslaget,
+     HjerneSlagPROD.`Alder` + '0' AS Alder,
+     HjerneSlagPROD.`DagerSymptDebutTilOppf` + '0' AS DagerSymptDebutTilOppf,
+     HjerneSlagPROD.`NIHSSinnkomst` + '0' AS NIHSSinnkomst,
+     HjerneSlagPROD.`NIHSSpreTrombolyse` + '0' AS NIHSSpreTrombolyse,
+     HjerneSlagPROD.`NIHSSetterTrombolyse` + '0' AS NIHSSetterTrombolyse,
+     HjerneSlagPROD.`NIHSSpreTrombektomi` + '0' AS NIHSSpreTrombektomi,
+     HjerneSlagPROD.`NIHSSetterTrombektomi` + '0' AS NIHSSetterTrombektomi,
+     HjerneSlagPROD.`DagerInnleggelseTilDod` + '0' AS DagerInnleggelseTilDod,
+     HjerneSlagPROD.`MindreEnn4tSymptInnlegg` + '0' AS MindreEnn4tSymptInnlegg,
+     HjerneSlagPROD.`Transportmetode` + '0' AS Transportmetode,
+     cast(HjerneSlagPROD.`Updated` as CHAR(19)) AS Updated
+FROM
+     HjerneSlagPROD]]>
+	</queryString>
+	<field name="PasientId" class="java.lang.String"/>
+	<field name="PatientInRegistryKey" class="java.lang.String"/>
+	<field name="ReshId" class="java.lang.Double"/>
+	<field name="RHF" class="java.lang.String"/>
+	<field name="RHFresh" class="java.lang.Double"/>
+	<field name="Organisasjon" class="java.lang.String"/>
+	<field name="OrgRESH" class="java.lang.Double"/>
+	<field name="Avdeling" class="java.lang.String"/>
+	<field name="DataSett" class="java.lang.Double"/>
+	<field name="RelatedID" class="java.lang.Double"/>
+	<field name="Oppfolgning" class="java.lang.Double"/>
+	<field name="SorteringsParameterVerdi" class="java.lang.String"/>
+	<field name="OpprettetDato" class="java.lang.String"/>
+	<field name="RapportgrunnlagID" class="java.lang.Double"/>
+	<field name="KontaktID" class="java.lang.Double"/>
+	<field name="KontaktNavn" class="java.lang.String"/>
+	<field name="KontaktFraDato" class="java.lang.String"/>
+	<field name="KontaktTilDato" class="java.lang.String"/>
+	<field name="DataSettID" class="java.lang.Double"/>
+	<field name="FraDato" class="java.lang.String"/>
+	<field name="Tildato" class="java.lang.String"/>
+	<field name="DSPasientnummer" class="java.lang.String"/>
+	<field name="OverflyttetFraSykehusHvilket" class="java.lang.String"/>
+	<field name="ADLAndrespesifisert" class="java.lang.String"/>
+	<field name="BesvartAvAndreSpesifiser" class="java.lang.String"/>
+	<field name="Dodsaarsak" class="java.lang.String"/>
+	<field name="Fodselsaar" class="java.lang.String"/>
+	<field name="Helseforetak" class="java.lang.String"/>
+	<field name="Kjonn" class="java.lang.String"/>
+	<field name="Kommunenummer" class="java.lang.String"/>
+	<field name="Pasientnummer" class="java.lang.String"/>
+	<field name="Postnummer" class="java.lang.String"/>
+	<field name="Poststed" class="java.lang.String"/>
+	<field name="Region" class="java.lang.String"/>
+	<field name="Registreringsavdeling" class="java.lang.String"/>
+	<field name="RehabAnnetSpes" class="java.lang.String"/>
+	<field name="Skjematype" class="java.lang.String"/>
+	<field name="Sykehus" class="java.lang.String"/>
+	<field name="UtskrTilAnnet" class="java.lang.String"/>
+	<field name="Yrke" class="java.lang.String"/>
+	<field name="AarsakManglendeOppfAnnen" class="java.lang.String"/>
+	<field name="TrombolyseHvilketSykehus" class="java.lang.String"/>
+	<field name="TrombektomiHvilketSykehus" class="java.lang.String"/>
+	<field name="HemikraniektomiHvilketSykehus" class="java.lang.String"/>
+	<field name="BlodningsstoppBehKlokkeslett" class="java.lang.String"/>
+	<field name="Innleggelsestidspunkt" class="java.lang.String"/>
+	<field name="Morsdato" class="java.lang.String"/>
+	<field name="OppfolgDato" class="java.lang.String"/>
+	<field name="Symptomdebut" class="java.lang.String"/>
+	<field name="TrombolyseStarttid" class="java.lang.String"/>
+	<field name="TrombektomiStarttidspunkt" class="java.lang.String"/>
+	<field name="HemikraniektomiStarttidspunkt" class="java.lang.String"/>
+	<field name="TidInnTrombolyse" class="java.lang.Double"/>
+	<field name="Utskrivingsdato" class="java.lang.String"/>
+	<field name="Varslingstidspunkt" class="java.lang.String"/>
+	<field name="ADLAndre" class="java.lang.Double"/>
+	<field name="ADLFamilie" class="java.lang.Double"/>
+	<field name="ADLHjemmehjelp" class="java.lang.Double"/>
+	<field name="ADLHjemmesykepleien" class="java.lang.Double"/>
+	<field name="ADLIngen" class="java.lang.Double"/>
+	<field name="ADLInstitusjon" class="java.lang.Double"/>
+	<field name="Ataksi" class="java.lang.Double"/>
+	<field name="BesvartAvAndre" class="java.lang.Double"/>
+	<field name="BesvartAvFamilie" class="java.lang.Double"/>
+	<field name="BesvartAvHelsepersonell" class="java.lang.Double"/>
+	<field name="BesvartAvPasient" class="java.lang.Double"/>
+	<field name="Dobbeltsyn" class="java.lang.Double"/>
+	<field name="PreIngenMedikam" class="java.lang.Double"/>
+	<field name="RisikofaktorerIngen" class="java.lang.Double"/>
+	<field name="NIHSSikkeUtfort" class="java.lang.Double"/>
+	<field name="Neglekt" class="java.lang.Double"/>
+	<field name="RehabAnnet" class="java.lang.Double"/>
+	<field name="RehabDag" class="java.lang.Double"/>
+	<field name="RehabDogn" class="java.lang.Double"/>
+	<field name="RehabSykehjem" class="java.lang.Double"/>
+	<field name="RehabHjemme" class="java.lang.Double"/>
+	<field name="RehabIngen" class="java.lang.Double"/>
+	<field name="RehabOpptreninngssenter" class="java.lang.Double"/>
+	<field name="RehabFysInst" class="java.lang.Double"/>
+	<field name="RehabUkjent" class="java.lang.Double"/>
+	<field name="Sensibilitetsutfall" class="java.lang.Double"/>
+	<field name="SupplerendeUndersIngen" class="java.lang.Double"/>
+	<field name="Synsfeltutfall" class="java.lang.Double"/>
+	<field name="HemikraniektomiIngen" class="java.lang.Double"/>
+	<field name="TrombektomiIngen" class="java.lang.Double"/>
+	<field name="TrombolyseIngen" class="java.lang.Double"/>
+	<field name="OpphIngenAntikoagulasjon" class="java.lang.Double"/>
+	<field name="UtIngenMedikam" class="java.lang.Double"/>
+	<field name="Vertigo" class="java.lang.Double"/>
+	<field name="AMKIkkeVarslet" class="java.lang.Double"/>
+	<field name="AntDagerInnl" class="java.lang.Double"/>
+	<field name="AkutteFokaleutfallPosBilleddiag" class="java.lang.Double"/>
+	<field name="AkutteFokaleUtfallUtenBilleddiag" class="java.lang.Double"/>
+	<field name="AndreFokaleSympt" class="java.lang.Double"/>
+	<field name="Armparese" class="java.lang.Double"/>
+	<field name="Atrieflimmer" class="java.lang.Double"/>
+	<field name="AvdForstInnlagt" class="java.lang.Double"/>
+	<field name="AvdForstInnlagtHvilken" class="java.lang.Double"/>
+	<field name="AvdUtskrFra" class="java.lang.Double"/>
+	<field name="AvdUtskrFraHvilken" class="java.lang.Double"/>
+	<field name="BedringEtterHjerneslag" class="java.lang.Double"/>
+	<field name="Beinparese" class="java.lang.Double"/>
+	<field name="BevissthetsgradInnleggelse" class="java.lang.Double"/>
+	<field name="BildediagnostikkHjerne" class="java.lang.Double"/>
+	<field name="BildediagnostikkHjerte" class="java.lang.Double"/>
+	<field name="RegistreringHjerterytme" class="java.lang.Double"/>
+	<field name="BildediagnostikkIntraraniell" class="java.lang.Double"/>
+	<field name="BildediagnostikkEkstrakranKar" class="java.lang.Double"/>
+	<field name="BoligforholdPre" class="java.lang.Double"/>
+	<field name="Boligforhold3mnd" class="java.lang.Double"/>
+	<field name="BosituasjonPre" class="java.lang.Double"/>
+	<field name="Bosituasjon3mnd" class="java.lang.Double"/>
+	<field name="CerebralCTInn" class="java.lang.Double"/>
+	<field name="PreDiabetes" class="java.lang.Double"/>
+	<field name="SvelgtestUtfort" class="java.lang.Double"/>
+	<field name="Facialisparese" class="java.lang.Double"/>
+	<field name="ForflytningPre" class="java.lang.Double"/>
+	<field name="Forflytning3mnd" class="java.lang.Double"/>
+	<field name="HjerneblodningsstoppBeh" class="java.lang.Double"/>
+	<field name="HjerneblodningsstoppBehHvilken" class="java.lang.Double"/>
+	<field name="PreA2Antagonist" class="java.lang.Double"/>
+	<field name="PreACEhemmer" class="java.lang.Double"/>
+	<field name="PreASA" class="java.lang.Double"/>
+	<field name="PreKombinasjonsbeh" class="java.lang.Double"/>
+	<field name="PreBetablokker" class="java.lang.Double"/>
+	<field name="PreDipyridamol" class="java.lang.Double"/>
+	<field name="PreDiuretica" class="java.lang.Double"/>
+	<field name="PreKalsiumanatgonist" class="java.lang.Double"/>
+	<field name="PreKlopidogrel" class="java.lang.Double"/>
+	<field name="PreStatinerLipid" class="java.lang.Double"/>
+	<field name="PreWarfarin" class="java.lang.Double"/>
+	<field name="PreAndreEnnWarfarin" class="java.lang.Double"/>
+	<field name="PreHjerteKarintervensj" class="java.lang.Double"/>
+	<field name="PreHjerteKarintervensjTidsinterv" class="java.lang.Double"/>
+	<field name="TverrfagligVurdering" class="java.lang.Double"/>
+	<field name="HjelpEtterHjerneslag" class="java.lang.Double"/>
+	<field name="PreMedikBehLipidsenkning" class="java.lang.Double"/>
+	<field name="InnlagtSykehusEtterUtskr" class="java.lang.Double"/>
+	<field name="MobiliseringInnen24Timer" class="java.lang.Double"/>
+	<field name="LegekontrollEtterHjerneslag" class="java.lang.Double"/>
+	<field name="PreMedikBehHoytBT" class="java.lang.Double"/>
+	<field name="MedisinMotBlodpropp" class="java.lang.Double"/>
+	<field name="MedisinHoytBlodtrykk3mnd" class="java.lang.Double"/>
+	<field name="MedisinHoytKolesterol" class="java.lang.Double"/>
+	<field name="Obdusert" class="java.lang.Double"/>
+	<field name="OppfolgUtf" class="java.lang.Double"/>
+	<field name="OverflyttetFraSykehus" class="java.lang.Double"/>
+	<field name="Pasientstatus" class="java.lang.Double"/>
+	<field name="PaakledningPre" class="java.lang.Double"/>
+	<field name="Paakledning3mnd" class="java.lang.Double"/>
+	<field name="MRSPre" class="java.lang.Double"/>
+	<field name="MRS3mnd" class="java.lang.Double"/>
+	<field name="OperertHalspulsaare" class="java.lang.Double"/>
+	<field name="ReinnlagtTypeSlag" class="java.lang.Double"/>
+	<field name="RoykerPre" class="java.lang.Double"/>
+	<field name="Royker3mnd" class="java.lang.Double"/>
+	<field name="YrkesaktivUnderHjerneslag2" class="java.lang.Double"/>
+	<field name="YrkesaktivNaa" class="java.lang.Double"/>
+	<field name="KjorteBilForHjerneslag" class="java.lang.Double"/>
+	<field name="KjorerBilNaa" class="java.lang.Double"/>
+	<field name="Sidelokasjon" class="java.lang.Double"/>
+	<field name="SivilstatusPre" class="java.lang.Double"/>
+	<field name="Sivilstatus3mnd" class="java.lang.Double"/>
+	<field name="Slagdiagnose" class="java.lang.Double"/>
+	<field name="SpraakTaleproblem" class="java.lang.Double"/>
+	<field name="SpraakTaleproblEtterHjslag" class="java.lang.Double"/>
+	<field name="SynsproblEtterHjslag" class="java.lang.Double"/>
+	<field name="Status" class="java.lang.Double"/>
+	<field name="SykehusIRegionen" class="java.lang.Double"/>
+	<field name="VaaknetMedSymptom" class="java.lang.Double"/>
+	<field name="TimerSymptomdebutInnlegg" class="java.lang.Double"/>
+	<field name="TidlHjerneslag" class="java.lang.Double"/>
+	<field name="TidlHjerteinfarkt" class="java.lang.Double"/>
+	<field name="TidlTIA" class="java.lang.Double"/>
+	<field name="TidlHjerneslagType" class="java.lang.Double"/>
+	<field name="TidlTIANaar" class="java.lang.Double"/>
+	<field name="Tilfredshet" class="java.lang.Double"/>
+	<field name="ToalettbesokPre" class="java.lang.Double"/>
+	<field name="Toalettbesok3mnd" class="java.lang.Double"/>
+	<field name="TreningEtterHjerneslag" class="java.lang.Double"/>
+	<field name="OpphAntikoagulasjon" class="java.lang.Double"/>
+	<field name="OpphAntikoagProfylakseBeh" class="java.lang.Double"/>
+	<field name="HjerneblInnen36timer" class="java.lang.Double"/>
+	<field name="Trombolyse" class="java.lang.Double"/>
+	<field name="Trombektomi" class="java.lang.Double"/>
+	<field name="Hemikraniektomi" class="java.lang.Double"/>
+	<field name="UtA2Antagonist" class="java.lang.Double"/>
+	<field name="UtACEhemmer" class="java.lang.Double"/>
+	<field name="UtASA" class="java.lang.Double"/>
+	<field name="UtKombinasjonsbeh" class="java.lang.Double"/>
+	<field name="UtBetablokker" class="java.lang.Double"/>
+	<field name="UtDipyridamol" class="java.lang.Double"/>
+	<field name="UtDiuretica" class="java.lang.Double"/>
+	<field name="UtKalsiumantagonist" class="java.lang.Double"/>
+	<field name="UtKlopidogrel" class="java.lang.Double"/>
+	<field name="UtStatinerLipid" class="java.lang.Double"/>
+	<field name="UtWarfarin" class="java.lang.Double"/>
+	<field name="UtAndreEnnWarfarin" class="java.lang.Double"/>
+	<field name="UtPlatehem" class="java.lang.Double"/>
+	<field name="UtAntikoag" class="java.lang.Double"/>
+	<field name="UtBTsenk" class="java.lang.Double"/>
+	<field name="UtskrTil" class="java.lang.Double"/>
+	<field name="AarsakManglendeOppf" class="java.lang.Double"/>
+	<field name="HvorOppstoHjerneslaget" class="java.lang.Double"/>
+	<field name="Alder" class="java.lang.Double"/>
+	<field name="DagerSymptDebutTilOppf" class="java.lang.Double"/>
+	<field name="NIHSSinnkomst" class="java.lang.Double"/>
+	<field name="NIHSSpreTrombolyse" class="java.lang.Double"/>
+	<field name="NIHSSetterTrombolyse" class="java.lang.Double"/>
+	<field name="NIHSSpreTrombektomi" class="java.lang.Double"/>
+	<field name="NIHSSetterTrombektomi" class="java.lang.Double"/>
+	<field name="DagerInnleggelseTilDod" class="java.lang.Double"/>
+	<field name="MindreEnn4tSymptInnlegg" class="java.lang.Double"/>
+	<field name="Transportmetode" class="java.lang.Double"/>
+	<field name="Updated" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="800" splitType="Stretch">
+			<image hAlign="Center" vAlign="Top">
+				<reportElement x="0" y="0" width="600" height="800" uuid="08afac1f-f724-4feb-8744-59bbc2c8ad40"/>
+				<imageExpression><![CDATA["file:" + $P{REPORT_SCRIPTLET}.getFileName()]]></imageExpression>
+			</image>
+		</band>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
