@@ -7,9 +7,41 @@
 #'
 #' @param RegData En dataramme med alle nødvendige variabler fra registeret
 #' @param valgtVar Hvilken variabel som skal visualiseres
-#'     Alder: Pasientens alder, 5-årige aldersgrupper
-#'     OpType: Primæroperasjon eller reoperasjon
-#'		OSV...
+#'     Alder: Aldersfordeling, 10-årige grupper 
+#'     AntDagerInnl: Liggetid 
+#'     AvdForstInnlagtHvilken: Hvilken avdeling ble pasienten først innlagt?
+#'     AvdUtskrFraHvilken: Hvilken avdeling ble pasienten utskrevet fra? 
+#'     BevissthetsgradInnleggelse: Bevissthetsgrad ved innleggelsen 
+#'     BildediagnostikkEkstrakranKar: Bildediagnostikk av ekstrakranielle kar 
+#'     BildediagnostikkHjerne: Bildediagnostikk av hjerneslaget
+#'     BildediagnostikkHjerte: Bildediagnostikk av hjertet 
+#'     BildediagnostikkIntraraniell: Bildediagnostikk av intrakranielle kar
+#'     Boligforhold3mnd: Boligforhold ved oppfølging 
+#'     BoligforholdPre: Boligforhold ved innleggelse 
+#'		FokaleUtf: Fokale utfall
+#'		FokaleUtfAndre: Andre fokale utfall
+#'     MRS3mnd: Rankinscale ved oppfølging
+#'     MRSPre: Rankinscale ved innleggelse 
+#'		NIHSSendrTrombektomi: Endring i NIHSS fra før trombektomi til 24t etter
+#'		NIHSSendrTrombolyse: Endring i NIHSS fra før trombolyse til 24t etter
+#'     NIHSSetterTrombektomi: NIHSS 24t etter trombektomi
+#'     NIHSSetterTrombolyse: NIHSS 24t etter trombolyse
+#'     NIHSSinnkomst: NIHSS ved innkomst
+#'     NIHSSpreTrombektomi: NIHSS før trombektomi
+#'     NIHSSpreTrombolyse: NIHSS før trombolyse
+#'     RegistreringHjerterytme: Registrering av hjerterytme 
+#'     Royker3mnd: Røykestatus ved oppfølging 
+#'     RoykerPre: Røykestatus ved innleggelse 
+#'     Sivilstatus3mnd: Sivilstatus ved oppfølging
+#'     SivilstatusPre: Sivilstatus ved innleggelse 
+#'     Slagdiagnose: Slagdiagnose 
+#'     TidInnleggTrombolyse: Antall timer fra innleggelse til trombolyse
+#'     TidSymptInnlegg: Tid fra symptomdebut til innleggelse', '(kun de som ikke våknet med symptom)
+#'     TidSymptTrombolyse: Tid fra symptomdebut til trombolyse,', '(kun de som ikke våknet med symptom)
+#'     Tilfredshet: Er du like fornøyd med tilværelsen som før hjerneslaget?
+#'     Transportmetode: Transport til sykehus etter varsling av AMK 
+#'     UtskrTil. Hva pasientene ble utskrevet til
+#'     
 #' @param datoFra Tidligste dato i utvalget (vises alltid i figuren).
 #' @param datoTil Seneste dato i utvalget (vises alltid i figuren).
 #' @param erMann Kjønn, standard: alt annet enn 0/1 gir begge kjønn

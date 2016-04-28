@@ -9,7 +9,7 @@
 #' @param enhetsUtvalg Gjør gruppeutvalg for
 #'                 0: Hele landet
 #'                 2: Egen enhet
-#'				         7: Egen region 
+#'				   7: Egen region 
 #'
 #' @return Søylediagram som viser antall registreringer per måned for valgte 12 måneder
 #'

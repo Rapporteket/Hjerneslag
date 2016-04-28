@@ -19,7 +19,7 @@
 #'          UtAntikoagI63atrie: Utskrevet med antikoagulasjon (hjerneinfarktpasienter med atrieflimmer)
 #' @param enhetsUtvalg Gjør gruppeutvalg for
 #'                 0: Hele landet
-#'				         7: Egen region 
+#'				   7: Egen region 
 #' @return Søylediagram med andeler av valgt variabel for hvert sykehus
 #'
 #' @export
