@@ -85,7 +85,8 @@
 
 %% this is equivalent to SweaveOpts{...}
 <<setup, include=FALSE, cache=FALSE>>=
-opts_chunk$set(fig.path='./', fig.align='center', fig.show='hold', out.width='.8\\textwidth',
+library(knitr)
+knitr::opts_chunk$set(fig.path='./', fig.align='center', fig.show='hold', out.width='.8\\textwidth',
 	cache=FALSE)
 #opts_chunk$set(par=TRUE)
 		 #, dev='pdf')	#comments=NA, 
@@ -93,11 +94,9 @@ opts_chunk$set(fig.path='./', fig.align='center', fig.show='hold', out.width='.8
 #options(continue=" ")	#?% supress the '+' continuation prompt
 @
 
-<<'LasteData', echo=FALSE, eval=F>>=
+<<'LasteData', echo=FALSE, eval=T>>=
 if (hentData == 1) {
   library(RMySQL)
-#  source(paste0(libkat, 'SlagLoadRegData.R'))
-#  source(paste0(libkat, 'SlagLoadRegDataMinimal.R'))
   cat('\nLocal loading of RegData...\n')
   RegData <- SlagRegDataSQL()
 }
