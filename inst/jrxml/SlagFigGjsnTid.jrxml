@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-04-28T09:37:08 -->
+<!-- 2016-04-28T10:50:11 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SlagFigGjsnTid" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="HjerneslagCommonScriptletRPackage" uuid="9ca92060-e90f-4e3c-acec-23662a03f059">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="ireport.jasperserver.url" value="https://test.helseregister.no/test.rapporteket/"/>
-	<property name="ireport.jasperserver.report.resource" value="/organizations/hjerne/Reports/GjsnTid_files/MainJrxml"/>
-	<property name="ireport.jasperserver.reportUnit" value="/organizations/hjerne/Reports/GjsnTid"/>
+	<property name="ireport.jasperserver.url" value="https://test.helseregister.no/rapporteket_test/"/>
+	<property name="ireport.jasperserver.report.resource" value="/organizations/hjerne/Reports/SlagFigGjsnTid_files/SlagFigGjsnTid_"/>
+	<property name="ireport.jasperserver.reportUnit" value="/organizations/hjerne/Reports/SlagFigGjsnTid"/>
+	<property name="ireport.jasperserver.user" value="superuser"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="LoggedInUser" class="com.jaspersoft.jasperserver.api.metadata.user.domain.User" isForPrompting="false">
 		<parameterDescription><![CDATA[At server side, gets the User object from the JRS logged in user]]></parameterDescription>
 	</parameter>
@@ -27,7 +29,7 @@
 		<defaultValueExpression><![CDATA[new String("Hjerneslag")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("FigGjsnTid(RegData=0, hentData=TRUE, DatoFra=datoFra, datoTil=datoTil, valgtVar=valgtVar,valgtMaal=valgtMaal, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("FigGjsnTid(RegData=0, hentData=1, datoFra=datoFra, datoTil=datoTil, valgtVar=valgtVar,valgtMaal=valgtMaal, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="varName" class="java.lang.String">
 		<defaultValueExpression><![CDATA[new String("AntDagerInnl")]]></defaultValueExpression>
