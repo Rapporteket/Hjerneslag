@@ -150,10 +150,6 @@ for (valgtVar in c('Boligforh', 'Bosituasjon', 'Toalett', 'Forflytning', 'Paakle
 
 #------------------------------ AndelTid --------------------------
 rm(list=ls())
-#load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21ansi.csv', sep=';', header=T) #, 
-
-RegData <- SlagData
 
 # Inndata til funksjon:
 reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
@@ -164,7 +160,7 @@ valgtVar <- 'UtBT'	#Må velge...
 	
 outfile <- ''	#paste(valgtVar, '.pdf', sep='')	#Navn angis av Jasper
 
-FigAndelTid(RegData=SlagData, datoFra=datoFra, valgtVar=valgtVar,
+FigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 

@@ -8,15 +8,13 @@
 #' @inheritParams FigAndeler 
 #' 
 #' @return Figur som viser andeler av kvalitetsindikatorer. 
-#'
+#' 
 #' @export
 
-FigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-31', 
-                               erMann='', NIHSSinn='', outfile='', enhetsUtvalg=1, preprosess=TRUE, hentData=0, reshID)	
-{
+FigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-31', erMann='', NIHSSinn='', 
+                               outfile='', enhetsUtvalg=1, preprosess=TRUE, hentData=0, reshID)	{
   
-  
-  if (hentData == 1) {		
+    if (hentData == 1) {		
     RegData <- SlagRegDataSQL(datoFra, datoTil)
   }
   

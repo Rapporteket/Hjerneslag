@@ -31,7 +31,7 @@
 #'
 #' @export
 
-FigMeanMed <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012-04-01', datoTil='2050-12-31', 
+FigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012-04-01', datoTil='2050-12-31', 
 		minald=0, maxald=130, erMann='', diagnose='', innl4t='', NIHSSinn='', enhetsUtvalg=0, reshID=0, 
 		outfile='', preprosess=1, hentData=0) {
 
