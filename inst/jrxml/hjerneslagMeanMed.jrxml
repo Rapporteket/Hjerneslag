@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-04-27T14:45:56 -->
+<!-- 2016-04-28T09:14:00 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MeanMed" language="groovy" pageWidth="600" pageHeight="842" columnWidth="600" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" scriptletClass="HjerneslagCommonScriptletRPackage" uuid="eaf89f49-3441-4791-a6f6-a6eb19af8125">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -24,11 +24,11 @@
 	<parameter name="reportName" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[new String("MeanMed")]]></defaultValueExpression>
 	</parameter>
-	<parameter name="rScriptName" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("SlagFigMeanMed.R")]]></defaultValueExpression>
+	<parameter name="rPackageName" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new String("Hjerneslag")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("FigMeanMed(RegData=RegData, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, enhetsUtvalg=enhetsUtvalg, reshID=reshID, outfile=outfile, hentData=1)")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("FigMeanMed(RegData=0, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn, enhetsUtvalg=enhetsUtvalg, reshID=reshID, outfile=outfile, hentData=1)")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="varName" class="java.lang.String">
 		<defaultValueExpression><![CDATA[new String("alder")]]></defaultValueExpression>
@@ -61,10 +61,9 @@
 	<parameter name="orgUnitSelection" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new java.lang.Integer(0)]]></defaultValueExpression>
 	</parameter>
-	<queryString>
-		<![CDATA[SELECT '1' as Dummy]]>
+	<queryString language="SQL">
+		<![CDATA[]]>
 	</queryString>
-	<field name="Dummy" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

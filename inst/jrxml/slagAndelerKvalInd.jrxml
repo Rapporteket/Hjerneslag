@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-04-27T14:46:03 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="slagAndelerKvalInd" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="HjerneslagCommonScriptletRPackage" uuid="5a58074b-3346-4b85-9ac6-dc8f2e57fef6">
+<!-- 2016-04-28T08:51:37 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="slagAndelerKvalInd" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="HjerneslagCommonScriptletRPackage" isIgnorePagination="true" uuid="5a58074b-3346-4b85-9ac6-dc8f2e57fef6">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -23,11 +23,11 @@
 	<parameter name="reportName" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[new String("SlagFigAndelerKvalInd")]]></defaultValueExpression>
 	</parameter>
-	<parameter name="rScriptName" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("SlagFigAndelerKvalInd.R")]]></defaultValueExpression>
+	<parameter name="rPackageName" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new String("Hjerneslag")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("FigAndelerKvalInd(RegData=RegData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, NIHSSinn=NIHSSinn, libkat=libkat, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=1)")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("FigAndelerKvalInd(RegData=RegData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, NIHSSinn=NIHSSinn, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=1)")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="beginDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").parse("2014-01-01")]]></defaultValueExpression>
@@ -42,10 +42,9 @@
 	<parameter name="orgUnitSelection" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new Integer(1)]]></defaultValueExpression>
 	</parameter>
-	<queryString>
-		<![CDATA[SELECT '1' as Dummy]]>
+	<queryString language="SQL">
+		<![CDATA[]]>
 	</queryString>
-	<field name="Dummy" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

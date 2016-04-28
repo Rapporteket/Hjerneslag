@@ -12,7 +12,7 @@
 #' @export
 
 FigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-31', 
-                               erMann='', NIHSSinn='', outfile='', enhetsUtvalg=1, preprosess=1, hentData=0, reshID)	
+                               erMann='', NIHSSinn='', outfile='', enhetsUtvalg=1, preprosess=TRUE, hentData=0, reshID)	
 {
   
   
@@ -28,9 +28,8 @@ FigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-3
   
   #------------Gjøre utvalg-------------------------
   
-  RegData$Variabel <- 0
   datoFra <- max(as.POSIXlt(datoFra, format="%Y-%m-%d"), as.POSIXlt('2014-01-01', format="%Y-%m-%d"))
-  
+  tittel <- 'Utvalgte kvalitetsindikatorer'
   
   #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
   SlagUtvalg <- SlagUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=0, maxald=130, 
