@@ -98,13 +98,13 @@ knitr::opts_chunk$set(fig.path='./', fig.align='center', fig.show='hold', out.wi
 if (hentData == 1) {
   library(RMySQL)
   cat('\nLocal loading of RegData...\n')
-  RegData <- SlagRegDataSQL()
+  SlagData <- SlagRegDataSQL()
 }
 @
 
 
 <<'DatautvalgOgPreProsess',echo=FALSE, eval=T>>=
-# Hvis RegData ikke har blitt preprosessert. 
+# Preprosessere data:  
 SlagData <- SlagPreprosess(RegData=SlagData, reshID=reshID)
 
 #Felles parametre:

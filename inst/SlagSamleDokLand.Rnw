@@ -94,11 +94,7 @@ opts_chunk$set(fig.path='./', fig.align='center', fig.show='hold', out.width='.7
 
 <<'LasteData', echo=FALSE, eval=F>>=
 if (hentData == 1) {
-  library(RMySQL)
-#  source(paste0(libkat, 'SlagLoadRegData.R'))
-#  source(paste0(libkat, 'SlagLoadRegDataMinimal.R'))
-  cat('\nLocal loading of RegData...\n')
-  RegData <- SlagRegDataSQL()
+  SlagData <- SlagRegDataSQL()
 }
 @
 
