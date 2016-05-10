@@ -95,11 +95,7 @@ knitr::opts_chunk$set(fig.path='./', fig.align='center', fig.show='hold', out.wi
 @
 
 <<'LasteData', echo=FALSE, eval=T>>=
-if (hentData == 1) {
-  library(RMySQL)
-  cat('\nLocal loading of RegData...\n')
   SlagData <- SlagRegDataSQL()
-}
 @
 
 
@@ -151,7 +147,7 @@ dum <- FigAndelerKvalInd(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erM
 
 \section{Innledning}
 Her presenteres en rekke tabeller og figurer som viser resultater fra Norsk Hjerneslagregister.
-Rapporten er utarbeidet av Lena Ringstad Olsen ved SKDE, på bestilling fra ledelsen i Norsk Hjerneslagregister.
+Rapporten er utarbeidet \Sexpr{N} av Lena Ringstad Olsen ved SKDE, på bestilling fra ledelsen i Norsk Hjerneslagregister.
 I denne rapporten vises aggregerte tall for \textbf{\Sexpr{shtxt}} og for hele landet. 
 Tabellene og figurene er basert
 på alle registrerte innleggelser i perioden \Sexpr{datoFra} til \Sexpr{datoTil}. 
