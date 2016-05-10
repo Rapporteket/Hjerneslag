@@ -86,12 +86,10 @@
 %% this is equivalent to SweaveOpts{...}
 <<setup, include=FALSE, cache=FALSE>>=
 library(knitr)
+knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
+knitr::opts_knit$set(root.dir = './')
 knitr::opts_chunk$set(fig.path='./', fig.align='center', fig.show='hold', out.width='.8\\textwidth',
 	cache=FALSE)
-#opts_chunk$set(par=TRUE)
-		 #, dev='pdf')	#comments=NA, 
-#options(replace.assign=TRUE,width=90)
-#options(continue=" ")	#?% supress the '+' continuation prompt
 @
 
 <<'LasteData', echo=FALSE, eval=T>>=
