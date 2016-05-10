@@ -81,26 +81,22 @@
 \newpage
 
 
-%% this is equivalent to SweaveOpts{...}
 <<setup, include=FALSE, cache=FALSE>>=
+knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
+knitr::opts_knit$set(root.dir = './')
+
 opts_chunk$set(fig.path='./', fig.align='center', fig.show='hold', out.width='.7\\textwidth', cache=FALSE)
 	#out.heigth='.45\\pageheight', #
 
-#opts_chunk$set(par=TRUE)
-		 #, dev='pdf')	#comments=NA, 
-#options(replace.assign=TRUE,width=90)
-#options(continue=" ")	#?% supress the '+' continuation prompt
 @
 
 <<'LasteData', echo=FALSE, eval=F>>=
-if (hentData == 1) {
   SlagData <- SlagRegDataSQL()
-}
 @
 
 
 <<'DatautvalgOgPreProsess',echo=FALSE, eval=T>>=
-# Hvis RegData ikke har blitt preprosessert. 
+# Preprosessere data. 
 SlagData <- SlagPreprosess(RegData=SlagData, reshID=reshID)
 SlagData$ShNavn <- as.factor(SlagData$Avdeling)	#factor(SlagData$ReshId)
 
