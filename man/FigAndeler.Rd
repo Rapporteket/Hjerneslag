@@ -12,10 +12,7 @@ FigAndeler(RegData, valgtVar, datoFra = "2012-04-01",
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
 
-\item{valgtVar}{Hvilken variabel som skal visualiseres
-Alder: Pasientens alder, 5-årige aldersgrupper
-OpType: Primæroperasjon eller reoperasjon
-OSV...}
+\item{valgtVar}{Hvilken variabel som skal visualiseres. Se \strong{Details} for oversikt.}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
@@ -64,13 +61,49 @@ TRUE: Ja (Standard)}
 1: Ja}
 }
 \value{
-Søylediagram (fordeling) av valgt variabel
+Søylediagram (fordeling) av valgt variabel. De enkelte verdiene kan også sendes med.
 }
 \description{
 Denne funksjonen lager et søylediagram som viser andeler (fordeling) av valgt variabel
 filtrert på de utvalg som er gjort.
 }
 \details{
-Detajer: Her bør man liste opp hvilke variable funksjonen benytter.
+Argumentet \emph{valgtVar} har følgende valgmuligheter:
+   \itemize{
+    \item Alder: Aldersfordeling, 10-årige grupper 
+    \item AntDagerInnl: Liggetid 
+    \item AvdForstInnlagtHvilken: Hvilken avdeling ble pasienten først innlagt?
+    \item AvdUtskrFraHvilken: Hvilken avdeling ble pasienten utskrevet fra? 
+    \item BevissthetsgradInnleggelse: Bevissthetsgrad ved innleggelsen 
+    \item BildediagnostikkEkstrakranKar: Bildediagnostikk av ekstrakranielle kar 
+    \item BildediagnostikkHjerne: Bildediagnostikk av hjerneslaget
+    \item BildediagnostikkHjerte: Bildediagnostikk av hjertet 
+    \item BildediagnostikkIntraraniell: Bildediagnostikk av intrakranielle kar
+    \item Boligforhold3mnd: Boligforhold ved oppfølging 
+    \item BoligforholdPre: Boligforhold ved innleggelse 
+	\item FokaleUtf: Fokale utfall
+	\item FokaleUtfAndre: Andre fokale utfall
+    \item MRS3mnd: Rankinscale ved oppfølging
+    \item MRSPre: Rankinscale ved innleggelse 
+	\item NIHSSendrTrombektomi: Endring i NIHSS fra før trombektomi til 24t etter
+	\item NIHSSendrTrombolyse: Endring i NIHSS fra før trombolyse til 24t etter
+    \item NIHSSetterTrombektomi: NIHSS 24t etter trombektomi
+    \item NIHSSetterTrombolyse: NIHSS 24t etter trombolyse
+    \item NIHSSinnkomst: NIHSS ved innkomst
+    \item NIHSSpreTrombektomi: NIHSS før trombektomi
+    \item NIHSSpreTrombolyse: NIHSS før trombolyse
+    \item RegistreringHjerterytme: Registrering av hjerterytme 
+    \item Royker3mnd: Røykestatus ved oppfølging 
+    \item RoykerPre: Røykestatus ved innleggelse 
+    \item Sivilstatus3mnd: Sivilstatus ved oppfølging
+    \item SivilstatusPre: Sivilstatus ved innleggelse 
+    \item Slagdiagnose: Slagdiagnose 
+    \item TidInnleggTrombolyse: Antall timer fra innleggelse til trombolyse
+    \item TidSymptInnlegg: Tid fra symptomdebut til innleggelse', '(kun de som ikke våknet med symptom)
+    \item TidSymptTrombolyse: Tid fra symptomdebut til trombolyse,', '(kun de som ikke våknet med symptom)
+    \item Tilfredshet: Er du like fornøyd med tilværelsen som før hjerneslaget?
+    \item Transportmetode: Transport til sykehus etter varsling av AMK 
+    \item UtskrTil. Hva pasientene ble utskrevet til
+   }
 }
 

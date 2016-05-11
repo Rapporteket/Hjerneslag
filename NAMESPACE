@@ -3,7 +3,7 @@
 export(FigAndelTid)
 export(FigAndeler)
 export(FigAndelerGrVar)
-export(FigAndelerKvalInd)
+export(FigAndelerKvalIndGML)
 export(FigAntReg)
 export(FigGjsnGrVar)
 export(FigGjsnTid)

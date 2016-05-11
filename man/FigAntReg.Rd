@@ -40,9 +40,9 @@ til systemets standard utdataenhet (som regel skjerm))}
 hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
 \item{enhetsUtvalg}{Gjør gruppeutvalg for
-0: Hele landet
-2: Egen enhet
-     7: Egen region}
+ 0: Hele landet
+ 2: Egen enhet
+7: Egen region}
 
 \item{preprosess}{Preprosesser data
 FALSE: Nei

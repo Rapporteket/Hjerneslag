@@ -29,8 +29,8 @@ UtAntikoagI63atrie: Utskrevet med antikoagulasjon (hjerneinfarktpasienter med at
 \item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
 
 \item{enhetsUtvalg}{Gjør gruppeutvalg for
-0: Hele landet
-     7: Egen region}
+ 0: Hele landet
+7: Egen region}
 
 \item{minald}{Alder, fra og med (Standardverdi: 0)}
 

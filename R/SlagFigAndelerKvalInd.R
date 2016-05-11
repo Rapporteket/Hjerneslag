@@ -1,16 +1,16 @@
 #' Søylediagram som viser andeler av kvalitetsindikatorer
 #'
 #' Funksjonen lager et søylediagram som viser kvalitetsindikatorer fra hjerneslagregisteret
+#'
+#' Detaljer: Her bør man liste opp hvilke variable funksjonen benytter...
 #' Mye hardkoding/spesialtilpasning. Ikke så egnet til gjenbruk.
 #'
-#' Detaljer: Her bør man liste opp hvilke variable funksjonen benytter.
+#' @inheritParams FigAndeler
 #'
-#' @inheritParams FigAndeler 
-#' 
-#' @return Figur som viser andeler av kvalitetsindikatorer. 
-#' 
+#' @return Figur som viser andeler av kvalitetsindikatorer framstilt i et søylediagram.
+#'
 #' @export
-
+#'
 FigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-31', erMann='', NIHSSinn='', 
                                outfile='', enhetsUtvalg=1, preprosess=TRUE, hentData=0, reshID)	{
   
