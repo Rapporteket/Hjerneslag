@@ -67,7 +67,7 @@ FigAntReg(RegData=SlagData,
 rm(list=ls())
 #load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21ansi.csv', sep=';', header=T) #, 
-RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-04-05.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-04-05.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 # Inndata til funksjon:
 reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
