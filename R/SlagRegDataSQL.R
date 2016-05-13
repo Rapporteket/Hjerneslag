@@ -85,7 +85,6 @@ PreKlopidogrel,
 PreMedHoytBT,
 PreStatinerLipid,
 PreWarfarin,
-PostMedBehHoytBT,
 PostMedHoytBT
 RegistreringHjerterytme,
 ReinnlagtTypeSlag,
