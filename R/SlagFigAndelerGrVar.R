@@ -12,7 +12,7 @@
 #'          InnlSlagenh: Innlagt direkte i slagehet
 #'          LipidI63u80: Utskrevet med lipidsenkning
 #'          SvelgtestUtfort: Svelgfunksjon vurdert
-#'          TidInnTrombolyse30min:  Trombolyse innen 30 min. etter innleggelse
+#'          TidInnTrombolyse40min:  Trombolyse innen 30 min. etter innleggelse
 #'          TrombolyseI63: Hjerneinfarktpasienter som har fått trombolyse
 #'          UtBT: Blodtrykksmedikament ved utskriving
 #'          UtAntitrombotiskI63: Utskrevet med antitrombotisk behandling. Innleggelser etter 31.12.2013.
@@ -90,7 +90,7 @@ if (valgtVar == 'SvelgtestUtfort') {
 #Av alle. Andel er  de som helt sikkert fått utf. svelgtest, samt de det ikke er relevant for
 	RegData$Variabel[which(RegData$SvelgtestUtfort %in% c(1,3))] <- 1
 }
-if (valgtVar == 'TidInnTrombolyse30min') {	
+if (valgtVar == 'TidInnTrombolyse40min') {	
 	diagnose <- 2	#'I63'
 	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
 	RegData$TidInnleggTromb <- as.numeric(difftime(RegData$TrombolyseStarttid,
@@ -140,7 +140,7 @@ tittel <- switch(valgtVar, InnlSlagenh = 'Innlagt direkte i slagehet' ,
 			BehSlagenhet = 'Behandlet i slagenhet',
 			InnlInnen4eSymptom= 'Innlagt innen 4t etter symptomdebut',
 			SvelgtestUtfort = 'Svelgfunksjon vurdert el. ikke relevant',
-			TidInnTrombolyse30min = 'Trombolyse innen 40 min. etter innleggelse',
+			TidInnTrombolyse40min = 'Trombolyse innen 40 min. etter innleggelse',
 			TrombolyseI63 = 'Hjerneinfarktpasienter som har fått trombolyse',	
 			UtAntitrombotiskI63 = c('Utskrevet med antitrombotisk behandling', 
 									'(Innleggelser etter 31.12.2013.)'),
