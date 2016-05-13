@@ -87,15 +87,15 @@ if (valgtVar == 'LipidI63u80') {
 	RegData$Variabel[RegData$UtStatinerLipid==1] <- 1
 	}
 if (valgtVar == 'SvelgtestUtfort') {
-#Av alle, dvs. andel er  de som helt sikkert fått utf. svelgtest
-	RegData$Variabel[which(RegData$SvelgtestUtfort==1)] <- 1
+#Av alle. Andel er  de som helt sikkert fått utf. svelgtest, samt de det ikke er relevant for
+	RegData$Variabel[which(RegData$SvelgtestUtfort %in% c(1,3))] <- 1
 }
 if (valgtVar == 'TidInnTrombolyse30min') {	
 	diagnose <- 2	#'I63'
 	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
 	RegData$TidInnleggTromb <- as.numeric(difftime(RegData$TrombolyseStarttid,
 			RegData$Innleggelsestidspunkt, units='mins'))
-	RegData$Variabel[RegData$TidInnleggTromb <= 30] <- 1 
+	RegData$Variabel[RegData$TidInnleggTromb <= 40] <- 1 
 }
 if (valgtVar == 'TrombolyseI63') {
 	#RegData <- RegData[which(RegData$Slagdiagnose==2), ]		#Slagdiagnose I63
@@ -122,10 +122,12 @@ if (valgtVar == 'UtAntikoagI63atrie') {
 }
 if (valgtVar == 'UtBT') {
 #Bare levende pasienter
+#PostMedBehHoytBT ny fra 1.1.2016
 	RegData <- RegData[which(RegData$UtskrTil != 10), ]
-	NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist')
+	NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist', 'PostMedBehHoytBT')
 	indBTsenkUt <- which(RegData[ ,NavnBTsenkUt]==1, arr.ind=T)[,1]
 	RegData$Variabel[indBTsenkUt] <- 1
+	#RegData$Variabel[which(RegData$PostMedikBehHoytBT ] <- 1	#Denne kan benyttes hvis variabelen oppdateres bakover i tid
 }
 
 #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
@@ -137,8 +139,8 @@ utvalgTxt <- SlagUtvalg$utvalgTxt
 tittel <- switch(valgtVar, InnlSlagenh = 'Innlagt direkte i slagehet' ,
 			BehSlagenhet = 'Behandlet i slagenhet',
 			InnlInnen4eSymptom= 'Innlagt innen 4t etter symptomdebut',
-			SvelgtestUtfort = 'Svelgfunksjon vurdert',
-			TidInnTrombolyse30min = 'Trombolyse innen 30 min. etter innleggelse',
+			SvelgtestUtfort = 'Svelgfunksjon vurdert el. ikke relevant',
+			TidInnTrombolyse30min = 'Trombolyse innen 40 min. etter innleggelse',
 			TrombolyseI63 = 'Hjerneinfarktpasienter som har fått trombolyse',	
 			UtAntitrombotiskI63 = c('Utskrevet med antitrombotisk behandling', 
 									'(Innleggelser etter 31.12.2013.)'),
