@@ -86,6 +86,7 @@ PreMedHoytBT,
 PreStatinerLipid,
 PreWarfarin,
 PostMedBehHoytBT,
+PostMedHoytBT
 RegistreringHjerterytme,
 ReinnlagtTypeSlag,
 RelatedGuid,
