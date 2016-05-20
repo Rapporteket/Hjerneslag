@@ -261,7 +261,7 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 					which(RegData$OppfolgUtf ==2 & RegData$MRS3mnd == 0 )), ]
 				}
 		tittel <- switch(valgtVar, 
-					MRSPre = 'Rankinscale ved innleggelse', 
+					MRSPre = 'Rankinscale før innleggelse', 
 					MRS3mnd = 'Rankinscale ved oppfølging')
 		#grtxt <- c('Ingen symptomer', 'Ikke sign. hemmet', 'Litt hemmet', 'Moderat hemmet', 
 		#	'Moderat/alvorlig hemmet', 'Alvorlig hemmet')	#, 'Død')
@@ -369,7 +369,7 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		tittel <- 'Hva pasientene ble utskrevet til'
 		grtxt <- c('Hjem u/hjelp', 'Hjem m/hjelp', 'Omsorgsbolig', 'Sykehjem', 'Avd for behandling', 
 			'Avd, vente sykehj/rehab', 'Rehabilitering', 'Opptreningssenter', 'Ukjent', 'Død under opphold', 
-			'Annen')
+			'Annen', 'Annet sykehus')
 		RegData$VariabelGr <- factor(as.numeric(RegData$Variabel), levels=c(1:11), labels = grtxt) 
 		#Antall 0'er stemmer overens med antall som har svart slagenehet i spm. Avdeling utskrevet fra? (AvdUtskrFra)
 		retn <- 'H'
@@ -397,15 +397,15 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		tittel <- 'Fokale utfall'
 		subtxt <- 'Andel med svar "ja" av alle totalt'
 	#Verdier 1,2,9. 0 kan forekomme.
-		variableOrig <- c('Facialisparese', 'Beinparese', 'Armparese', 'SpraakTaleproblem', 
+		variableOrig <- c('Facialisparese', 'Beinparese', 'Armparese', 'Spraakproblem', 
 				'AndreFokaleSympt')
-		variable <- c('Facialisparese01', 'Beinparese01', 'Armparese01', 'SpraakTaleproblem01', 
+		variable <- c('Facialisparese01', 'Beinparese01', 'Armparese01', 'Spraakproblem01', 
 				'AndreFokaleSympt01')
 		RegData[ ,variable] <- 0
 		for (teller in 1:length(variable)) {	#Fysj! STYGG KVIKKFIX...
 			RegData[which(RegData[ ,variableOrig[teller]]==1), variable[teller]] <- 1
 			}
-		grtxt <- c('Facialisparese', 'Beinparese', 'Armparese', 'Språk-/tale', 'Andre')
+		grtxt <- c('Facialisparese', 'Beinparese', 'Armparese', 'Språkproblem', 'Andre')
 		}
 	
 	if (valgtVar == 'FokaleUtfAndre'){
@@ -414,8 +414,8 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		retn <- 'H'
 		tittel <- 'Andre fokale utfall'
 		subtxt <- 'Andel med svar "ja" av "andre fokale utfall"'
-		variable <- c('Ataksi', 'Sensibilitetsutfall', 'Neglekt', 'Dobbeltsyn', 'Synsfeltutfall', 'Vertigo')
-		grtxt <- c('Ataksi', 'Sens.utfall', 'Neglekt', 'Dobbeltsyn', 'Synsfeltutfall', 'Vertigo')
+		variable <- c('Dysartri', 'Ataksi', 'Sensibilitetsutfall', 'Neglekt', 'Dobbeltsyn', 'Synsfeltutfall', 'Vertigo')
+		grtxt <- c('Dysartri', 'Ataksi', 'Sens.utfall', 'Neglekt', 'Dobbeltsyn', 'Synsfeltutfall', 'Vertigo')
 	}
 
 
