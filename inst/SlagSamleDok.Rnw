@@ -16,9 +16,6 @@
 \pagestyle{fancy}
 \usepackage{amsmath}
 
-%add rotating for plain tables
-\usepackage{rotating}
-
 %add rotating/landcape for pdf
 \usepackage{pdflscape}
 
