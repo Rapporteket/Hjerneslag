@@ -370,7 +370,7 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		grtxt <- c('Hjem u/hjelp', 'Hjem m/hjelp', 'Omsorgsbolig', 'Sykehjem', 'Avd for behandling', 
 			'Avd, vente sykehj/rehab', 'Rehabilitering', 'Opptreningssenter', 'Ukjent', 'Død under opphold', 
 			'Annen', 'Annet sykehus')
-		RegData$VariabelGr <- factor(as.numeric(RegData$Variabel), levels=c(1:11), labels = grtxt) 
+		RegData$VariabelGr <- factor(as.numeric(RegData$Variabel), levels=c(1:12), labels = grtxt) 
 		#Antall 0'er stemmer overens med antall som har svart slagenehet i spm. Avdeling utskrevet fra? (AvdUtskrFra)
 		retn <- 'H'
 	}
