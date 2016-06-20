@@ -36,6 +36,9 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 
   #Riktig navn på regions-variabel:
 	RegData$Region <- RegData$RHF
+	
+#Mappe Afasi til SpraakTaleproblem:
+ RegData$SpraakTaleproblem <- Regdata$Afasi
 
 
   return(invisible(RegData))
