@@ -11,7 +11,7 @@
 #' 
 #' @export
 #'
-SlagFigAndelerKvalIndTest  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-31', erMann='', NIHSSinn='', 
+SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-31', erMann='', NIHSSinn='', 
                                    outfile='', enhetsUtvalg=1, preprosess=TRUE, hentData=0, reshID)	{
 
     

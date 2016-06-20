@@ -3,7 +3,7 @@
 export(SlagFigAndelTid)
 export(SlagFigAndeler)
 export(SlagFigAndelerGrVar)
-export(SlagFigAndelerKvalIndTest)
+export(SlagFigAndelerKvalInd)
 export(SlagFigAntReg)
 export(SlagFigGjsnGrVar)
 export(SlagFigGjsnTid)
