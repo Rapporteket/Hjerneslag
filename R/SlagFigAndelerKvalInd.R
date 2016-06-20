@@ -5,16 +5,17 @@
 #' Detaljer: Her bør man liste opp hvilke variable funksjonen benytter...
 #' Mye hardkoding/spesialtilpasning. Ikke så egnet til gjenbruk.
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams SlagFigAndeler
 #'
 #' @return Figur som viser andeler av kvalitetsindikatorer framstilt i et søylediagram.
-#'
+#' 
 #' @export
 #'
-FigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-31', erMann='', NIHSSinn='', 
-                               outfile='', enhetsUtvalg=1, preprosess=TRUE, hentData=0, reshID)	{
-  
-    if (hentData == 1) {		
+SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-31', erMann='', NIHSSinn='', 
+                                   outfile='', enhetsUtvalg=1, preprosess=TRUE, hentData=0, reshID)	{
+
+    
+  if (hentData == 1) {		
     RegData <- SlagRegDataSQL(datoFra, datoTil)
   }
   
@@ -74,29 +75,8 @@ FigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-3
                       '6' = which(as.numeric(RegData$ReshId)!=reshID),	#RegData inneh. kun egen region
                       '8' = which(RegData$Region != RegData$Region[indEgen1]))
   }								
-  
-  
-  
-  if (as.POSIXlt(datoTil) < as.POSIXlt('2014-01-01')) {
-    FigTypUt <- figtype(outfile)
-    plot.new()
-    title(main=tittel)	
-    text(0.5, 0.6, 'Figuren omfatter ikke registreringer før 1.jan. 2014.', cex=1.2)
-    if ( outfile != '') {dev.off()}
-  } else {	
     
-    #Hvis for få observasjoner..
-    if (length(indHoved) < 10 | (medSml ==1 & length(indRest) <10)) {
-      #-----------Figur---------------------------------------
-      FigTypUt <- figtype(outfile)
-      farger <- FigTypUt$farger
-      plot.new()
-      title(main=tittel)	
-      legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
-      text(0.5, 0.65, 'Færre enn 10 registreringer i hoved-', cex=1.2)
-      text(0.55, 0.6, 'eller sammenlikningsgruppe', cex=1.2)
-      if ( outfile != '') {dev.off()}
-    } else {
+  
       
       #---------------------------------------------------------
       
@@ -146,15 +126,11 @@ FigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-3
         #Medisin mot høyt BT ved utskr.: Levende pasienter i nevner
         #Oppfølging etter 3 mnd: Tar ut de som er døde og innleggelser for mindre enn 90 dager siden
         
-        #NvaaknetIkkeMsymt <- sum(RegData$VaaknetMedSymptom==2)
         KvalInd <- rbind(
           'Innlagt direkte i slagenhet' = length(indDirInnlSlag)/N,
           'Behandlet i slagenhet' = length(union(which(RegData$AvdForstInnlagt==1), 
                                                  which(RegData$AvdUtskrFra==1)))/N,
-          #'Innlagt <4t etter symptomdebut' = sum(RegData$TidSymptInnlegg <= 4 & RegData$VaaknetMedSymptom==2, na.rm = TRUE) 		
-          #/NvaaknetIkkeMsymt,	#Uten oppvåkningsslag #TV: Tatt bort, er ikke lengre en kval.indikator.	
           'Vurdert svelgfunksjon' = sum(RegData$SvelgtestUtfort==1)/N,		#Av alle, dvs. andel er  de som helt sikkert fått utf. svelgtest
-          #'Hjerneinfarkt, trombolysebehandlet' = sum(RegDataI63$Trombolyse %in% c(1,3))/Ni63,	#TV: Ikke en kval.indikator
           'Hjerneinfarkt, <=80 år, trombolysebehandlet' = 
             length(intersect(which(RegDataI63$Trombolyse %in% c(1,3)),which(RegDataI63$Alder <=80)))/
             sum(RegDataI63$Alder <=80),	
@@ -164,10 +140,6 @@ FigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-3
           'Hjerneinf., atriefl. utskr. antikoag.' = 
             length(unique(which(RegDataI63leve[indAtrI63leve ,Antikoag]==1, arr.ind=T)[,1]))/
             length(indAtrI63leve),
-          #'Hjerneinfarkt, atrieflimmer <=80 år utskr. med antikoagulasjon' = 
-          #		length(intersect(intersect(which(RegDataI63leve[ ,Antikoag]==1, arr.ind=T)[,1], indAtrI63leve),
-          #		which(RegDataI63leve$Alder<=80)))/
-          #		length(intersect(indAtrI63leve, which(RegDataI63leve$Alder<=80))),#TV: Tatt bort, er ikke en kval.indikator		
           'Hjerneinfarkt, <80 utskr. kolesterolsenk.' = 
             length(which(RegDataI63leve$Alder<=80 & RegDataI63leve$UtStatinerLipid==1))/
             sum(RegDataI63leve$Alder<=80),
@@ -182,11 +154,7 @@ FigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-3
         #Hvis vi ikke har sammenlikning, vil resultatet lagres i Andeler$Hoved 
         if (teller == 1) {Andeler$Hoved <- AndelerFlereVar
         Nsh <- dim(RegData)[1]
-        #Ngr <- c(N, N, NvaaknetIkkeMsymt, N, Ni63, sum(RegDataI63$Alder <=80), Ntrombolyse, 
-		#			NI63leve, length(indAtrI63leve), 
-		#			length(intersect(indAtrI63leve, which(RegDataI63leve$Alder<=80))),
-		#			sum(RegDataI63leve$Alder<=80), sum(RegData$UtskrTil != 10),length(ind90d))
-		Ngr <- c(N, N, N, sum(RegDataI63$Alder <=80), Ntrombolyse, NI63leve, length(indAtrI63leve),
+ 		Ngr <- c(N, N, N, sum(RegDataI63$Alder <=80), Ntrombolyse, NI63leve, length(indAtrI63leve),
                  sum(RegDataI63leve$Alder<=80), sum(RegData$UtskrTil != 10),length(ind90d))
         }
         if (teller == 2) {Andeler$Rest <- AndelerFlereVar
@@ -203,8 +171,28 @@ FigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-3
       Andeler$Hoved[indGrUt] <- 0
       
       
-      #-----------Figur---------------------------------------
-      
+  #-----------Figur---------------------------------------
+   if (as.POSIXlt(datoTil) < as.POSIXlt('2014-01-01')) {
+    FigTypUt <- figtype(outfile)
+    plot.new()
+    title(main=tittel)	
+    text(0.5, 0.6, 'Figuren omfatter ikke registreringer før 1.jan. 2014.', cex=1.2)
+    if ( outfile != '') {dev.off()}
+  } else {	
+    
+    #Hvis for få observasjoner..
+    if (length(indHoved) < 10 | (medSml ==1 & length(indRest) <10)) {
+      FigTypUt <- figtype(outfile)
+      farger <- FigTypUt$farger
+      plot.new()
+      title(main=tittel)	
+      legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
+      text(0.5, 0.65, 'Færre enn 10 registreringer i hoved-', cex=1.2)
+      text(0.55, 0.6, 'eller sammenlikningsgruppe', cex=1.2)
+      if ( outfile != '') {dev.off()}
+    } else {
+  
+# Lager resultatfigur  
       #Plottspesifikke parametre:
       FigTypUt <- figtype(outfile, height=3*650, fargepalett=SlagUtvalg$fargepalett)	# res=84,  res påvirker png, men ikke pdf
       vmarg <- 0.23
@@ -237,8 +225,6 @@ FigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-12-3
       mtext(at=pos[5]-tl2, 'antitrombotisk behandling', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
       mtext(at=pos[4]+tl1, 'Hjerneinfarkt, atrieflimmer', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
       mtext(at=pos[4]-tl2, 'utskrevet med antikoagulasjon', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      #mtext(at=pos[4]+tl1, expression('Hjerneinfarkt, atrieflimmer,' ~ ''<=80 ~ 'år'), side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      #mtext(at=pos[4]-tl2, 'utskrevet med antikoagulasjon', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
       mtext(at=pos[3]+tl1, expression('Hjerneinfarkt,' ~ ''<=80 ~ 'år utskrevet med'), side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
       mtext(at=pos[3]-tl2, 'kolesterolsenkende behandling', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
       mtext(at=pos[2]+tl1, 'Blodtrykksmedikament', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)

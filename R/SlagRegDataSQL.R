@@ -3,7 +3,7 @@
 #'
 #' Henter data for Hjerneslagregisteret fra "staging"
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams SlagFigAndeler
 #'
 #' @return Henter dataramma RegData for Hjerneslag
 #' @export
@@ -16,6 +16,7 @@ SlagRegDataSQL <- function(datoFra = '2013-01-01', datoTil = '2099-01-01') {
   
   query <- paste0('SELECT
 AarsakManglendeOppf,
+Afasi,
 AkutteFokaleutfallPosBilleddiag,
 Alder,
 AndreFokaleSympt,
@@ -42,6 +43,7 @@ CerebralCTInn,
 DagerInnleggelseTilDod,
 DagerSymptDebutTilOppf,
 Dobbeltsyn,
+Dysartri,
 Facialisparese,
 Forflytning3mnd,
 ForflytningPre,

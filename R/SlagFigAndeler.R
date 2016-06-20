@@ -82,9 +82,9 @@
 #'
 #' @export
 #'
-FigAndeler  <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil='2050-12-31', 
+SlagFigAndeler  <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil='2050-12-31', 
 		minald=0, maxald=130, erMann='', diagnose='', innl4t='', NIHSSinn='', outfile='', 
-		reshID, enhetsUtvalg=1, preprosess=1, hentData=0)	
+		preprosess=1, hentData=0, reshID, enhetsUtvalg=1)	
 {
 
 
@@ -153,7 +153,7 @@ flerevar <- 0
 
 
 
-#--------------- Gjøre beregninger ------------------------------
+#--------------- Variabeldefinisjon ------------------------------
 	if (valgtVar=='Alder') {
 		tittel <- 'Aldersfordeling'
 		gr <- c(0, seq(35, 95, 10), 120)	#c(0,16,31,46,61,76,200)	
@@ -370,7 +370,7 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		grtxt <- c('Hjem u/hjelp', 'Hjem m/hjelp', 'Omsorgsbolig', 'Sykehjem', 'Avd for behandling', 
 			'Avd, vente sykehj/rehab', 'Rehabilitering', 'Opptreningssenter', 'Ukjent', 'Død under opphold', 
 			'Annen', 'Annet sykehus')
-		RegData$VariabelGr <- factor(as.numeric(RegData$Variabel), levels=c(1:11), labels = grtxt) 
+		RegData$VariabelGr <- factor(as.numeric(RegData$Variabel), levels=c(1:12), labels = grtxt) 
 		#Antall 0'er stemmer overens med antall som har svart slagenehet i spm. Avdeling utskrevet fra? (AvdUtskrFra)
 		retn <- 'H'
 	}
@@ -397,7 +397,7 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		tittel <- 'Fokale utfall'
 		subtxt <- 'Andel med svar "ja" av alle totalt'
 	#Verdier 1,2,9. 0 kan forekomme.
-		variableOrig <- c('Facialisparese', 'Beinparese', 'Armparese', 'Spraakproblem', 
+		variableOrig <- c('Facialisparese', 'Beinparese', 'Armparese', 'SpraakTaleproblem', 
 				'AndreFokaleSympt')
 		variable <- c('Facialisparese01', 'Beinparese01', 'Armparese01', 'Spraakproblem01', 
 				'AndreFokaleSympt01')
@@ -483,8 +483,6 @@ if (medSml==1) {
 					'1' = length(indRest))
 	Andeler$Rest <- 100*AntRest/NRest
 }
-
-
 
 
 

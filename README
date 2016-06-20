@@ -25,3 +25,10 @@ fail. If so, try the following prior to the above install command:
 
 replacing the example parameter values with whatever applies for the
 system the package is being installed on
+
+Kokebok for "git, Rstudio og github på Windows gjennom proxy" :
+(gjelder oppsett på SKDE. I andre regioner kan man måtte benytte andre proxy)
+http://skde.readthedocs.io/en/master/git-r.html
+
+Nyttig lenke til bruk av GitHub:
+https://guides.github.com/activities/hello-world/#what

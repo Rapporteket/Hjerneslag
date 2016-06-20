@@ -6,7 +6,7 @@
 #'
 #' Detajer: Her bør man liste opp hvilke variable funksjonen benytter...
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams SlagFigAndeler
 #' @param valgtMaal 'Med' = median. Alt annet gir gjennomsnitt 
 #' @param enhetsUtvalg Gjør gruppeutvalg for
 #'                 0: Hele landet
@@ -31,7 +31,7 @@
 #'
 #' @export
 
-FigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012-04-01', datoTil='2050-12-31', 
+SlagFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012-04-01', datoTil='2050-12-31', 
 		minald=0, maxald=130, erMann='', diagnose='', innl4t='', NIHSSinn='', enhetsUtvalg=0, reshID=0, 
 		outfile='', preprosess=1, hentData=0) {
 
@@ -193,14 +193,16 @@ if (valgtMaal=='Med') {
 	KIHele <- MidtHele + sd(RegData$Variabel)/sqrt(N)*c(-2,2)
 } 
 
+
 GrNavnSort <- paste(names(Ngr)[sortInd], Ngrtxt[sortInd], sep='')
 AntGr <- length(which(Ngr >= Ngrense))	#length(which(Midt>0))
+
+#--------------------------FIGUR---------------------------------------------------
 soyletxt <- c(sprintf('%.1f',Midt[1:AntGr]), rep('',length(Ngr)-AntGr))	#	#round(Midt[1:AntGr],1)
 xmax <-  min(1.1*max(c(Midt, KIned, KIopp)), 1.4*max(Midt))
 cexGrNavn <- 0.8
 cexSoyletxt <- 0.75
 
-#--------------------------FIGUR---------------------------------------------------
 FigTypUt <- figtype(outfile, height=3*800, fargepalett=SlagUtvalg$fargepalett)	#res=96, 
 farger <- FigTypUt$farger
 #Tilpasse marger for å kunne skrive utvalgsteksten

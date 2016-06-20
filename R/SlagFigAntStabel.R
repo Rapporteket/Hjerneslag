@@ -5,7 +5,7 @@
 #'
 #' Detajer: Her bør man liste opp hvilke variable funksjonen benytter...
 #'
-#' @inheritParams FigAndeler 
+#' @inheritParams SlagFigAndeler 
 #' @param enhetsUtvalg Gjør gruppeutvalg for
 #'                 0: Hele landet
 #'                 2: Egen enhet
@@ -14,7 +14,7 @@
 #' @return Søylediagram som viser antall registreringer per måned for valgte 12 måneder
 #'
 #' @export
-FigAntReg  <- function(RegData, datoTil='2050-12-31', 
+SlagFigAntReg  <- function(RegData, datoTil='2050-12-31', 
 		minald=0, maxald=130, erMann='', diagnose='', innl4t='', NIHSSinn='', outfile='', 
 		reshID, enhetsUtvalg=2, preprosess=1, hentData=0)
 {

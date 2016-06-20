@@ -5,7 +5,7 @@
 #'
 #' Detajer: Her bør man liste opp hvilke variable funksjonen benytter...
 #'
-#' @inheritParams FigAndeler 
+#' @inheritParams SlagFigAndeler 
 #' @param valgtVar Hvilken variabel som skal visualiseres
 #'          BehSlagenhet: Behandlet i slagenhet
 #'          InnlInnen4eSymptom: Innlagt innen 4t etter symptomdebut
@@ -24,7 +24,7 @@
 #'
 #' @export
 
-FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil='2050-12-31', enhetsUtvalg=0,
+SlagFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil='2050-12-31', enhetsUtvalg=0,
 		minald=0, maxald=130, erMann='', diagnose='', innl4t='', NIHSSinn='', hentData=0, preprosess=1, reshID=0, outfile='') {
 
   if (hentData == 1) {		
@@ -150,7 +150,6 @@ tittel <- switch(valgtVar, InnlSlagenh = 'Innlagt direkte i slagehet' ,
 			UtBT = 'Blodtrykksmedikament ved utskriving')
 
 
-	dummy0 <- -0.001
 	N <- dim(RegData)[1]
 	Nvar <- tapply(RegData$Variabel, RegData[ ,grVar], sum, na.rm=T)
 	if(N > 0) {Ngr <- table(RegData[ ,grVar])}	else {Ngr <- 0}
@@ -159,7 +158,7 @@ tittel <- switch(valgtVar, InnlSlagenh = 'Innlagt direkte i slagehet' ,
 	
 	indGrUt <- as.numeric(which(Ngr < Ngrense))
 	if (length(indGrUt)==0) { indGrUt <- 0}
-	AndelerGr[indGrUt] <- dummy0
+	AndelerGr[indGrUt] <- -0.001
 	sortInd <- order(as.numeric(AndelerGr), decreasing=TRUE) 
 	Ngrtxt <- paste('N=', as.character(Ngr), sep='')	#
 	Ngrtxt[indGrUt] <- paste('N<', Ngrense,sep='')	#paste(' (<', Ngrense,')',sep='')	#
