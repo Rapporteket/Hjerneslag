@@ -152,9 +152,9 @@ rm(list=ls())
 
 # Inndata til funksjon:
 reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
-valgtVar <- 'UtBT'	#Må velge... 
+valgtVar <- 'TidInnTrombolyse40min'	#Må velge... 
     # BehSlagenhet, InnlSlagenh, InnlInnen4eSymptom, LipidI63, OppfolgUtf (ta ut siste 3 mnd)
-    # SvelgtestUtfort, TidInnTrombolyse30min, TrombolyseI63, UtAntitrombotiskI63, UtAntikoagI63atrie
+    # SvelgtestUtfort, TidInnTrombolyse40min, TrombolyseI63, UtAntitrombotiskI63, UtAntikoagI63atrie
  	# UtBT(?)
 	
 outfile <- ''	#paste(valgtVar, '.pdf', sep='')	#Navn angis av Jasper

@@ -13,7 +13,7 @@
 #' 			LipidI63
 #' 			OppfolgUtf (mangler)
 #' 			SvelgtestUtfort
-#'			TidInnTromb30min (mangler)
+#'			TidInnTrombolyse40min
 #' 			TrombolyseI63
 #' 			UtAntitrombotiskI63
 #' 			UtAntikoagI63atrie
@@ -102,14 +102,14 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
     RegData$Variabel[which(RegData$SvelgtestUtfort==1)] <- 1
     VarTxt <- 'med svelgfunksjon vurdert'
   }
-  if (valgtVar == 'TidInnTrombolyse30min') {	
+  if (valgtVar == 'TidInnTrombolyse40min') {	
     diagnose <- 2	#'I63'
     RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
     RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
     RegData$TidInnleggTromb <- as.numeric(difftime(RegData$TrombolyseStarttid,
                                                    RegData$Innleggelsestidspunkt, units='mins'))
-    RegData$Variabel[RegData$TidInnleggTromb <= 30] <- 1 
-    VarTxt <- 'som har fått trombolyse innen 30 min.'
+    RegData$Variabel[RegData$TidInnleggTromb <= 40] <- 1 
+    VarTxt <- 'som har fått trombolyse innen 40 min.'
   }
   if (valgtVar == 'TrombolyseI63') {
     #RegData <- RegData[which(RegData$Slagdiagnose==2), ]		#Slagdiagnose I63
@@ -151,7 +151,7 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
                    InnlInnen4eSymptom= 'Innlagt innen 4t etter symptomdebut',
                    LipidI63 = 'Utskrevet med lipidsenkning',
                    SvelgtestUtfort = 'Svelgfunksjon vurdert',
-                   TidInnTrombolyse30min = 'Trombolyse innen 30 minutter', 
+                   TidInnTrombolyse40min = 'Trombolyse innen 40 minutter', 
                    TrombolyseI63 = 'Hjerneinfarktpasienter som har fått trombolyse',	
                    UtAntitrombotiskI63 = c('Utskrevet med antitrombotisk behandling', 
                                            '(Innleggelser etter 31.12.2013.)'),
