@@ -3,7 +3,7 @@
 #'
 #' Henter data for Hjerneslagregisteret fra "staging"
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams SlagFigAndeler
 #'
 #' @return Henter dataramma RegData for Hjerneslag
 #' @export

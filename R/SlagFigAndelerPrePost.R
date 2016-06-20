@@ -4,7 +4,7 @@
 #'
 #' Detajer: Her bør man liste opp hvilke variable funksjonen benytter...
 #'
-#' @inheritParams FigAndeler 
+#' @inheritParams SlagFigAndeler 
 #' @param valgtVar Hvilken variabel som skal visualiseres
 #'          Boligforh: Boligforhold ved innleggelse og 3 mnd etter slaget
 #'          Bosituasjon: Bosituasjon ved innleggelse og 3 mnd etter slaget
@@ -21,7 +21,7 @@
 #' @return Søylediagram som fordeling av valgt variabel, målt både før og etter hjerneslaget
 #'
 #' @export
-FigPrePost  <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil='2050-12-31', 
+SlagFigPrePost  <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil='2050-12-31', 
 		minald=0, maxald=130, erMann='', diagnose='', innl4t='', NIHSSinn='', outfile='', 
 		reshID, enhetsUtvalg=1, preprosess=1, hentData=0)	
 {

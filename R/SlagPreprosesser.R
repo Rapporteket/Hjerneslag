@@ -2,7 +2,7 @@
 #'
 #' Denne funksjonen definerer variabler og fjerner ikke-ferdigstilte registreringer
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams SlagFigAndeler
 #'
 #' @return Data En list med det filtrerte datasettet og sykehusnavnet som tilsvarer reshID
 #'
@@ -17,7 +17,10 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
   RegData$erMann[RegData$Kjonn == 'M'] <- 1
   #RegData$erMann <- 0
 	#RegData$erMann[RegData$Kjonn == 'M'] <- 1	#kjVar <- 'Kjonn'
-
+  
+  #Riktig navn på regions-variabel:
+  RegData$Region <- RegData$RHF
+  
   #Riktig format på datovariable:
 	RegData$InnDato <- as.Date(RegData$Innleggelsestidspunkt, format="%Y-%m-%d") # %H:%M:%S" )	#"%d.%m.%Y"	"%Y-%m-%d"
 	RegData <- RegData[which(RegData$Innleggelsestidspunkt!=''),]	#Tar ut registreringer som ikke har innleggelsesdato
@@ -31,12 +34,22 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 	RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
 	RegData$TidInnTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Innleggelsestidspunkt,   
 		units='mins'))
+	
+	#Div. variabel"mapping"
 	RegData$PreMedikBehHoytBT <- RegData$PreMedHoytBT 
 	RegData$PreKalsiumanatgonist <- RegData$PreKalsiumantagonist
+	
+	indAfasi <- which(RegData$Afasi %in% c(1,2,9))
+	RegData$SpraakTaleproblem[indAfasi] <- RegData$Afasi[indAfasi]
 
-  #Riktig navn på regions-variabel:
-	RegData$Region <- RegData$RHF
-
+	#Da har vi ikke sikret oss mot evt. «villregistrering» i SpraakTaleproblem.
+	#Evt. kan vi gjøre sånn:
+#	indAfasi <- which(RegData$Afasi %in% c(1,2,9))
+#	indSprTale <- which(RegData$ SpraakTaleproblem %in% c(1,2,9))
+#	RegData$Spraakproblem <- -1
+#	RegData$Spraakproblem[indSprTale] <- RegData$SpraakTaleproblem[indSprTale]
+	#	RegData$Spraakproblem[indAfasi] <- RegData$Afasi[indAfasi]
+	
 
   return(invisible(RegData))
 }

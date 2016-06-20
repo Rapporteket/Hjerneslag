@@ -82,9 +82,9 @@
 #'
 #' @export
 #'
-FigAndeler  <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil='2050-12-31', 
+SlagFigAndeler  <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil='2050-12-31', 
 		minald=0, maxald=130, erMann='', diagnose='', innl4t='', NIHSSinn='', outfile='', 
-		reshID, enhetsUtvalg=1, preprosess=1, hentData=0)	
+		preprosess=1, hentData=0, reshID, enhetsUtvalg=1)	
 {
 
 
@@ -153,7 +153,7 @@ flerevar <- 0
 
 
 
-#--------------- Gjøre beregninger ------------------------------
+#--------------- Variabeldefinisjon ------------------------------
 	if (valgtVar=='Alder') {
 		tittel <- 'Aldersfordeling'
 		gr <- c(0, seq(35, 95, 10), 120)	#c(0,16,31,46,61,76,200)	
@@ -483,8 +483,6 @@ if (medSml==1) {
 					'1' = length(indRest))
 	Andeler$Rest <- 100*AntRest/NRest
 }
-
-
 
 
 

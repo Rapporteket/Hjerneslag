@@ -1,13 +1,14 @@
 #' Funksjon som gjør utvalg av dataene, returnerer det filtrerte datasettet og utvalgsteksten.
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams SlagFigAndeler
 #' @param fargepalett Hvilken fargepalett skal brukes i figurer (Standard: BlaaRapp)
 #'
 #' @return UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og tekststreng som angir fargepalett
 #'
 #' @export
-
-SlagUtvalg <- function(RegData, datoFra, datoTil, minald, maxald, erMann, diagnose, innl4t, NIHSSinn, fargepalett='BlaaRapp')
+#' 
+SlagUtvalg <- function(RegData, datoFra, datoTil, minald, maxald, erMann, diagnose, innl4t, NIHSSinn, 
+                       fargepalett='BlaaRapp')
 {
     # Definer intersect-operator
     "%i%" <- intersect

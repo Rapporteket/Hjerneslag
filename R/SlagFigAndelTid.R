@@ -5,7 +5,7 @@
 #'
 #' Detajer: Her bør man liste opp hvilke variable funksjonen benytter.
 #'
-#' @inheritParams FigAndeler 
+#' @inheritParams SlagFigAndeler 
 #' @param valgtVar Hvilken variabel som skal visualiseres
 #'         	BehSlagenhet
 #' 			InnlSlagenh
@@ -22,7 +22,7 @@
 #' @return Figur som viser tidstrend, dvs. andel av valgt variabel for hvert år. 
 #'
 #' @export
-FigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31', 
+SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31', 
                         minald=0, maxald=130, erMann='',   diagnose='', innl4t='', NIHSSinn='', reshID, outfile='', 
                         enhetsUtvalg=1, preprosess=1, hentData=0) {
   

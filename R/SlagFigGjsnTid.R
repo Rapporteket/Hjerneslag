@@ -5,7 +5,7 @@
 #'
 #' Detajer: Her bør man liste opp hvilke variable funksjonen benytter...
 #'
-#' @inheritParams FigAndeler 
+#' @inheritParams SlagFigAndeler 
 #' @param valgtMaal
 #'        'Gjsn': gir middelverdi (standard)
 #'        'Med': gir median
@@ -22,7 +22,7 @@
 #' @return Linjediagram som viser utvikling over tid for valgt variabel
 #'
 #' @export
-FigGjsnTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31', 
+SlagFigGjsnTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31', 
                     minald=0, maxald=130, erMann='',   diagnose='', innl4t='', NIHSSinn='', reshID, outfile='', 
                     enhetsUtvalg=1, valgtMaal='', preprosess=1, hentData=0){
 
