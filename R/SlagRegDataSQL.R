@@ -16,6 +16,7 @@ SlagRegDataSQL <- function(datoFra = '2013-01-01', datoTil = '2099-01-01') {
   
   query <- paste0('SELECT
 AarsakManglendeOppf,
+Afasi,
 AkutteFokaleutfallPosBilleddiag,
 Alder,
 AndreFokaleSympt,
