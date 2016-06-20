@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-04-05T12:20:40 -->
+<!-- 2016-06-20T17:56:19 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="slagAndeler" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="no.skde.report.hjerneslag.HjerneslagCommonScriptletMinimal" uuid="5a58074b-3346-4b85-9ac6-dc8f2e57fef6">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -28,7 +28,7 @@
 		<defaultValueExpression><![CDATA[new String("SlagFigAndeler.R")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("FigAndeler(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=1)")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("SlagFigAndeler(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=1)")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="varName" class="java.lang.String">
 		<defaultValueExpression><![CDATA[new String("Alder")]]></defaultValueExpression>
