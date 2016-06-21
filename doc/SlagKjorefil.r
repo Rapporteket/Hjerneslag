@@ -159,7 +159,9 @@ valgtVar <- 'TidInnTrombolyse40min'	#Må velge...
 	
 outfile <- ''	#paste(valgtVar, '.pdf', sep='')	#Navn angis av Jasper
 
-FigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")
+RegData <- SlagData
+SlagFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 
