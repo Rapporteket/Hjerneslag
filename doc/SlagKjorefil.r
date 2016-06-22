@@ -19,24 +19,24 @@ table(table(SlagData$PatientInRegistryKey[which(SlagData$SkjemaID==1)]))
 #--------------------------------------SAMLERAPPORT-----------------------------------
 
 rm(list=ls())
-#Sys.setenv("MYSQL_HOME"="C:/Program Files/MySQL/mysql-cluster")
-#knit(input, output = NULL, tangle = FALSE, text = NULL, envir = parent.frame())
 
-SlagDataALLE <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+#SlagDataALLE <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 #names(SlagData[which(names(SlagData) == 'PreMedHoytBT')]) <- 'PreMedikBehHoytBT'
-SlagData <- SlagDataALLE[sample(1:dim(SlagDataALLE)[1], 5000), ]
+#SlagData <- SlagDataALLE[sample(1:dim(SlagDataALLE)[1], 5000), ]
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/SlagEksempel.csv', sep=';', header=T) #, 
-#Brukes kun for å få med alle potensielle sykehus slik at de som evt. har 0 registreringer også blir med.
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+#SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+
+load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
 reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
 
-
-setwd('C:/ResultattjenesteGIT/Hjerneslag/inst')
+library(Hjerneslag)
 library(knitr)
+setwd('C:/ResultattjenesteGIT/Hjerneslag/inst')
 knit('SlagSamleDokLand.Rnw')
+
 knit('SlagSamleDok.Rnw')
 #knit('SlagSamleDok_AlleTabOgKomm.Rnw')
-
+tools::texi2pdf('SlagSamleDokLand.tex')
 #--------------------------------------------------------
 
 
@@ -159,7 +159,9 @@ valgtVar <- 'TidInnTrombolyse40min'	#Må velge...
 	
 outfile <- ''	#paste(valgtVar, '.pdf', sep='')	#Navn angis av Jasper
 
-FigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
+RegData <- SlagData
+SlagFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 

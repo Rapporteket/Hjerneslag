@@ -9,6 +9,7 @@ Maintainer: Torunn Varmdal <Torunn.Varmdal@stolav.no>
 Description: Pakke for generering av resultatrapporter fra Norsk Hjerneslagregister.  
 License: GPL2
 LazyData: TRUE
+Encoding: UTF-8
 Depends: R (>= 3.0.2), rapbase (>= 1.0.0) 
 Imports:
   plyr,

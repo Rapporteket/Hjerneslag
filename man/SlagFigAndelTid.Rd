@@ -19,7 +19,7 @@ SlagFigAndelTid(RegData, valgtVar, datoFra = "2013-01-01",
     LipidI63
     OppfolgUtf (mangler)
     SvelgtestUtfort
-TidInnTromb30min (mangler)
+TidInnTrombolyse40min
     TrombolyseI63
     UtAntitrombotiskI63
     UtAntikoagI63atrie

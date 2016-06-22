@@ -84,14 +84,14 @@
 <<setup, include=FALSE, cache=FALSE>>=
 knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
 knitr::opts_knit$set(root.dir = './')
-
-knitr::opts_chunk$set(fig.path='./', fig.align='center', fig.show='hold', out.width='.7\\textwidth', cache=FALSE)
+knitr::opts_chunk$set(fig.path='', fig.align='center', fig.show='hold', out.width='.7\\textwidth', cache=FALSE)
 	#out.heigth='.45\\pageheight', #
-
 @
 
-<<'LasteData', echo=FALSE, eval=F>>=
+<<'LasteData', echo=FALSE, eval=T>>=
+if (!exists('SlagData')){
   SlagData <- SlagRegDataSQL()
+  }
 @
 
 
@@ -130,7 +130,7 @@ N <- dim(SlagData)[1]
 tabKjPst <- round(table(SlagData$erMann)/N*100, digits=1)
 indFra2014 <- which(SlagData$InnDato>=as.POSIXlt('2014-01-01'))
 
-dum <- FigAndelerKvalInd(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, 
+dum <- SlagFigAndelerKvalInd(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, 
 	NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, outfile='FigKvalInd.pdf')
 
 @
@@ -294,7 +294,7 @@ Nokkelt <- xtable(Pasientkarakteristika, digits=c(0,1,0,0,0,0), align=c('l', rep
 print(Nokkelt)
 
 
-dum <- FigAndeler(RegData=SlagData, valgtVar='Alder', datoFra=datoFra, 
+dum <- SlagFigAndeler(RegData=SlagData, valgtVar='Alder', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigAlder.pdf')
 @
@@ -338,7 +338,7 @@ BoligforhTab <- xtable(Boligforhold, digits=c(1,1,1,0), align=c('l', 'r', 'r', '
 		label="tab:Boligforh")
 print(BoligforhTab)
 
-dum <- 	FigAndeler(RegData=SlagData, valgtVar='SivilstatusPre', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='SivilstatusPre', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigSivilstatusPre.pdf')
@@ -623,47 +623,47 @@ for (d in 1:2) {
 
 <<'FigurerAndelSh', echo=FALSE, results='asis', eval=T>>=
 
-InnlSlag <- FigAndelerGrVar(RegData=SlagData, valgtVar='InnlSlagenh', datoFra=datoFra, 
+InnlSlag <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='InnlSlagenh', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigInnlSlag.pdf')
 
-BehSlagenhet <- FigAndelerGrVar(RegData=SlagData, valgtVar='BehSlagenhet', datoFra=datoFra, 
+BehSlagenhet <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='BehSlagenhet', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigBehSlagenhet.pdf')
 		
-TrombolyseI63 <- FigAndelerGrVar(RegData=SlagData, valgtVar='TrombolyseI63', datoFra=datoFra, 
+TrombolyseI63 <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='TrombolyseI63', datoFra=datoFra, 
 		datoTil=datoTil, minald=18, maxald=80, erMann=erMann, diagnose=2, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigTrombolyseI63.pdf')
 
-InnlInnen4eSymptom <- FigAndelerGrVar(RegData=SlagData, valgtVar='InnlInnen4eSymptom', datoFra=datoFra, 
+InnlInnen4eSymptom <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='InnlInnen4eSymptom', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigInnlInnen4eSymptom.pdf')
 
-SvelgtestUtfort <- FigAndelerGrVar(RegData=SlagData, valgtVar='SvelgtestUtfort', datoFra=datoFra, 
+SvelgtestUtfort <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='SvelgtestUtfort', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigSvelgtestUtfort.pdf')
 		
-UtAntitrombotiskI63 <- FigAndelerGrVar(RegData=SlagData, valgtVar='UtAntitrombotiskI63', datoFra=datoFra, 
+UtAntitrombotiskI63 <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='UtAntitrombotiskI63', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=2, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigUtAntitrombotiskI63.pdf')
 		
-UtAntikoagI63atrie <- FigAndelerGrVar(RegData=SlagData, valgtVar='UtAntikoagI63atrie', datoFra=datoFra, 
+UtAntikoagI63atrie <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='UtAntikoagI63atrie', datoFra=datoFra, 
 		datoTil=datoTil, minald=18, maxald=80, erMann=erMann, diagnose=2, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigUtAntikoagI63atrie.pdf')
 
-UtBT <- FigAndelerGrVar(RegData=SlagData, valgtVar='UtBT', datoFra=datoFra, 
+UtBT <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='UtBT', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigUtBT.pdf')
 		
-LipidI63u80 <- FigAndelerGrVar(RegData=SlagData, valgtVar='LipidI63u80', datoFra=datoFra, 
+LipidI63u80 <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='LipidI63u80', datoFra=datoFra, 
 		datoTil=datoTil, minald=18, maxald=80, erMann=erMann, diagnose=2, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigLipidI63u80.pdf')
 		
-AntDagerInnlGjsn <- FigMeanMed(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='mean', datoFra=datoFra, 
+AntDagerInnlGjsn <- SlagFigGjsnGrVar(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='mean', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigAntDagerInnlGjsn.pdf')
 			
-AntDagerInnlMed <- FigMeanMed(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='Med', datoFra=datoFra, 
+AntDagerInnlMed <- SlagFigGjsnGrVar(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='Med', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigAntDagerInnlMed.pdf')
 		
@@ -749,27 +749,27 @@ Dette avsnittet inneholder resultater fra behandling i akuttfasen. Dette omfatte
 
 <<FigurerAkutt, echo=FALSE, message=FALSE, eval=T>>=
 
-dum <- FigAndeler(RegData=SlagData, valgtVar='TidSymptInnlegg', datoFra=datoFra, 
+dum <- SlagFigAndeler(RegData=SlagData, valgtVar='TidSymptInnlegg', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigTidSymptInnlegg.pdf')
 
-dum <- 	FigAndeler(RegData=SlagData, valgtVar='TidInnleggTrombolyse', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='TidInnleggTrombolyse', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigTidInnTromb.pdf')
 
-dum <- 	FigAndeler(RegData=SlagData, valgtVar='BevissthetsgradInnleggelse', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='BevissthetsgradInnleggelse', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigBevissthetsgradInn.pdf')
 
-dum <- 	FigAndeler(RegData=SlagData, valgtVar='NIHSSinnkomst', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='NIHSSinnkomst', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigNIHSSinnkomst.pdf')
 
-dum <-	FigAndeler(RegData=SlagData, valgtVar='AvdForstInnlagtHvilken', datoFra=datoFra, 
+dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='AvdForstInnlagtHvilken', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigAvdForstInnlagt.pdf')
@@ -852,7 +852,7 @@ xtable(AkuttbehI63, digits=c(0,0,1), align=c('l', 'r', 'r'),
 
 %\begin{figure}[ht]
 %<<FigNIHSSpreTrombolyse, echo=FALSE, message=FALSE, eval=T>>=
-%	FigAndeler(RegData=SlagData, valgtVar='NIHSSpreTrombolyse', datoFra=datoFra, 
+%	SlagFigAndeler(RegData=SlagData, valgtVar='NIHSSpreTrombolyse', datoFra=datoFra, 
 %		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 %		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile=outfile)
 %@
@@ -861,7 +861,7 @@ xtable(AkuttbehI63, digits=c(0,0,1), align=c('l', 'r', 'r'),
 
 %\begin{figure}[ht]
 %<<FigNIHSSetterTrombolyse, echo=FALSE, message=FALSE, eval=T>>=
-%	FigAndeler(RegData=SlagData, valgtVar='NIHSSetterTrombolyse', datoFra=datoFra, 
+%	SlagFigAndeler(RegData=SlagData, valgtVar='NIHSSetterTrombolyse', datoFra=datoFra, 
 %		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 %		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile=outfile)
 %@
@@ -907,31 +907,31 @@ print(KritSupplPstTab)
 		
 
 		
-dum <- FigPrePost(RegData=SlagData, valgtVar='NIHSSTrombolyse', datoFra=datoFra, 
+dum <- SlagFigPrePost(RegData=SlagData, valgtVar='NIHSSTrombolyse', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, outfile='FigNIHSSTrombolysePP.pdf')
 
-dum <- 	FigAndeler(RegData=SlagData, valgtVar='NIHSSendrTrombolyse', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='NIHSSendrTrombolyse', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigNIHSSendrTrombolyse.pdf')
 		
-dum <- 	FigAndeler(RegData=SlagData, valgtVar='BildediagnostikkHjerne', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkHjerne', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagnostikkHjerne.pdf')
 		
-dum <- 	FigAndeler(RegData=SlagData, valgtVar='BildediagnostikkEkstrakranKar', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkEkstrakranKar', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagEksKar.pdf')
 
-dum <- 	FigAndeler(RegData=SlagData, valgtVar='BildediagnostikkIntraraniell', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkIntraraniell', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagIntraKar.pdf')
 
-dum <- 	FigAndeler(RegData=SlagData, valgtVar='RegistreringHjerterytme', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='RegistreringHjerterytme', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigHjerterytme.pdf')
 
-dum <- 	FigAndeler(RegData=SlagData, valgtVar='BildediagnostikkHjerte', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkHjerte', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagnostikkHjerte.pdf')
 		
@@ -1147,15 +1147,15 @@ Dette kapitlet inneholder informasjon om:
 \end{itemize}
 
 <<FigurerUtskriving, echo=FALSE, message=FALSE, eval=T>>=
-dum <- 	FigAndeler(RegData=SlagData, valgtVar='AntDagerInnl', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='AntDagerInnl', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigAntDagerInnl.pdf')
 
-dum <- 	FigAndeler(RegData=SlagData, valgtVar='AvdUtskrFraHvilken', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='AvdUtskrFraHvilken', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigAvdUtskrFraHvilken.pdf')
 		
-dum <- 	FigAndeler(RegData=SlagData, valgtVar='UtskrTil', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='UtskrTil', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigUtskrTil.pdf')
 		
@@ -1194,36 +1194,36 @@ Dette kapitlet inneholder resultater knyttet til:
 
 
 <<FigurerBoligforh, echo=FALSE, message=FALSE, eval=T>>=
-dum <-	FigPrePost(RegData=SlagData, valgtVar='Boligforh', datoFra=datoFra, datoTil=datoTil, 
+dum <-	SlagFigPrePost(RegData=SlagData, valgtVar='Boligforh', datoFra=datoFra, datoTil=datoTil, 
 	minald=minald, maxald=maxald, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 	outfile='FigBoligforh.pdf')
 
-dum <- 	FigPrePost(RegData=SlagData, valgtVar='Bosituasjon', datoFra=datoFra, 
+dum <- 	SlagFigPrePost(RegData=SlagData, valgtVar='Bosituasjon', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigBositPrePost.pdf')
 
-dum <- 	FigPrePost(RegData=SlagData, valgtVar='Toalett', datoFra=datoFra, datoTil=datoTil, 
+dum <- 	SlagFigPrePost(RegData=SlagData, valgtVar='Toalett', datoFra=datoFra, datoTil=datoTil, 
 		minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigToalettPrePost.pdf')
 		
-dum <- 	FigPrePost(RegData=SlagData, valgtVar='Forflytning', datoFra=datoFra, 
+dum <- 	SlagFigPrePost(RegData=SlagData, valgtVar='Forflytning', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigForflytningPrePost.pdf')
 		
-dum <- 	FigPrePost(RegData=SlagData, valgtVar='Paakledning', datoFra=datoFra, 
+dum <- 	SlagFigPrePost(RegData=SlagData, valgtVar='Paakledning', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigPaakledningPrePost.pdf')
 		
-dum <- 	FigPrePost(RegData=SlagData, valgtVar='Bilkjoring', datoFra=datoFra, 
+dum <- 	SlagFigPrePost(RegData=SlagData, valgtVar='Bilkjoring', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigBilkjoringPrePost.pdf')
 
-dum <-	FigAndeler(RegData=SlagData, valgtVar='Tilfredshet', datoFra=datoFra, 
+dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='Tilfredshet', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
 		outfile='FigTilfredshet.pdf')
