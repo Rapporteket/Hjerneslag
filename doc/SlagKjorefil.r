@@ -96,7 +96,7 @@ valgtVar <- 'Alder'	#Må velge... Alder, Transportmetode,
 outfile <- paste(valgtVar, '_ford.pdf', sep='')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/Hjerneslag")
 
-FigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+SlagFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 
