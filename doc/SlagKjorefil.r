@@ -19,14 +19,11 @@ table(table(SlagData$PatientInRegistryKey[which(SlagData$SkjemaID==1)]))
 #--------------------------------------SAMLERAPPORT-----------------------------------
 
 rm(list=ls())
-#Sys.setenv("MYSQL_HOME"="C:/Program Files/MySQL/mysql-cluster")
-#knit(input, output = NULL, tangle = FALSE, text = NULL, envir = parent.frame())
 
 #SlagDataALLE <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 #names(SlagData[which(names(SlagData) == 'PreMedHoytBT')]) <- 'PreMedikBehHoytBT'
 #SlagData <- SlagDataALLE[sample(1:dim(SlagDataALLE)[1], 5000), ]
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/SlagEksempel.csv', sep=';', header=T) #, 
-#Brukes kun for å få med alle potensielle sykehus slik at de som evt. har 0 registreringer også blir med.
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
@@ -39,7 +36,7 @@ knit('SlagSamleDokLand.Rnw')
 
 knit('SlagSamleDok.Rnw')
 #knit('SlagSamleDok_AlleTabOgKomm.Rnw')
-
+tools::texi2pdf('SlagSamleDokLand.tex')
 #--------------------------------------------------------
 
 
