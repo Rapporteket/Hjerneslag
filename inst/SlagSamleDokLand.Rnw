@@ -659,11 +659,11 @@ LipidI63u80 <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='LipidI63u80', dat
 		datoTil=datoTil, minald=18, maxald=80, erMann=erMann, diagnose=2, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigLipidI63u80.pdf')
 		
-AntDagerInnlGjsn <- SlagFigMeanMed(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='mean', datoFra=datoFra, 
+AntDagerInnlGjsn <- SlagFigGjsnGrVar(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='mean', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigAntDagerInnlGjsn.pdf')
 			
-AntDagerInnlMed <- SlagFigMeanMed(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='Med', datoFra=datoFra, 
+AntDagerInnlMed <- SlagFigGjsnGrVar(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='Med', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigAntDagerInnlMed.pdf')
 		
