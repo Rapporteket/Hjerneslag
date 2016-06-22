@@ -84,10 +84,7 @@
 <<setup, include=FALSE, cache=FALSE>>=
 knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
 knitr::opts_knit$set(root.dir = './')
-knitr::opts_chunk$set(fig.path='', fig.align='center', fig.show='hold', out.width='.7\\textwidth', cache=FALSE)
-knitr::opts_knit$set(root.dir = './')
-knitr::opts_chunk$set(fig.path='', fig.align='center', fig.show='hold', out.width='.8\\textwidth',
-	cache=FALSE)
+knitr::opts_chunk$set(fig.path='', fig.align='center', fig.show='hold', out.width='.8\\textwidth',cache=FALSE)
 @
 
 <<'LasteData', echo=FALSE, eval=T>>=
