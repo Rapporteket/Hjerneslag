@@ -58,28 +58,28 @@ if (enhetsUtvalg %in% c(2,6,7)) {
 						'7' = RegData[which(RegData$RHF == as.character(RegData$RHF[indEgen1])),])	#kun egen region
 	}
 
-if (valgtVar == 'TidSymptInnlegg') {
+#if (valgtVar == 'TidSymptInnlegg') {
   #Uten oppvåkningsslag
-  RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
-  RegData$Symptomdebut <- as.POSIXlt(RegData$Symptomdebut, format="%Y-%m-%d %H:%M:%S" )
-  RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut,  
-		units='hours'))
+#  RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
+ # RegData$Symptomdebut <- as.POSIXlt(RegData$Symptomdebut, format="%Y-%m-%d %H:%M:%S" )
+  #RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut,  
+	#	units='hours'))
   #RegData$Variabel <- RegData$TidSymptInnlegg
-}
-if (valgtVar == 'TidSymptTrombolyse') {
+#}
+#if (valgtVar == 'TidSymptTrombolyse') {
   #Uten oppvåkningsslag
-  RegData <- RegData[which(RegData$Trombolyse %in% c(1,3) & RegData$VaaknetMedSymptom==2), ]
-  RegData$Symptomdebut <- as.POSIXlt(RegData$Symptomdebut, format="%Y-%m-%d %H:%M:%S" )
-  RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
-  RegData$Variabel <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Symptomdebut,  
-                                          units='hours'))
-}
-if (valgtVar == 'TidInnleggTrombolyse') {
-  RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
-  RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
-  RegData$Variabel <- as.numeric(difftime(RegData$TrombolyseStarttid, 
-                                                      RegData$Innleggelsestidspunkt, units='mins'))
-}
+#  RegData <- RegData[which(RegData$Trombolyse %in% c(1,3) & RegData$VaaknetMedSymptom==2), ]
+ # RegData$Symptomdebut <- as.POSIXlt(RegData$Symptomdebut, format="%Y-%m-%d %H:%M:%S" )
+#  RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
+ # RegData$Variabel <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Symptomdebut,  
+  #                                        units='hours'))
+#}
+#if (valgtVar == 'TidInnleggTrombolyse') {
+ # RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
+  #RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
+#  RegData$Variabel <- as.numeric(difftime(RegData$TrombolyseStarttid, 
+ #                                                     RegData$Innleggelsestidspunkt, units='mins'))
+#}
 if (valgtVar == 'NIHSSinnkomst') {
   RegData <- RegData[which(RegData$NIHSSikkeUtfort == 0), ]
 }
@@ -90,8 +90,9 @@ if (valgtVar == 'NIHSSetterTrombolyse') {
   RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
 }
 
-if (valgtVar %in% c('Alder', 'AntDagerInnl', 'TidSymptInnlegg',
-                    'NIHSSinnkomst', 'NIHSSpreTrombolyse', 'NIHSSetterTrombolyse')) {
+if (valgtVar %in% c('Alder', 'AntDagerInnl', 'TidSymptInnlegg','TidSymptTrombolyse', 'TidInnleggTrombolyse',
+                    'NIHSSinnkomst', 'NIHSSpreTrombolyse', 'NIHSSetterTrombolyse',
+                    'TidSymptInnlegg','TidSymptTrombolyse', 'TidInnleggTrombolyse')) {
   RegData$Variabel <- RegData[ ,valgtVar] }
 
 

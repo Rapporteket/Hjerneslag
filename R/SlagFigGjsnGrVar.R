@@ -61,17 +61,18 @@ Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
 
 RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
 
-if (valgtVar == 'TidSymptTrombolyse') {
+#if (valgtVar == 'TidSymptTrombolyse') {
 #Uten oppvåkningsslag
-	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3) & RegData$VaaknetMedSymptom==2), ]
-	RegData$Variabel <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Symptomdebut,  
-			units='hours'))
-	}
-if (valgtVar == 'TidSymptInnlegg') {
-#Uten oppvåkningsslag
-	RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
-	RegData$Variabel <- RegData$TidSymptInnlegg
-	}
+	#RegData <- RegData[which(RegData$Trombolyse %in% c(1,3) & RegData$VaaknetMedSymptom==2), ] Nå i preprosess
+#	RegData$Variabel <- RegData$TidSymptTrombolyse
+	  #as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Symptomdebut,  
+#			units='hours'))
+#	}
+#if (valgtVar == 'TidSymptInnlegg') {
+#Uten oppvåkningsslag - gjøres nå i preprosess
+	#RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
+#	RegData$Variabel <- RegData$TidSymptInnlegg
+#	}
 if (valgtVar == 'NIHSSpreTrombolyse') {
 	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
 	}
@@ -84,18 +85,18 @@ if (valgtVar == 'NIHSSpreTrombektomi') {
 if (valgtVar == 'NIHSSetterTrombektomi') {
 	RegData <- RegData[which(RegData$Trombektomi %in% c(1,3)), ]
 	}
-if (valgtVar == 'TidInnleggTrombolyse') {
-	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
-	RegData$TidInnleggTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, 
-			RegData$Innleggelsestidspunkt, units='mins'))
-	}
+#if (valgtVar == 'TidInnleggTrombolyse') {   DEFINERT I PREPROSESS
+#	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
+#	RegData$TidInnleggTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, 
+#			RegData$Innleggelsestidspunkt, units='mins'))
+#	}
 if (valgtVar == 'NIHSSinnkomst') {
 	RegData <- RegData[which(RegData$NIHSSikkeUtfort == 0), ]
 	}
 
-if (valgtVar %in% c('Alder', 'AntDagerInnl', 'TidInnleggTrombolyse',
-		'NIHSSinnkomst','NIHSSpreTrombolyse','NIHSSetterTrombolyse',
-		'NIHSSpreTrombektomi', 'NIHSSetterTrombektomi')) {
+if (valgtVar %in% c('Alder', 'AntDagerInnl', 'NIHSSinnkomst','NIHSSpreTrombolyse',
+                    'NIHSSetterTrombolyse','NIHSSpreTrombektomi', 'NIHSSetterTrombektomi', 
+                    'TidInnleggTrombolyse','TidSymptInnlegg','TidSymptTrombolyse')) {
 	RegData$Variabel <- RegData[ ,valgtVar] }
 
 #Tar ut de med manglende registrering av valgt variabel og gjør utvalg

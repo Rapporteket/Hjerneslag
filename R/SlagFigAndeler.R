@@ -111,22 +111,22 @@ if (enhetsUtvalg %in% c(2,6,7)) {
 	}
 
 
-if (valgtVar == 'TidSymptInnlegg') {
-	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut,  
-			units='hours'))
-	RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
-	}
-if (valgtVar == 'TidSymptTrombolyse') {
-	RegData <- RegData[intersect(which(RegData$Trombolyse %in% c(1,3)), 
-		which(RegData$VaaknetMedSymptom==2)), ]
-	RegData$TidSymptTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Symptomdebut,  
-			units='hours'))
-	}
-if (valgtVar == 'TidInnleggTrombolyse') {
-	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
-	RegData$TidInnleggTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, 
-			RegData$Innleggelsestidspunkt, units='hours'))	#units='mins'
-	}
+#if (valgtVar == 'TidSymptInnlegg') {
+	#RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut,  
+	#		units='hours'))
+	#RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
+#	}
+#if (valgtVar == 'TidSymptTrombolyse') {
+#	RegData <- RegData[intersect(which(RegData$Trombolyse %in% c(1,3)), 
+#		which(RegData$VaaknetMedSymptom==2)), ]
+	#RegData$TidSymptTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Symptomdebut,  
+	#		units='hours'))
+#	}
+#if (valgtVar == 'TidInnleggTrombolyse') {
+#	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
+	#RegData$TidInnleggTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, 
+	#		RegData$Innleggelsestidspunkt, units='hours'))	#units='mins'
+#	}
 if (valgtVar %in% c('Alder', 'AntDagerInnl', 'TidSymptInnlegg','TidSymptTrombolyse','TidInnleggTrombolyse',
 		'NIHSSinnkomst','NIHSSpreTrombolyse','NIHSSetterTrombolyse',
 		'NIHSSpreTrombektomi', 'NIHSSetterTrombektomi',

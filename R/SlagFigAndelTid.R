@@ -72,8 +72,8 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
     VarTxt <- 'innleggelser direkte i slagehet'
   }
   if (valgtVar == 'InnlInnen4eSymptom') {
-    #  Tar ut oppvåkningsslag
-    RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
+    #  Tar ut oppvåkningsslag - Dette gjøres nå i preprosssesseringa
+    #RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
     # Innleggelsestidspunkt comes as class 'character', must be 'date-time'
     #RegData$TidSymptInnlegg <- as.numeric(
     #  difftime(as.POSIXlt(RegData$Innleggelsestidspunkt,format = "%Y-%m-%d %H:%M:%S"),
@@ -90,16 +90,17 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
   }
   if (valgtVar == 'OppfolgUtf') {
     #Regner ut antall dager fra innleggelse til død
-    RegData$TidDeath <- as.numeric(
-      difftime(as.POSIXlt(RegData$DeathDate,
-                          format = "%Y-%m-%d %H:%M:%S"),
-               as.POSIXlt(RegData$Innleggelsestidspunkt,
-                          format = "%Y-%m-%d %H:%M:%S"),
-               units='days'))
-    RegData$Variabel[RegData$TidDeath %in% 0:98] <- 1 
+   # RegData$TidDeath <- as.numeric(x = #FLYTTER DENNE TIL PREPROSESS. Får bruk for den til 30d-dødelighet.
+    #  difftime(as.POSIXlt(RegData$DeathDate, format = "%Y-%m-%d %H:%M:%S"),
+     #          as.POSIXlt(RegData$Innleggelsestidspunkt, format = "%Y-%m-%d %H:%M:%S"),
+      #         units='days'))
+    #RegData$Variabel[RegData$TidDeath %in% 0:98] <- 1 Her vil bare de med heltallsverdier 0:98 komme med.
+    #Utvalget må evt. gjøres slik: RegData$Variabel[RegData$TidDeath < 98] <- 1
     datoTil <- min(datoTil, as.character(Sys.Date()-90))
-    RegData <- RegData[which(RegData$OppfolgUtf %in% 1:2), ] #TV 28.juni: Her må det inn at missing-verdier også skal være med
-    RegData$Variabel[RegData$OppfolgUtf==1 | RegData$TidDeath==1] <- 1	#1-Ja, 2-Nei
+    #RegData <- RegData[which(RegData$OppfolgUtf %in% 1:2), ] #TV 28.juni: Her må det inn at missing-verdier også skal være med
+    #                                                         OK Da gjør vi ingen utvalg her.
+    #RegData$Variabel[RegData$OppfolgUtf==1 | RegData$TidDeath==1] <- 1	#HER VELGER DU DE SOM HAR DØDD ETTER ETT DØGN
+    RegData$Variabel[RegData$OppfolgUtf==1 | RegData$TidDeath <= 98] <- 1	
     VarTxt <- 'som har fått oppfølging'
   }
   if (valgtVar == 'SvelgtestUtfort') {
@@ -109,7 +110,7 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
   }
   if (valgtVar == 'TidInnTrombolyse40min') {	
     diagnose <- 2	#'I63'
-    RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
+    #RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]  GJØRES NÅ I PREPROSESSERINGA
     #RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
     #RegData$TidInnleggTromb <- as.numeric(difftime(RegData$TrombolyseStarttid,
     #                                               RegData$Innleggelsestidspunkt, units='mins'))
