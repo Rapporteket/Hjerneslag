@@ -46,8 +46,8 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut, units='hours'))
 	RegData$TidSymptInnlegg[indUtInnlegg %u% indUtSymptomdebut %u% which(RegData$TidSymptInnlegg<0)] <- NA
 	
-	RegData$TidInnTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Innleggelsestidspunkt, units='mins'))
-	RegData$TidInnTrombolyse[indUtInnlegg %u% indUtTrombStart %u% which(RegData$TidInnTrombolyse<0)] <- NA
+	RegData$TidInnleggTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Innleggelsestidspunkt, units='mins'))
+	RegData$TidInnleggTrombolyse[indUtInnlegg %u% indUtTrombStart %u% which(RegData$TidInnleggTrombolyse<0)] <- NA
 	
 	RegData$TidSymptTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Symptomdebut, units='hours'))
 	RegData$TidSymptTrombolyse[indUtSymptomdebut %u% indUtTrombStart %u% which(RegData$TidSymptTrombolyse<0)] <- NA
