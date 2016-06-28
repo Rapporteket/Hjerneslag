@@ -41,7 +41,7 @@ SlagFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012-
   }
   
   # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
-  if (preprosess){
+  if (preprosess == 1){
     RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
   }
   

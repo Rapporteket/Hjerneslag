@@ -25,7 +25,7 @@ SlagFigAntReg  <- function(RegData, datoTil='2050-12-31',
   }
   
 # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
-if (preprosess){
+if (preprosess ==1 ){
     RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
   }
   

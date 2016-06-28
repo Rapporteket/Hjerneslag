@@ -32,7 +32,7 @@ SlagFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil
   }
   
 # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
-  if (preprosess){
+  if (preprosess==1){
     RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
   }
   
