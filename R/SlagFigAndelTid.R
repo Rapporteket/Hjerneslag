@@ -92,14 +92,14 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
     VarTxt <- 'utskrevet med lipidsenkning'
   }
   if (valgtVar == 'OppfolgUtf') {
-    datoTil <- min(datoTil, as.character(Sys.Date()-90))
+    datoTil <- min(datoTil, as.character(Sys.Date()-98))
     RegData <- RegData[which(RegData$OppfolgUtf %in% 1:2), ] 
     RegData$Variabel[RegData$OppfolgUtf==1] <- 1	#1-Ja, 2-Nei
     VarTxt <- 'som har fått oppfølging'
   }
   if (valgtVar == 'SvelgtestUtfort') {
     #Av alle, dvs. andel er  de som helt sikkert fått utf. svelgtest
-    RegData$Variabel[which(RegData$SvelgtestUtfort==1)] <- 1
+    RegData$Variabel[which(RegData$SvelgtestUtfort %in% c(1,3))] <- 1
     VarTxt <- 'med svelgfunksjon vurdert'
   }
   if (valgtVar == 'TidInnTrombolyse40min') {	
@@ -140,7 +140,7 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
   if (valgtVar == 'UtBT') {
     #Bare levende pasienter
     RegData <- RegData[which(RegData$UtskrTil != 10), ]
-    NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist')
+    NavnBTsenkUt <- c('PostMedBehHoytBT')
     indBTsenkUt <- which(RegData[ ,NavnBTsenkUt]==1, arr.ind=T)[,1]
     RegData$Variabel[indBTsenkUt] <- 1
     VarTxt <- 'utskrevet med blodtrykksmedikament'
