@@ -92,9 +92,17 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
     VarTxt <- 'utskrevet med lipidsenkning'
   }
   if (valgtVar == 'OppfolgUtf') {
-    datoTil <- min(datoTil, as.character(Sys.Date()-98))
-    RegData <- RegData[which(RegData$OppfolgUtf %in% 1:2), ] 
-    RegData$Variabel[RegData$OppfolgUtf==1] <- 1	#1-Ja, 2-Nei
+    #Regner ut antall dager fra innleggelse til død
+    RegData$TidDeath <- as.numeric(
+      difftime(as.POSIXlt(RegData$DeathDate,
+                          format = "%Y-%m-%d %H:%M:%S"),
+               as.POSIXlt(RegData$Innleggelsestidspunkt,
+                          format = "%Y-%m-%d %H:%M:%S"),
+               units='days'))
+    RegData$Variabel[RegData$TidDeath %in% 0:98] <- 1 
+    datoTil <- min(datoTil, as.character(Sys.Date()-90))
+    RegData <- RegData[which(RegData$OppfolgUtf %in% 1:2), ] #TV 28.juni: Her må det inn at missing-verdier også skal være med
+    RegData$Variabel[RegData$OppfolgUtf==1 | RegData$TidDeath==1] <- 1	#1-Ja, 2-Nei
     VarTxt <- 'som har fått oppfølging'
   }
   if (valgtVar == 'SvelgtestUtfort') {
