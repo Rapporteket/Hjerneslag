@@ -21,24 +21,44 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
   #Riktig navn på regions-variabel:
   RegData$Region <- RegData$RHF
   
-  #Riktig format på datovariable:
+  #Riktig format på datovariable, samt identifisere registreringer som ikke har gyldig tidspunkt
 	RegData$InnDato <- as.Date(RegData$Innleggelsestidspunkt, format="%Y-%m-%d") # %H:%M:%S" )	#"%d.%m.%Y"	"%Y-%m-%d"
-	RegData$Innleggelsestidspunkt <- strptime(RegData$Innleggelsestidspunkt, "%Y-%m-%d %H:%M:%S")
-	#Tar ut registreringer som ikke har innleggelsesdato
-	MangelSjekk2 <- format(RegData$Innleggelsestidspunkt, "%H:%M")
-	indMed2 <- which(MangelSjekk2 != '00:00')	
-	#MangelSjekk <- as.numeric(format(RegData$Innleggelsestidspunkt, "%H"))  +  as.numeric(format(RegData$Symptomdebut, "%M"))/60
-	#RegData <- RegData[which(MangelSjekk>0)
-
-	RegData$Symptomdebut <- as.POSIXlt(RegData$Symptomdebut, format="%Y-%m-%d %H:%M:%S" )
 	
-	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut,  
-			units='hours'))
-	#RegData$TimerSymptomdebutInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut,  
-	#                                                         units='hours'))
+	RegData$Innleggelsestidspunkt <- strptime(RegData$Innleggelsestidspunkt, "%Y-%m-%d %H:%M:%S")
+	SjekkTidsPktInnlegg <- format(RegData$Innleggelsestidspunkt, "%H:%M")
+	indUtInnlegg <- which(SjekkTidsPktInnlegg == '00:00')	
+	
+	RegData$Symptomdebut <- as.POSIXlt(RegData$Symptomdebut, format="%Y-%m-%d %H:%M:%S" )
+	SjekkTidsPktSymptomdebut <- format(RegData$Symptomdebut, "%H:%M")
+	indUtSymptomdebut <- which(SjekkTidsPktSymptomdebut == '00:00')	
+	
+	
 	RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
-	RegData$TidInnTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Innleggelsestidspunkt,   
-		units='mins'))
+	SjekkTidsPktTrombStart <- format(RegData$TrombolyseStarttid, "%H:%M")
+	indUtTrombStart <- which(SjekkTidsPktTrombStart == '00:00')	
+	
+	#Definere nye tidsvariable. Ugyldige tidspunkt settes til NA.
+	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut, units='hours'))
+	RegData$TidSymptInnlegg[union(indUtInnlegg, indUtSymptomdebut)] <- NA
+	
+	RegData$TidInnTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Innleggelsestidspunkt, units='mins'))
+	RegData$TidInnTrombolyse[union(indUtInnlegg, indUtTrombStart)] <- NA
+	
+	#Tidspunktet 00:00 angir at tidspunkt er ukjent. Disse må tas ut når man skal se på differanser til andre tidspunkt.
+	#Dette kan gjøres på flere måter:
+	#RegData$Tidsvariabel <- strptime(RegData$Tidsvariabel, "%Y-%m-%d %H:%M:%S")
+	#MangelSjekk <- as.numeric(format(RegData$Tidsvariabel, "%H"))  +  as.numeric(format(RegData$Tidsvariabel, "%M"))/60
+	#indMed <- which(MangelSjekk>0)
+	
+	#RegData$Tidsvariabel <- strptime(RegData$Tidsvariabel, "%Y-%m-%d %H:%M:%S")
+	#MangelSjekk2 <- format(RegData$Tidsvariabel, "%H:%M")
+	#indMed2 <- which(MangelSjekk2 != '00:00')
+	#Eventuelt kan man snu utvalget, lage en dvs. lage 
+	#indUT <- which(MangelSjekk2 == '00:00')
+	#og sette disse lik ‘NA’.
+	
+	
+	
 	
 	#Div. variabel"mapping"
 	RegData$PreMedikBehHoytBT <- RegData$PreMedHoytBT 

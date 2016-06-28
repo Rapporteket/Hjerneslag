@@ -75,12 +75,9 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
     #  Tar ut oppvåkningsslag
     RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
     # Innleggelsestidspunkt comes as class 'character', must be 'date-time'
-    RegData$TidSymptInnlegg <- as.numeric(
-      difftime(as.POSIXlt(RegData$Innleggelsestidspunkt,
-                          format = "%Y-%m-%d %H:%M:%S"),
-               as.POSIXlt(RegData$Symptomdebut,
-                          format = "%Y-%m-%d %H:%M:%S"),
-               units='hours'))
+    #RegData$TidSymptInnlegg <- as.numeric(
+    #  difftime(as.POSIXlt(RegData$Innleggelsestidspunkt,format = "%Y-%m-%d %H:%M:%S"),
+     #          as.POSIXlt(RegData$Symptomdebut,format = "%Y-%m-%d %H:%M:%S"),units='hours'))
     RegData$Variabel[RegData$TidSymptInnlegg <= 4] <- 1 
     VarTxt <- 'innlagt innen 4t etter symptomdebut'
   }
@@ -105,15 +102,14 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
   if (valgtVar == 'TidInnTrombolyse40min') {	
     diagnose <- 2	#'I63'
     RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
-    RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
-    RegData$TidInnleggTromb <- as.numeric(difftime(RegData$TrombolyseStarttid,
-                                                   RegData$Innleggelsestidspunkt, units='mins'))
+    #RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
+    #RegData$TidInnleggTromb <- as.numeric(difftime(RegData$TrombolyseStarttid,
+    #                                               RegData$Innleggelsestidspunkt, units='mins'))
     RegData$Variabel[RegData$TidInnleggTromb <= 40] <- 1 
     VarTxt <- 'som har fått trombolyse innen 40 min.'
   }
   if (valgtVar == 'TrombolyseI63') {
-    #RegData <- RegData[which(RegData$Slagdiagnose==2), ]		#Slagdiagnose I63
-    diagnose <- 2	#'I63'
+    diagnose <- 2	# Slagdiagnose 'I63'
     RegData$Variabel[which(RegData$Trombolyse %in% c(1,3))] <- 1
     VarTxt <- 'som har fått trombolyse'
   }
@@ -138,11 +134,9 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
     VarTxt <- 'utskrevet med antikoagulasjon'
   }
   if (valgtVar == 'UtBT') {
-    #Bare levende pasienter
-    RegData <- RegData[which(RegData$UtskrTil != 10), ]
-    NavnBTsenkUt <- c('PostMedBehHoytBT')
-    indBTsenkUt <- which(RegData[ ,NavnBTsenkUt]==1, arr.ind=T)[,1]
-    RegData$Variabel[indBTsenkUt] <- 1
+    #Bare levende pasienter og de vi vet om har fått bt-medikament eller ikke.
+    RegData <- RegData[(which(RegData$UtskrTil != 10) & (RegData$PostMedHoytBT %in% 1:2)), ]
+    RegData$Variabel[which(RegData$PostMedHoytBT == 1)] <- 1 #-1:None, 1:Ja, 9:Ukjent, 2:Nei
     VarTxt <- 'utskrevet med blodtrykksmedikament'
   }
   

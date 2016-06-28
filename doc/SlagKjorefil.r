@@ -10,6 +10,8 @@ SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2013-12-11.csv
 save(SlagData, file='C:/Registre/Hjerneslag/data/HjerneSlag2013-12-11.Rdata')
 write.table(SlagData, file='SlagDataTest.csv', row.names=FALSE, sep=';')
 
+
+
 table(table(SlagData$PatientInRegistryKey))
 #Flere pasienter som har mer enn tre registreringer
 
@@ -25,8 +27,9 @@ rm(list=ls())
 #SlagData <- SlagDataALLE[sample(1:dim(SlagDataALLE)[1], 5000), ]
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/SlagEksempel.csv', sep=';', header=T) #, 
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+#load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
+RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag04PROD2016-06-28.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
-load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
 reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
 
 library(Hjerneslag)
@@ -152,14 +155,15 @@ rm(list=ls())
 
 # Inndata til funksjon:
 reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
-valgtVar <- 'TidInnTrombolyse40min'	#Må velge... 
+valgtVar <- 'InnlInnen4eSymptom'	#Må velge... 
     # BehSlagenhet, InnlSlagenh, InnlInnen4eSymptom, LipidI63, OppfolgUtf (ta ut siste 3 mnd)
     # SvelgtestUtfort, TidInnTrombolyse40min, TrombolyseI63, UtAntitrombotiskI63, UtAntikoagI63atrie
  	# UtBT(?)
 	
 outfile <- ''	#paste(valgtVar, '.pdf', sep='')	#Navn angis av Jasper
 
-load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
+#load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
+SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag04PROD2016-06-28.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 RegData <- SlagData
 SlagFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
