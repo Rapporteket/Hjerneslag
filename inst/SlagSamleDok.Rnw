@@ -246,7 +246,7 @@ xtable(tabPasAarNEget, digits=0, align=c('l', rep('r', ncol(tabPasAarNEget))),
 #Tabell med antall av hver skjematype og andel med oppfølging (inkl. døde)	
 #AntHoved <- table(SlagData$ShNavn)
 #AntOppf <- with(SlagData, table(ShNavn[union(which(OppfolgUtf==1), 						#Levende med oppfølging
-#		union(which(OppfolgUtf==2 & AarsakManglendeOppf==3), which(UtskrTil==10)))]))	#Døde
+#		union(which(TidDeath<=98)]))))	#Døde innen 98 dager
 #AndelOppf <- round(AntOppf/AntHoved*100, 1)
 #tabHovedOppf <- cbind(
 #		'Akuttskjema' = AntHoved,
@@ -261,9 +261,9 @@ xtable(tabPasAarNEget, digits=0, align=c('l', rep('r', ncol(tabPasAarNEget))),
 
 #Eget sykehus
 AntOppfEget <- with(SlagDataEget, length(union(which(OppfolgUtf==1), 				#Levende med oppfølging
-		union(which(OppfolgUtf==2 & AarsakManglendeOppf==3), which(UtskrTil==10)))))	#Døde
+		union(which(TidDeath<=98)))))	#Døde innen 98 dager
 AntOppfTot <- with(SlagData, length(union(which(OppfolgUtf==1), 				#Levende med oppfølging
-		union(which(OppfolgUtf==2 & AarsakManglendeOppf==3), which(UtskrTil==10)))))	#Døde
+		union(which(TidDeath<=98)))))	#Døde innen 98 dager
 AndelOppfEget <- round(AntOppfEget/Neget*100, 1)
 AndelOppfTot <- round(AntOppfTot/N*100, 1)
 
@@ -274,13 +274,13 @@ tabHovedOppfEget <- rbind(
 #colnames(tabHovedOppfEget)[dim(tabHovedOppfEget)[2]]<- 'Totalt:'
 colnames(tabHovedOppfEget) <- c('Akuttskjema', 'Oppfølgingsskjema','Totalt:')
 xtable(tabHovedOppfEget, digits= c(0,0,0,1), align=c('l', rep('r', ncol(tabHovedOppfEget))), 
-		caption='Antall akuttskjema og andel av disse med oppfølgingsskjema, inkl. døde.
+		caption='Antall akuttskjema og andel av disse med oppfølgingsskjema, inkl. døde innen 3 mnd etter sykehusoppholdet.
 		Andelen oppfølging kan være noe lavere enn den reelle, siden slag oppstått
 		de siste 3 mnd ikke har rukket å få oppfølging.',
 		label='tab:AndelOppfEget')
 
 		#		caption='Antall akuttskjema og andel av disse med oppfølgingsskjema. I andelen oppfølgingsskjema
-#		inkluderes også døde (uten mulighet for å få oppfølgingsskjema).
+#		inkluderes også døde innen 3 mnd etter sykehusopholdet (uten mulighet for å få oppfølgingsskjema).
 #		Andelen oppfølging er lavere enn den reelle siden slag oppstått
 #		de siste 3 mnd ikke har rukket å få oppfølging.',
 	
