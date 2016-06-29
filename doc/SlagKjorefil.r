@@ -70,7 +70,7 @@ FigAntReg(RegData=SlagData,
 rm(list=ls())
 #load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21ansi.csv', sep=';', header=T) #, 
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-06-20.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-06-20.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 # Inndata til funksjon:
 reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
@@ -85,7 +85,7 @@ enhetsUtvalg <-1 #0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 				#6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 NIHSSinn <- ''	#NIHSS grupper: 1-6, tilsv. verdi: 0-5,6-10,11-15,..., standard: '' (alt annet)
 				#Velges denne, blir registreringer hvor NIHSS ikke er utført, tatt bort.
-valgtVar <- 'Alder'	#Må velge... Alder, Transportmetode,
+valgtVar <- 'TidInnleggTrombolyse'	#Må velge... Alder, Transportmetode,
 		#AntDagerInnl, TidSymptInnlegg, TidSymptTrombolyse, TidInnleggTrombolyse
 		#NIHSSinnkomst, NIHSSendrTrombolyse, NIHSSendrTrombektomi
 		#NIHSSpreTrombolyse','NIHSSetterTrombolyse','NIHSSpreTrombektomi', 'NIHSSetterTrombektomi'
