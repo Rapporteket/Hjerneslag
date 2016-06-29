@@ -44,18 +44,18 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 	
 	#------Definere nye tidsvariable. Ugyldige tidspunkt settes til NA.
 	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut, units='hours'))
-	RegData$TidSymptInnlegg[indUtInnlegg %u% indUtSymptomdebut %u% which(RegData$TidSymptInnlegg<0)] <- NA
+	RegData$TidSymptInnlegg[indUtInnlegg %u% indUtSymptomdebut] <- NA   # %u% which(RegData$TidSymptInnlegg<0)
 	
 	RegData$TidInnleggTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Innleggelsestidspunkt, units='mins'))
-	RegData$TidInnleggTrombolyse[indUtInnlegg %u% indUtTrombStart %u% which(RegData$TidInnleggTrombolyse<0)] <- NA
+	RegData$TidInnleggTrombolyse[indUtInnlegg %u% indUtTrombStart] <- NA  # %u% which(RegData$TidInnleggTrombolyse<0)
 	
 	RegData$TidSymptTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Symptomdebut, units='hours'))
-	RegData$TidSymptTrombolyse[indUtSymptomdebut %u% indUtTrombStart %u% which(RegData$TidSymptTrombolyse<0)] <- NA
+	RegData$TidSymptTrombolyse[indUtSymptomdebut %u% indUtTrombStart] <- NA   # %u% which(RegData$TidSymptTrombolyse<0)
 	
 	#Antall dager fra innleggelse til død
 	RegData$TidDeath <- as.numeric(difftime(as.POSIXlt(RegData$DeathDate, format = "%Y-%m-%d"),
 	          as.POSIXlt(RegData$Innleggelsestidspunkt, format = "%Y-%m-%d"), units='days'))
-	RegData$TidDeath[which(RegData$TidDeath<0)] <- NA
+	#RegData$TidDeath[which(RegData$TidDeath<0)] <- NA
 
 	#Tidspunktet 00:00 angir at tidspunkt er ukjent. Disse må tas ut når man skal se på differanser til andre tidspunkt.
 	#Dette kan gjøres på flere måter:
