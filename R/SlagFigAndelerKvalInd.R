@@ -21,7 +21,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
   
   
   # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
-  if (preprosess){
+  if (preprosess==1){
     RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
   }
   

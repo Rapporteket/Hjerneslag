@@ -93,7 +93,7 @@ if (hentData == 1) {
 }
 
 # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
-if (preprosess){
+if (preprosess==1){
        RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
      }
 
@@ -111,22 +111,22 @@ if (enhetsUtvalg %in% c(2,6,7)) {
 	}
 
 
-if (valgtVar == 'TidSymptInnlegg') {
-	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut,  
-			units='hours'))
-	RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
-	}
-if (valgtVar == 'TidSymptTrombolyse') {
-	RegData <- RegData[intersect(which(RegData$Trombolyse %in% c(1,3)), 
-		which(RegData$VaaknetMedSymptom==2)), ]
-	RegData$TidSymptTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Symptomdebut,  
-			units='hours'))
-	}
-if (valgtVar == 'TidInnleggTrombolyse') {
-	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
-	RegData$TidInnleggTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, 
-			RegData$Innleggelsestidspunkt, units='hours'))	#units='mins'
-	}
+#if (valgtVar == 'TidSymptInnlegg') {
+	#RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut,  
+	#		units='hours'))
+	#RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
+#	}
+#if (valgtVar == 'TidSymptTrombolyse') {
+#	RegData <- RegData[intersect(which(RegData$Trombolyse %in% c(1,3)), 
+#		which(RegData$VaaknetMedSymptom==2)), ]
+	#RegData$TidSymptTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Symptomdebut,  
+	#		units='hours'))
+#	}
+#if (valgtVar == 'TidInnleggTrombolyse') {
+#	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
+	#RegData$TidInnleggTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, 
+	#		RegData$Innleggelsestidspunkt, units='hours'))	#units='mins'
+#	}
 if (valgtVar %in% c('Alder', 'AntDagerInnl', 'TidSymptInnlegg','TidSymptTrombolyse','TidInnleggTrombolyse',
 		'NIHSSinnkomst','NIHSSpreTrombolyse','NIHSSetterTrombolyse',
 		'NIHSSpreTrombektomi', 'NIHSSetterTrombektomi',
@@ -192,9 +192,11 @@ flerevar <- 0
 	if (valgtVar == 'TidInnleggTrombolyse') {
 		RegData$Variabel <- as.numeric(RegData$Variabel)
 		tittel <- 'Antall timer fra innleggelse til trombolyse'
-		gr <- c(0,0.5,1,1.5,2,2.5,10000)	#*60
+		#gr <- c(0,0.5,1,1.5,2,2.5,10000)	#*60
+		gr <- c(0,30,60,90,120,150,10000)	#*60
 		RegData$VariabelGr <- cut(RegData$Variabel, breaks=gr, include.lowest=TRUE, right=FALSE)
 		grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '2.5+')	
+		grtxt <- c('[0-0.5)','[0.5-1)', '[1-1.5)', '[1.5-2)', '[2-2.5)' , '2.5+')	
 		subtxt <- 'Antall timer'
 	}
 
