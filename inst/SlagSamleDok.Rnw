@@ -261,11 +261,9 @@ xtable(tabPasAarNEget, digits=0, align=c('l', rep('r', ncol(tabPasAarNEget))),
 		
 
 #Eget sykehus
-AntOppfEget <- with(SlagDataEget, length(union(which(OppfolgUtf==1), 				#Levende med oppfølging
-		union(which(TidDeath<=98)))))	#Døde innen 98 dager
+AntOppfEget <- with(SlagDataEget, length(union(which(OppfolgUtf==1), which(TidDeath<=98))))	#Døde innen 98 dager
 #		union(which(OppfolgUtf==2 & AarsakManglendeOppf==3), which(UtskrTil==10)))))	#Døde
-AntOppfTot <- with(SlagData, length(union(which(OppfolgUtf==1), 				#Levende med oppfølging
-		union(which(TidDeath<=98)))))	#Døde innen 98 dager
+AntOppfTot <- with(SlagData, length(union(which(OppfolgUtf==1), which(TidDeath<=98))))	#Døde innen 98 dager
 AndelOppfEget <- round(AntOppfEget/Neget*100, 1)
 AndelOppfTot <- round(AntOppfTot/N*100, 1)
 
@@ -307,7 +305,7 @@ AlderKv <- na.omit(SlagDataUtv$Alder[which(SlagDataUtv$erMann == 0)])
 
 DagerInnlagt <- na.omit(as.numeric(SlagDataUtv$AntDagerInnl))
 TidSymptInnl <- na.omit(as.numeric(SlagDataUtv$TidSymptInnlegg))  
-TidInnTromb <- na.omit(as.numeric(SlagDataUtv$TidInnleggTrombolyse[which(SlagDataUtv$TidInnleggTrombolyse>0)])*60)
+TidInnTromb <- na.omit(as.numeric(SlagDataUtv$TidInnleggTrombolyse[which(SlagDataUtv$TidInnleggTrombolyse>0)]))
 MRSinn <- na.omit(as.numeric(SlagDataUtv$MRSPre))
 NIHSSinnl <- na.omit(as.numeric(SlagDataUtv$NIHSSinnkomst[which(SlagData$NIHSSikkeUtfort == 0)])) 
 
