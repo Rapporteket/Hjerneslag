@@ -122,7 +122,7 @@ for (valgtVar in c('Alder', 'AntDagerInnl', 'AvdForstInnlagtHvilken', 'AvdUtskrF
 #---------------------------------------- KVALITETSINDIKATORER
 outfile <- 'KvalInd.png'	#'KvalInd.pdf'	#Navn angis av Jasper
 
-SlagFigAndelerKvalIndTest(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, NIHSSinn=NIHSSinn, 
+SlagFigAndelerKvalInd(RegData=RegData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, NIHSSinn=NIHSSinn, 
 			reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 
 #------------------------------ Sammenligning av resultat før og etter [Pre-Post] --------------------------

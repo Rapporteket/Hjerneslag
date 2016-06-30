@@ -113,8 +113,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
         indAtrI63<- which(RegDataI63$Atrieflimmer==1)
         
         Dagensdato <- as.POSIXlt(Sys.Date(), format="%Y-%m-%d")
-        #ind90d <- which(RegData$InnDato < as.POSIXlt(Dagensdato-90*24*60*60)) #Innleggelsesdatoer 120 dager før dagens dato.
-        ind90d <- which(RegData$InnDato < as.Date(Dagensdato-90)) #Innleggelsesdatoer 120 dager før dagens dato.
+        ind90d <- which(RegData$InnDato < as.Date(Dagensdato-90*24*60*60)) #Innleggelsesdatoer 90 dager før dagens dato.
         indDirInnlSlag <- union(which(RegData$AvdForstInnlagt==1), 
                                 which(RegData$AvdForstInnlagtHvilken %in% 3:4))
         Ntrombolyse <- sum(RegDataI63$Trombolyse %in% c(1,3))
@@ -136,18 +135,19 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
             sum(RegDataI63$Alder <=80),	
           'Trombolyse innen 40 min.' = sum((RegDataI63$TidInnTrombolyse <= 40) & (RegDataI63$Trombolyse %in% c(1,3)), na.rm = TRUE)
           /Ntrombolyse,	#
-          'Hjerneinfarkt, utskr. blodfort.beh.' = sum(RegDataI63leve$UtAntitrombotisk)/NI63leve,
-          'Hjerneinf., atriefl. utskr. antikoag.' = 
+          'Hjerneinfarkt, utskrevet med \nantitrombotisk behandling' = sum(RegDataI63leve$UtAntitrombotisk)/NI63leve,
+          'Hjerneinfarkt, atrieflimmer, \nutskrevet med antikoagulasjon' = 
             length(unique(which(RegDataI63leve[indAtrI63leve ,Antikoag]==1, arr.ind=T)[,1]))/
             length(indAtrI63leve),
           'Hjerneinfarkt, <80 utskr. kolesterolsenk.' = 
             length(which(RegDataI63leve$Alder<=80 & RegDataI63leve$UtStatinerLipid==1))/
             sum(RegDataI63leve$Alder<=80),
-          'Blodtrykksbehandling ved utskriving' = length(which(RegData$UtBTsenk==1 & RegData$UtskrTil != 10))
-          /sum(RegData$UtskrTil != 10),
-          'Oppfølging etter 3 mnd.' = length(intersect(which(RegData$OppfolgUtf==1), ind90d))/length(ind90d)
+          'Blodtrykksmedikament \nved utskriving' = length(which(RegData$UtBTsenk==1 & RegData$UtskrTil != 10))
+              /sum(RegData$UtskrTil != 10),
+          'Fått oppfølging eller død \netter 3 mnd.' = 
+					length(intersect(which(RegData$OppfolgUtf==1 | RegData$Dod98 == 1), ind90d))
+					/length(ind90d)
           )
-        
         
         AndelerFlereVar  <- round(100*KvalInd,2)
         
@@ -155,7 +155,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
         if (teller == 1) {Andeler$Hoved <- AndelerFlereVar
         Nsh <- dim(RegData)[1]
  		Ngr <- c(N, N, N, sum(RegDataI63$Alder <=80), Ntrombolyse, NI63leve, length(indAtrI63leve),
-                 sum(RegDataI63leve$Alder<=80), sum(RegData$UtskrTil != 10),length(ind90d))
+                 sum(RegDataI63leve$Alder<=80), sum(RegData$UtskrTil != 10), length(ind90d))
         }
         if (teller == 2) {Andeler$Rest <- AndelerFlereVar
         NRest <- dim(RegData)[1]
@@ -214,21 +214,20 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
                      col=fargeSh, border='white', font.main=1, xlim=c(0, xmax), ylim=c(0.05, 1.3)*antGr)	#  
       cexmtxt <- 0.9
       cexNpst <- 0.75
-      #mtext(at=pos[-c(2:6,8,11)]+0.1, rev(grtxt)[-c(2:6,8,11)], side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-	  mtext(at=pos[-c(2:5,7)]+0.1, rev(grtxt)[-c(2:5,7)], side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      tl1 <- 0.3
-      tl2 <- 0.2
-      #mtext(at=pos[11], expression('Innlagt ' ~ symbol("\243") ~ '4t etter symptomdebut'), side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
+	  mtext(at=pos[-c(3,7)]+0.1, rev(grtxt)[-c(3,7)], side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
+      tl1 <- 0.2
+      tl2 <- 0.1
       mtext(at=pos[7]+tl1, expression('Hjerneinfarkt,' ~ symbol("\243") ~ '80 år'), side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
       mtext(at=pos[7]-tl2, 'trombolysebehandlet', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      mtext(at=pos[5]+tl1, 'Hjerneinfarkt, utskrevet med', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      mtext(at=pos[5]-tl2, 'antitrombotisk behandling', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      mtext(at=pos[4]+tl1, 'Hjerneinfarkt, atrieflimmer', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      mtext(at=pos[4]-tl2, 'utskrevet med antikoagulasjon', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
+      #mtext(at=pos[5]+tl1, 'Hjerneinfarkt, utskrevet med', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
+      #mtext(at=pos[5]-tl2, 'antitrombotisk behandling', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
+      #mtext(at=pos[4]+tl1, 'Hjerneinfarkt, atrieflimmer', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
+      #mtext(at=pos[4]-tl2, 'utskrevet med antikoagulasjon', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
       mtext(at=pos[3]+tl1, expression('Hjerneinfarkt,' ~ ''<=80 ~ 'år utskrevet med'), side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
       mtext(at=pos[3]-tl2, 'kolesterolsenkende behandling', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      mtext(at=pos[2]+tl1, 'Blodtrykksmedikament', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      mtext(at=pos[2]-tl2, 'ved utskrivning', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
+      #mtext(at=pos[2]+tl1, 'Blodtrykksmedikament', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
+      #mtext(at=pos[2]-tl2, 'ved utskrivning', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
+      
       
       if (medSml == 1) {
         points(as.numeric(rev(Andeler$Rest)), pos, col=fargeRest,  cex=lwdRest, pch=18) #c("p","b","o"), 

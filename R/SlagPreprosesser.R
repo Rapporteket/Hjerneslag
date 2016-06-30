@@ -55,6 +55,9 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 	#Antall dager fra innleggelse til død
 	RegData$TidDeath <- as.numeric(difftime(as.POSIXlt(RegData$DeathDate, format = "%Y-%m-%d"),
 	          as.POSIXlt(RegData$Innleggelsestidspunkt, format = "%Y-%m-%d"), units='days'))
+	RegData$Dod98 <- 0
+	RegData$Dod98[RegData$TidDeath <= 98] <- 1
+	
 	#RegData$TidDeath[which(RegData$TidDeath<0)] <- NA
 
 	#Tidspunktet 00:00 angir at tidspunkt er ukjent. Disse må tas ut når man skal se på differanser til andre tidspunkt.

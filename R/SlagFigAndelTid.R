@@ -11,7 +11,7 @@
 #' 			InnlSlagenh
 #' 			InnlInnen4eSymptom
 #' 			LipidI63
-#' 			OppfolgUtf (mangler)
+#' 			OppfolgUtf
 #' 			SvelgtestUtfort
 #'			TidInnTrombolyse40min
 #' 			TrombolyseI63
