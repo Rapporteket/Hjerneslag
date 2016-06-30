@@ -133,7 +133,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
           'Hjerneinfarkt, <=80 år, trombolysebehandlet' = 
             length(intersect(which(RegDataI63$Trombolyse %in% c(1,3)),which(RegDataI63$Alder <=80)))/
             sum(RegDataI63$Alder <=80),	
-          'Trombolyse innen 40 min.' = sum((RegDataI63$TidInnTrombolyse <= 40) & (RegDataI63$Trombolyse %in% c(1,3)), na.rm = TRUE)
+          'Trombolyse innen 40 min.' = sum((RegDataI63$TidInnleggTrombolyse <= 40) & (RegDataI63$Trombolyse %in% c(1,3)), na.rm = TRUE)
           /Ntrombolyse,	#
           'Hjerneinfarkt, utskrevet med \nantitrombotisk behandling' = sum(RegDataI63leve$UtAntitrombotisk)/NI63leve,
           'Hjerneinfarkt, atrieflimmer, \nutskrevet med antikoagulasjon' = 

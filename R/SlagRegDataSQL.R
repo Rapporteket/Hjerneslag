@@ -107,7 +107,6 @@ SvelgtestUtfort,
 Symptomdebut,
 Synsfeltutfall,
 SynsproblEtterHjslag,
-TidInnTrombolyse,
 TidlHjerneslag,
 TidlHjerneslagType,
 TidlHjerteinfarkt,
@@ -145,6 +144,8 @@ FROM
      HjerneSlagPROD
                  WHERE Innleggelsestidspunkt >= \'', datoFra, '\' AND Innleggelsestidspunkt <= \'', datoTil, '\'')
   
+
+#TidInnTrombolyse, - feil format
   
   RegData <- rapbase::LoadRegData(registryName, query, dbType)
   

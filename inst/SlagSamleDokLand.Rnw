@@ -260,8 +260,8 @@ AlderKv <- na.omit(SlagDataUtv$Alder[which(SlagDataUtv$erMann == 0)])
 
 DagerInnlagt <- na.omit(as.numeric(SlagDataUtv$AntDagerInnl))
 TidSymptInnl <- na.omit(as.numeric(SlagDataUtv$TimerSymptomdebutInnlegg))
-#TidInnTromb <- na.omit(as.numeric(SlagDataUtv$TidInnTrombolyse)*60)
-TidInnTromb <- na.omit(as.numeric(SlagDataUtv$TidInnTrombolyse[which(SlagDataUtv$TidInnTrombolyse>0)])*60)
+#TidInnTromb <- na.omit(as.numeric(SlagDataUtv$TidInnleggTrombolyse)*60)
+TidInnTromb <- na.omit(as.numeric(SlagDataUtv$TidInnleggTrombolyse[which(SlagDataUtv$TidInnleggTrombolyse>0)])*60)
 MRSinn <- na.omit(as.numeric(SlagDataUtv$MRSPre))
 NIHSSinnl <- na.omit(as.numeric(SlagDataUtv$NIHSSinnkomst[which(SlagData$NIHSSikkeUtfort == 0)])) 
 
@@ -821,7 +821,7 @@ NI63 <- dim(SlagDataI63)[1]
 Trom <- length(indTromb)
 Trom80 <- length(intersect(indTromb, ind80))
 TromO80 <- length(intersect(indTromb, indO80))
-AntInnTromI63 <- length(na.omit(SlagDataI63$TidInnTrombolyse))
+AntInnTromI63 <- length(na.omit(SlagDataI63$TidInnleggTrombolyse))
 
 SlagDataI63$HjerneblInnen36timer <- factor(SlagDataI63$HjerneblInnen36timer, levels=1:2)
 #indSvarHjernebl36t <- which(SlagDataI63$HjerneblInnen36timer %in% 1:2)
