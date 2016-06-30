@@ -246,6 +246,7 @@ xtable(tabPasAarNEget, digits=0, align=c('l', rep('r', ncol(tabPasAarNEget))),
 #Tabell med antall av hver skjematype og andel med oppfølging (inkl. døde)	
 #AntHoved <- table(SlagData$ShNavn)
 #AntOppf <- with(SlagData, table(ShNavn[union(which(OppfolgUtf==1), 						#Levende med oppfølging
+#GML:		union(which(OppfolgUtf==2 & AarsakManglendeOppf==3), which(UtskrTil==10)))]))	#Døde
 #		union(which(TidDeath<=98)]))))	#Døde innen 98 dager
 #AndelOppf <- round(AntOppf/AntHoved*100, 1)
 #tabHovedOppf <- cbind(
@@ -262,6 +263,7 @@ xtable(tabPasAarNEget, digits=0, align=c('l', rep('r', ncol(tabPasAarNEget))),
 #Eget sykehus
 AntOppfEget <- with(SlagDataEget, length(union(which(OppfolgUtf==1), 				#Levende med oppfølging
 		union(which(TidDeath<=98)))))	#Døde innen 98 dager
+#		union(which(OppfolgUtf==2 & AarsakManglendeOppf==3), which(UtskrTil==10)))))	#Døde
 AntOppfTot <- with(SlagData, length(union(which(OppfolgUtf==1), 				#Levende med oppfølging
 		union(which(TidDeath<=98)))))	#Døde innen 98 dager
 AndelOppfEget <- round(AntOppfEget/Neget*100, 1)
