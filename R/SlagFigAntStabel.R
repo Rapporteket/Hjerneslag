@@ -74,7 +74,7 @@ AntHoved <- table(RegData$Mnd)[mndRekkef]
 indOppf <- which(RegData$OppfolgUtf==1) 						#Levende med oppfølging
 AntOppf <- table(RegData$Mnd[indOppf])[mndRekkef]	
 #indDod <- with(RegData, union(which(OppfolgUtf==2 & AarsakManglendeOppf==3), which(UtskrTil==10)))
-indDod <- with(RegData, which(UtskrTil==10))	#Død under sykehusoppholdet
+indDod <- with(RegData, which(UtskrTil==10 | Dod98==1))	#Død under sykehusoppholdet eller innen 98 dager
 
 AntDod <- table(RegData$Mnd[indDod])[mndRekkef]
 
