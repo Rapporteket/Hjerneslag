@@ -2,7 +2,7 @@ Package: Hjerneslag
 Type: Package
 Title: Resultatrapporter for Hjerneslag
 Version: 0.9.0
-Date: 2016-04-20
+Date: 2016-07-04
 Author: Authors@R: c(person("Varmdal", "Torunn", email = "Torunn.Varmdal@stolav.no", role = "aut"),
   person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no", role = c("cre", "aut"))
 Maintainer: Torunn Varmdal <Torunn.Varmdal@stolav.no>

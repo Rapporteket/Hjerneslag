@@ -601,7 +601,7 @@ MedBehPrePst <- 100*rbind(
 	'...A2-antagonist' = c(length(intersect(which(SlagDataUtv$PreA2Antagonist==1), ind1kun))/N_BTsenk , NA),
 	'...Betablokker' = c(length(intersect(which(SlagDataUtv$PreBetablokker==1), ind1kun))/N_BTsenk , NA),
 	'...Kalsiumantagonist' = c(length(intersect(which(SlagDataUtv$PreKalsiumanatgonist==1), ind1kun))/N_BTsenk , NA),
-	'...Blodtrykksmedikament' = c(length(intersect(which(SlagDataUtv$PreMedHoytBT==1), ind1kun))/N_BTsenk , NA)
+	'...Blodtrykksmedikament' = c(length(intersect(which(SlagDataUtv$PreMedHoytBT==1), ind1kun))/N_BTsenk , NA),
 	'...Komb. 2 BT-senkende' = c(length(ind2kun)/N_BTsenk, NA),
 	'...Komb. 3 BT-senkende' = c(length(ind3kun)/N_BTsenk, NA),
 	'...Komb. 4 BT-senkende' = c(length(ind4kun)/N_BTsenk, NA),

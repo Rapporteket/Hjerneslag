@@ -16,12 +16,12 @@
 #'     \item BildediagnostikkIntraraniell: Bildediagnostikk av intrakranielle kar
 #'     \item Boligforhold3mnd: Boligforhold ved oppfølging 
 #'     \item BoligforholdPre: Boligforhold ved innleggelse 
-#'		\item FokaleUtf: Fokale utfall
-#'		\item FokaleUtfAndre: Andre fokale utfall
+#'		 \item FokaleUtf: Fokale utfall
+#'		 \item FokaleUtfAndre: Andre fokale utfall
 #'     \item MRS3mnd: Rankinscale ved oppfølging
 #'     \item MRSPre: Rankinscale ved innleggelse 
-#'		\item NIHSSendrTrombektomi: Endring i NIHSS fra før trombektomi til 24t etter
-#'		\item NIHSSendrTrombolyse: Endring i NIHSS fra før trombolyse til 24t etter
+#'		 \item NIHSSendrTrombektomi: Endring i NIHSS fra før trombektomi til 24t etter
+#'	 	 \item NIHSSendrTrombolyse: Endring i NIHSS fra før trombolyse til 24t etter
 #'     \item NIHSSetterTrombektomi: NIHSS 24t etter trombektomi
 #'     \item NIHSSetterTrombolyse: NIHSS 24t etter trombolyse
 #'     \item NIHSSinnkomst: NIHSS ved innkomst
@@ -394,6 +394,7 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		
 #FIGURER SATT SAMMEN AV FLERE VARIABLE FRA SAMME TOTALUTVALG	
 	if (valgtVar == 'FokaleUtf') {
+	  #******************************Her mangler vel Afasi...??
 		flerevar <- 1
 		retn <- 'H'
 		tittel <- 'Fokale utfall'
@@ -412,6 +413,7 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 	
 	if (valgtVar == 'FokaleUtfAndre'){
 		RegData <- RegData[which(RegData$AndreFokaleSympt==1), ]
+		#************************************Må endres ihht. formatering.
 		flerevar <- 1
 		retn <- 'H'
 		tittel <- 'Andre fokale utfall'

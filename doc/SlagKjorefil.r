@@ -28,18 +28,18 @@ rm(list=ls())
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/SlagEksempel.csv', sep=';', header=T) #, 
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 #load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
-RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag04PROD2016-06-28.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag04PROD2016-06-28.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
 
 library(Hjerneslag)
 library(knitr)
 setwd('C:/ResultattjenesteGIT/Hjerneslag/inst')
-knit('SlagSamleDokLand.Rnw')
-
 knit('SlagSamleDok.Rnw')
+
+
 #knit('SlagSamleDok_AlleTabOgKomm.Rnw')
-tools::texi2pdf('SlagSamleDokLand.tex')
+tools::texi2pdf('SlagSamleDok.tex')
 #--------------------------------------------------------
 
 
@@ -55,9 +55,9 @@ RegData <- SlagData
 reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
 datoTil <- '2016-03-03'
 enhetsUtvalg <-7 #0-hele landet, 2-egen enhet, 7–egen region, 
-outfile <- ''	#paste('Registreringer',enhetsUtvalg, '.pdf', sep='')	#Navn angis av Jasper
+outfile <- paste('Registreringer',enhetsUtvalg, 'NY.pdf', sep='')	#Navn angis av Jasper
 
-FigAntReg(RegData=SlagData,
+SlagFigAntReg(RegData=RegData,
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 
