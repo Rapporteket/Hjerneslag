@@ -435,7 +435,7 @@ StatusAkutt <- rbind(
 			#table(SlagDataUtv$Facialisparese[which(SlagDataUtv$Facialisparese %in% c(1,2,9))]),
 	'Armparese' = c(sum(SlagDataUtv$Armparese==1, na.rm=T), sum(SlagDataUtv$Armparese==9, na.rm=T), 
 				sum(SlagDataUtv$Armparese %in% c(1,2,9), na.rm=T)), #table(SlagDataUtv$Armparese),
-	'Språk- el taleproblemer' = c(sum(SlagDataUtv$SpraakTaleproblem==1, na.rm=T),
+	'Språkproblemer' = c(sum(SlagDataUtv$SpraakTaleproblem==1, na.rm=T),
 								sum(SlagDataUtv$SpraakTaleproblem==9, na.rm=T),
 								sum(SlagDataUtv$SpraakTaleproblem %in% c(1,2,9), na.rm=T)),	#table(SlagDataUtv$SpraakTaleproblem),
 	'Beinparese' = c(sum(SlagDataUtv$Beinparese==1, na.rm=T), sum(SlagDataUtv$Beinparese==9, na.rm=T),
@@ -538,7 +538,7 @@ SlagData$PreBeggeAntikoag <- c(1,2,2,9,9,9)[SlagData$PreAntikoagsum]
 
 #BT-senkende
 #Variabelen PreMedikBehHoytBT er verdiløs, dvs. feil ift hva som er reg. i de enkelte BT-variable
-NavnBTsenk <- c('PreDiuretica','PreACEhemmer', 'PreA2Antagonist', 'PreBetablokker', 'PreKalsiumanatgonist')
+NavnBTsenk <- c('PreDiuretica','PreACEhemmer', 'PreA2Antagonist', 'PreBetablokker', 'PreKalsiumanatgonist', 'PreMedHoytBT')
 SlagData$PreBTsenk <- 9
 TF <- (SlagData[ ,NavnBTsenk])==1
 SlagData$PreBTsenk[rowSums(TF, na.rm=T)>0] <- 1
@@ -601,6 +601,7 @@ MedBehPrePst <- 100*rbind(
 	'...A2-antagonist' = c(length(intersect(which(SlagDataUtv$PreA2Antagonist==1), ind1kun))/N_BTsenk , NA),
 	'...Betablokker' = c(length(intersect(which(SlagDataUtv$PreBetablokker==1), ind1kun))/N_BTsenk , NA),
 	'...Kalsiumantagonist' = c(length(intersect(which(SlagDataUtv$PreKalsiumanatgonist==1), ind1kun))/N_BTsenk , NA),
+	'...Blodtrykksmedikament' = c(length(intersect(which(SlagDataUtv$PreMedHoytBT==1), ind1kun))/N_BTsenk , NA)
 	'...Komb. 2 BT-senkende' = c(length(ind2kun)/N_BTsenk, NA),
 	'...Komb. 3 BT-senkende' = c(length(ind3kun)/N_BTsenk, NA),
 	'...Komb. 4 BT-senkende' = c(length(ind4kun)/N_BTsenk, NA),
