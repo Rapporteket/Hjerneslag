@@ -128,7 +128,7 @@ SlagData <- SlagData[(SlagData$InnDato>=as.Date(datoFra)) & (SlagData$InnDato<=a
 SlagData$Aar <- 1900 + strptime(SlagData$Innleggelsestidspunkt, format="%Y")$year
 N <- dim(SlagData)[1]
 tabKjPst <- round(table(SlagData$erMann)/N*100, digits=1)
-indFra2014 <- which(SlagData$InnDato>=as.POSIXlt('2014-01-01'))
+indFra2014 <- which(SlagData$InnDato>=as.Date('2014-01-01'))
 
 dum <- SlagFigAndelerKvalInd(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, 
 	NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, outfile='FigKvalInd.pdf')
