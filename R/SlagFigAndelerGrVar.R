@@ -124,10 +124,10 @@ if (valgtVar == 'UtBT') {
 #Bare levende pasienter
 #PostMedBehHoytBT ny fra 1.1.2016
 	RegData <- RegData[which(RegData$UtskrTil != 10), ]
-	NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist', 'PostMedHoytBT')
-	indBTsenkUt <- which(RegData[ ,NavnBTsenkUt]==1, arr.ind=T)[,1]
-	RegData$Variabel[indBTsenkUt] <- 1
-	#RegData$Variabel[which(RegData$PostMedHoytBT ] <- 1	#Denne kan benyttes hvis variabelen oppdateres bakover i tid
+	#NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist', 'PostMedHoytBT')
+	#indBTsenkUt <- which(RegData[ ,NavnBTsenkUt]==1, arr.ind=T)[,1]
+	#RegData$Variabel[indBTsenkUt] <- 1
+	RegData$Variabel[which(RegData$PostMedHoytBT ==1) ] <- 1	#Denne kan benyttes hvis variabelen oppdateres bakover i tid
 }
 
 #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
