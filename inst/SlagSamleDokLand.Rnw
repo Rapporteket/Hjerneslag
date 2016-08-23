@@ -128,7 +128,7 @@ SlagData <- SlagData[(SlagData$InnDato>=as.Date(datoFra)) & (SlagData$InnDato<=a
 SlagData$Aar <- 1900 + strptime(SlagData$Innleggelsestidspunkt, format="%Y")$year
 N <- dim(SlagData)[1]
 tabKjPst <- round(table(SlagData$erMann)/N*100, digits=1)
-indFra2014 <- which(SlagData$InnDato>=as.POSIXlt('2014-01-01'))
+indFra2014 <- which(SlagData$InnDato>=as.Date('2014-01-01'))
 
 dum <- SlagFigAndelerKvalInd(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, 
 	NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, outfile='FigKvalInd.pdf')
@@ -388,7 +388,7 @@ StatusAkutt <- rbind(
 			#table(SlagDataUtv$Facialisparese[which(SlagDataUtv$Facialisparese %in% c(1,2,9))]),
 	'Armparese' = c(sum(SlagDataUtv$Armparese==1, na.rm=T), sum(SlagDataUtv$Armparese==9, na.rm=T), 
 				sum(SlagDataUtv$Armparese %in% c(1,2,9), na.rm=T)), #table(SlagDataUtv$Armparese),
-	'Språk- el taleproblemer' = c(sum(SlagDataUtv$SpraakTaleproblem==1, na.rm=T),
+	'Språkproblemer' = c(sum(SlagDataUtv$SpraakTaleproblem==1, na.rm=T),
 								sum(SlagDataUtv$SpraakTaleproblem==9, na.rm=T),
 								sum(SlagDataUtv$SpraakTaleproblem %in% c(1,2,9), na.rm=T)),	#table(SlagDataUtv$SpraakTaleproblem),
 	'Beinparese' = c(sum(SlagDataUtv$Beinparese==1, na.rm=T), sum(SlagDataUtv$Beinparese==9, na.rm=T),
@@ -688,12 +688,12 @@ AntDagerInnlMed <- SlagFigGjsnGrVar(RegData=SlagData, valgtVar='AntDagerInnl', v
 
 \begin{figure}[ht]
 \centerline{ \scalebox{\Sexpr{sSh}}{\includegraphics{FigInnlInnen4eSymptom.pdf}} }
-\caption{\label{fig:Innl4sympt} Andel pasienter innlagt innen 4,5 timer etter symptomdebut.}
+\caption{\label{fig:Innl4sympt} Andel pasienter innlagt innen 4 timer etter symptomdebut.}
 \end{figure}
 
 \begin{figure}[ht]
 \centerline{ \scalebox{\Sexpr{sSh}}{\includegraphics{FigSvelgtestUtfort.pdf}} }
-\caption{\label{fig:Svelgtest} Andel pasienter som har fått vurdert og/eller testet 
+\caption{\label{fig:Svelgtest} Andel pasienter som har fått vurdert eller testet 
 			svelgfunksjon.}
 \end{figure}
 
