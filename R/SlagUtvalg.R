@@ -20,7 +20,7 @@ indVarMed <- which(RegData$Variabel != 'NA') %i% which(RegData$Variabel != 'NaN'
 indAldUt <- which(RegData$Alder < minald | RegData$Alder > maxald)
 indDatoUt <- which(RegData$InnDato < as.Date(datoFra) | RegData$InnDato > as.Date(datoTil))
 indKjUt <- if (erMann %in% 0:1) {which(RegData$erMann != erMann)} else {indKjUt <- NULL}
-indDiagUt <- if (diagnose %in% c(1,2,9)){which(RegData$Slagdiagnose != diagnose)} else {indDiagUt <- NULL}
+indDiagUt <- if (diagnose %in% c(1:3)){which(RegData$Slagdiagnose != diagnose)} else {indDiagUt <- NULL}
 indInnl4tUt <- if (innl4t %in% c('Ja','Nei')){switch(innl4t,
 										Ja = which(RegData$TidSymptInnlegg >= 4),
 										Nei = which(RegData$TidSymptInnlegg < 4))
@@ -45,8 +45,7 @@ utvalgTxt <- c(paste('Innleggelsesdato: ',
 	if ((minald>0) | (maxald<120)) {
 		paste('Pasienter fra ', min(RegData$Alder, na.rm=T), ' til ', max(RegData$Alder, na.rm=T), ' år', sep='')},
 	if (erMann %in% 0:1) {paste('Kjønn: ', c('Kvinner', 'Menn')[erMann+1], sep='')},
-	if (diagnose %in% c(1,2,9)) {paste('Diagnose: ', c('Blødning (I61)', 'Infarkt (I63)', rep('',6),
-		'Udefinert (I64)')[diagnose], sep='')},
+	if (diagnose %in% c(1:3)) {paste0('Diagnose: ', c('Blødning (I61)', 'Infarkt (I63)', 'Udefinert (I64)')[diagnose])},
 	if (innl4t %in% c('Ja','Nei')) {paste('Innlagt innen 4t: ', innl4t, sep='')},
 	if (NIHSSinn %in% 1:6) {paste('NIHSS-score: ', NIHSSgrtxt[NIHSSinn], sep='')}
 	)

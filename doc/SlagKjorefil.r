@@ -28,7 +28,7 @@ rm(list=ls())
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/SlagEksempel.csv', sep=';', header=T) #, 
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 #load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag04PROD2016-06-28.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-08-16.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
 
@@ -47,7 +47,8 @@ tools::texi2pdf('SlagSamleDok.tex')
 
 rm(list=ls())
 #load(file='C:/Registre/Hjerneslag/data/HjerneSlag2013-12-11.Rdata')
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+#SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-08-16.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 RegData <- SlagData
 # Inndata til funksjon:
 
@@ -85,7 +86,7 @@ enhetsUtvalg <-1 #0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 				#6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 NIHSSinn <- ''	#NIHSS grupper: 1-6, tilsv. verdi: 0-5,6-10,11-15,..., standard: '' (alt annet)
 				#Velges denne, blir registreringer hvor NIHSS ikke er utført, tatt bort.
-valgtVar <- 'TidInnleggTrombolyse'	#Må velge... Alder, Transportmetode,
+valgtVar <- 'Slagdiagnose'	#Må velge... Alder, Transportmetode,
 		#AntDagerInnl, TidSymptInnlegg, TidSymptTrombolyse, TidInnleggTrombolyse
 		#NIHSSinnkomst, NIHSSendrTrombolyse, NIHSSendrTrombektomi
 		#NIHSSpreTrombolyse','NIHSSetterTrombolyse','NIHSSpreTrombektomi', 'NIHSSetterTrombektomi'

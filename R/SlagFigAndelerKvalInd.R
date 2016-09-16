@@ -114,8 +114,9 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
         
         Dagensdato <- as.POSIXlt(Sys.Date(), format="%Y-%m-%d")
         ind90d <- which(RegData$InnDato < as.Date(Dagensdato-90*24*60*60)) #Innleggelsesdatoer 90 dager før dagens dato.
-        indDirInnlSlag <- union(which(RegData$AvdForstInnlagt==1), 
-                                which(RegData$AvdForstInnlagtHvilken %in% 3:4))
+        indDirInnlSlag <- intersect(union(which(RegData$AvdForstInnlagt==1), 
+                                which(RegData$AvdForstInnlagtHvilken %in% 3:4)),
+                                which(RegData$AvdUtskrFra ==1))
         Ntrombolyse <- sum(RegDataI63$Trombolyse %in% c(1,3))
         Ni63 <- dim(RegDataI63)[1]
         N <- dim(RegData)[1]

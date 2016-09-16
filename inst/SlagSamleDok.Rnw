@@ -837,7 +837,7 @@ SlagDataUtv <- SlagData[switch(utvalg[k], Eget = ind$Eget, Alle = ind$Alle),]
 #Variabelen ´´Hjerneblødningsstoppende behandling''
 #inneholder 88\% nuller som er en ukjent kode. Disse er tatt ut... Muligens skal de være med som manglende, 
 #og følgelig ukjent...???. 
-sumDiag <- sum(SlagDataUtv$Slagdiagnose %in% c(1,2,9), na.rm=T)
+sumDiag <- sum(SlagDataUtv$Slagdiagnose %in% 1:3, na.rm=T) #c(1,2,9)
 
 KritSupplTab <- rbind(
 	'CT/MR innen 12t' = c(sum(SlagDataUtv$CerebralCTInn == 1, na.rm=T), sum(SlagDataUtv$CerebralCTInn == 9, na.rm=T), 
@@ -847,7 +847,7 @@ KritSupplTab <- rbind(
 					#table(SlagDataUtv$AkutteFokaleutfallPosBilleddiag, useNA='a'),
 	'Hjerneblødning (I61)' = c(sum(SlagDataUtv$Slagdiagnose ==1, na.rm=T), NA,  sumDiag),#c(SlagDiag[1], sum(SlagDiag[-1], na.rm=T), NA),
 	'Hjerneinfarkt (I63)' = c(sum(SlagDataUtv$Slagdiagnose ==2, na.rm=T), NA,  sumDiag),#c(SlagDiag[2], sum(SlagDiag[-2], na.rm=T), NA), 
-	'Uspes. slag (I64)' = c(sum(SlagDataUtv$Slagdiagnose ==9, na.rm=T), NA,  sumDiag),#c(SlagDiag[3], sum(SlagDiag[-3], na.rm=T), NA), 
+	'Uspes. slag (I64)' = c(sum(SlagDataUtv$Slagdiagnose ==3, na.rm=T), NA,  sumDiag),#c(SlagDiag[3], sum(SlagDiag[-3], na.rm=T), NA), 
 #	'Tidligere hjerneslag' = table(SlagDataUtv$TidlHjerneslag),
 #	'Hjernebl.stoppende beh.' = table(HjerneblodningsstoppBeh),
 	'Svelgfunksjon vurdert' = c(sum(SlagDataUtv$SvelgtestUtfort==1,na.rm=T), 

@@ -305,8 +305,8 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		if (valgtVar == 'Slagdiagnose') {
 		tittel <- 'Slagdiagnose'
 		grtxt <- c('Hjerneblødning', 'Hjerneinfarkt', 'Uspesifisert')
-		RegData <- RegData[which(RegData$Variabel %in% c(1,2,9)), ]
-		RegData$VariabelGr <- factor(RegData$Variabel, levels=c(1,2,9), labels = grtxt)
+		RegData <- RegData[which(RegData$Variabel %in% 1:3), ]
+		RegData$VariabelGr <- factor(RegData$Variabel, levels=1:3, labels = grtxt)
 	}
 	if (valgtVar == 'BildediagnostikkHjerne') {
 		tittel <- 'Bildediagnostikk av hjerneslaget'

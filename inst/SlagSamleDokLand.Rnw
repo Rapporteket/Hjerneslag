@@ -517,16 +517,18 @@ N_AndreWarf <- length(which(SlagDataUtv$PreWarfarin==2 & SlagDataUtv$PreAndreEnn
 N_A2 <- sum(SlagDataUtv$PreBeggeAntikoag == 1, na.rm=T)
 
 #BT-senkende
-N_BTsenk <- sum(SlagDataUtv$PreBTsenk == 1)
+#N_BTsenk <- sum(SlagDataUtv$PreBTsenk == 1) Torunn: kommentert ut og endret
+N_BTsenk <- sum(SlagDataUtv$PreMedHoytBT == 1)
 
-SlagDataUtv$PreBTsenkSum <- rowSums(SlagDataUtv[ ,NavnBTsenk], na.rm=T)
+#SlagDataUtv$PreBTsenkSum <- rowSums(SlagDataUtv[ ,NavnBTsenk], na.rm=T)Torunn: kommentert ut og endret
+SlagDataUtv$PreBTsenkSum <- rowSums(SlagDataUtv[ ,PreMedHoytBT], na.rm=T)
 #Gir verdiene c(5:10,13:17,21:24,29:31,37,38,45), hvorav 8 betyr kun to, 9 kun én, 10 ingen
-indIngen <- which(SlagDataUtv$PreBTsenkSum == 10)
-ind1kun <- which(SlagDataUtv$PreBTsenkSum == 9)
-ind2kun <- which(SlagDataUtv$PreBTsenkSum == 8)
-ind3kun <- which(SlagDataUtv$PreBTsenkSum == 7)
-ind4kun <- which(SlagDataUtv$PreBTsenkSum == 6)
-indAlle <- which(SlagDataUtv$PreBTsenkSum == 5)
+#indIngen <- which(SlagDataUtv$PreBTsenkSum == 10) Torunn: Kommentert ut linje 525-530
+#ind1kun <- which(SlagDataUtv$PreBTsenkSum == 9)
+#ind2kun <- which(SlagDataUtv$PreBTsenkSum == 8)
+#ind3kun <- which(SlagDataUtv$PreBTsenkSum == 7)
+#ind4kun <- which(SlagDataUtv$PreBTsenkSum == 6)
+#indAlle <- which(SlagDataUtv$PreBTsenkSum == 5)
 
 #indSjekk <- setdiff(1:N_BTsenk, unique(c(ind1kun, ind2kun, ind3kun, ind4kun, indAlle)))
 N_DiuA2 <- length(intersect(which(SlagDataUtv$PreDiuretica==1 | SlagDataUtv$PreA2Antagonist==1), ind2kun))
@@ -544,15 +546,15 @@ MedBehPrePst <- 100*rbind(
 	'...Andre perorale antikoag.' = c(N_AndreWarf, NA)/N_Anti, 
 	
 	'BT-senkende' = c(N_BTsenk/Nutv, sum(SlagDataUtv$PreBTsenk == 9, na.rm=T)/Nutv),
-	'...Diuretica' = c(length(intersect(which(SlagDataUtv$PreDiuretica==1), ind1kun))/N_BTsenk , NA),
-	'...ACE-hemmer' = c(length(intersect(which(SlagDataUtv$PreACEhemmer==1), ind1kun))/N_BTsenk , NA),
-	'...A2-antagonist' = c(length(intersect(which(SlagDataUtv$PreA2Antagonist==1), ind1kun))/N_BTsenk , NA),
-	'...Betablokker' = c(length(intersect(which(SlagDataUtv$PreBetablokker==1), ind1kun))/N_BTsenk , NA),
-	'...Kalsiumantagonist' = c(length(intersect(which(SlagDataUtv$PreKalsiumanatgonist==1), ind1kun))/N_BTsenk , NA),
-	'...Komb. 2 BT-senkende' = c(length(ind2kun)/N_BTsenk, NA),
-	'...Komb. 3 BT-senkende' = c(length(ind3kun)/N_BTsenk, NA),
-	'...Komb. 4 BT-senkende' = c(length(ind4kun)/N_BTsenk, NA),
-	'...Komb. alle BT-senkende' = c(length(indAlle)/N_BTsenk, NA),
+	#'...Diuretica' = c(length(intersect(which(SlagDataUtv$PreDiuretica==1), ind1kun))/N_BTsenk , NA),
+	#'...ACE-hemmer' = c(length(intersect(which(SlagDataUtv$PreACEhemmer==1), ind1kun))/N_BTsenk , NA),
+	#'...A2-antagonist' = c(length(intersect(which(SlagDataUtv$PreA2Antagonist==1), ind1kun))/N_BTsenk , NA),
+	#'...Betablokker' = c(length(intersect(which(SlagDataUtv$PreBetablokker==1), ind1kun))/N_BTsenk , NA),
+	#'...Kalsiumantagonist' = c(length(intersect(which(SlagDataUtv$PreKalsiumanatgonist==1), ind1kun))/N_BTsenk , NA),
+	#'...Komb. 2 BT-senkende' = c(length(ind2kun)/N_BTsenk, NA),
+	#'...Komb. 3 BT-senkende' = c(length(ind3kun)/N_BTsenk, NA),
+	#'...Komb. 4 BT-senkende' = c(length(ind4kun)/N_BTsenk, NA),
+	#'...Komb. alle BT-senkende' = c(length(indAlle)/N_BTsenk, NA),Torunn: kommentert ut linje 549-557
 
 	'Statin-Lipidsenkende' = table(SlagDataUtv$PreStatinerLipid)[c(1,3)]/Nutv
 	#'Medikamentell behandling?' = table(SlagDataUtv$PreIngenMedikam, useNA='a') 
@@ -875,7 +877,7 @@ xtable(AkuttbehI63, digits=c(0,0,1), align=c('l', 'r', 'r'),
 <<'KritOgSupplUnders',echo=FALSE, results='asis', eval=T>>= 
 
 SlagDataUtv <- SlagData
-sumDiag <- sum(SlagDataUtv$Slagdiagnose %in% c(1,2,9), na.rm=T)
+sumDiag <- sum(SlagDataUtv$Slagdiagnose %in% 1:3, na.rm=T)
 
 KritSupplTab <- rbind(
 	'CT/MR innen 12t' = c(sum(SlagDataUtv$CerebralCTInn == 1, na.rm=T), sum(SlagDataUtv$CerebralCTInn == 9, na.rm=T), 
@@ -884,7 +886,7 @@ KritSupplTab <- rbind(
 					sum(is.na(SlagData$AkutteFokaleutfallPosBilleddiag)), dim(SlagDataUtv)[1]),
 	'Hjerneblødning (I61)' = c(sum(SlagDataUtv$Slagdiagnose ==1, na.rm=T), NA,  sumDiag),#c(SlagDiag[1], sum(SlagDiag[-1], na.rm=T), NA),
 	'Hjerneinfarkt (I63)' = c(sum(SlagDataUtv$Slagdiagnose ==2, na.rm=T), NA,  sumDiag),#c(SlagDiag[2], sum(SlagDiag[-2], na.rm=T), NA), 
-	'Uspes. slag (I64)' = c(sum(SlagDataUtv$Slagdiagnose ==9, na.rm=T), NA,  sumDiag),#c(SlagDiag[3], sum(SlagDiag[-3], na.rm=T), NA), 
+	'Uspes. slag (I64)' = c(sum(SlagDataUtv$Slagdiagnose ==3, na.rm=T), NA,  sumDiag),#c(SlagDiag[3], sum(SlagDiag[-3], na.rm=T), NA), 
 	'Svelgfunksjon vurdert' = c(sum(SlagDataUtv$SvelgtestUtfort==1,na.rm=T), 
 								sum(SlagDataUtv$SvelgtestUtfort==9, na.rm=T),
 								sum(SlagDataUtv$SvelgtestUtfort %in% c(1,2,9), na.rm=T)), #table(SlagDataUtv$SvelgtestUtfort[which(SlagDataUtv$SvelgtestUtfort %in% c(1,2,9))]),
@@ -1087,28 +1089,29 @@ xtable(MedBehUtDivPst, digits=1, align=c('l', 'r'),
 
 #-----------------------------------------------------------------------------------
 #BT-senkende
-NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist')
+#NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist') Torunn: kommentert ut linje 1092-1113
  
-SlagData$UtBTsenk <- 9
-TF <- (SlagData[ ,NavnBTsenkUt])==1		#TRUE for de som har minst en "ja"
-SlagData$UtBTsenk[rowSums(TF)>0] <- 1
-Nei <- (SlagData[ ,NavnBTsenkUt])==2
-SlagData$UtBTsenk[rowSums(Nei) == length(NavnBTsenkUt)] <- 2	#Nei for alle
+#SlagData$UtBTsenk <- 9
+#TF <- (SlagData[ ,NavnBTsenkUt])==1		#TRUE for de som har minst en "ja"
+#SlagData$UtBTsenk[rowSums(TF)>0] <- 1
+#Nei <- (SlagData[ ,NavnBTsenkUt])==2
+#SlagData$UtBTsenk[rowSums(Nei) == length(NavnBTsenkUt)] <- 2	#Nei for alle
 
-SlagData$UtBTsenkSum <- rowSums(SlagData[ ,NavnBTsenkUt])
+#SlagData$UtBTsenkSum <- rowSums(SlagData[ ,NavnBTsenkUt])
 #Gir verdiene c(5:10,13:17,21:24,29:31,37,38,45), hvorav 8 betyr kun to, 9 kun én, 10 ingen
 
-SlagDataUtv <- SlagData
-Nutv <- dim(SlagDataUtv)[1]
+#SlagDataUtv <- SlagData
+#Nutv <- dim(SlagDataUtv)[1]
 
-indIngen <- which(SlagDataUtv$UtBTsenkSum == 10)
-ind1kun <- which(SlagDataUtv$UtBTsenkSum == 9)
-ind2kun <- which(SlagDataUtv$UtBTsenkSum == 8)
-ind3kun <- which(SlagDataUtv$UtBTsenkSum == 7)
-ind4kun <- which(SlagDataUtv$UtBTsenkSum == 6)
-indAlle <- which(SlagDataUtv$UtBTsenkSum == 5)
+#indIngen <- which(SlagDataUtv$UtBTsenkSum == 10)
+#ind1kun <- which(SlagDataUtv$UtBTsenkSum == 9)
+#ind2kun <- which(SlagDataUtv$UtBTsenkSum == 8)
+#ind3kun <- which(SlagDataUtv$UtBTsenkSum == 7)
+#ind4kun <- which(SlagDataUtv$UtBTsenkSum == 6)
+#indAlle <- which(SlagDataUtv$UtBTsenkSum == 5)
 
-N_BTsenkUt <- sum(SlagDataUtv$UtBTsenk == 1)
+#N_BTsenkUt <- sum(SlagDataUtv$UtBTsenk == 1)
+N_BTsenkUt <- sum(SlagDataUtv$PostMedHoytBT == 1)
 N_DiuA2 <- length(intersect(which(SlagDataUtv$UtDiuretica==1 | SlagDataUtv$UtA2Antagonist==1), ind2kun))
 #osv...
 

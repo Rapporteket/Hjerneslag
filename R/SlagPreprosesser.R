@@ -77,8 +77,8 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 	
 	
 	#Div. variabel"mapping"
-	RegData$PreMedikBehHoytBT <- RegData$PreMedHoytBT 
-	RegData$PreKalsiumanatgonist <- RegData$PreKalsiumantagonist
+	#RegData$PreMedikBehHoytBT <- RegData$PreMedHoytBT 
+	#RegData$PreKalsiumanatgonist <- RegData$PreKalsiumantagonist
 	
 	indAfasi <- which(RegData$Afasi %in% c(1,2,9))
 	RegData$SpraakTaleproblem[indAfasi] <- RegData$Afasi[indAfasi]
@@ -90,7 +90,28 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 #	RegData$Spraakproblem <- -1
 #	RegData$Spraakproblem[indSprTale] <- RegData$SpraakTaleproblem[indSprTale]
 	#	RegData$Spraakproblem[indAfasi] <- RegData$Afasi[indAfasi]
-	
+
+#BT-senkende ved innkomst
+#Variabelen PreMedikBehHoytBT er verdiløs, dvs. feil ift hva som er reg. i de enkelte BT-variable
+NavnBTsenk <- c('PreDiuretica','PreACEhemmer', 'PreA2Antagonist', 'PreBetablokker', 'PreKalsiumantagonist')
+RegData$PreBTsenk <- 9
+TF <- (RegData[ ,NavnBTsenk])==1
+RegData$PreBTsenk[rowSums(TF, na.rm=T)>0] <- 1
+Nei <- (RegData[ ,NavnBTsenk])==2
+RegData$PreBTsenk[rowSums(Nei, na.rm=T) == length(NavnBTsenk)] <- 2
+	indFor2016<- which(RegData$InnDato < as.Date('2016-01-01'))
+RegData$PreMedHoytBT[indFor2016] <- RegData$PreBTsenk[indFor2016]
+
+#BT-senkende ved utreise
+NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist')
+RegData$PostBTsenk <- 9
+TF <- (RegData[ ,NavnBTsenkUt])==1
+RegData$PostBTsenk[rowSums(TF, na.rm=T)>0] <- 1
+Nei <- (RegData[ ,NavnBTsenkUt])==2
+RegData$PostBTsenk[rowSums(Nei, na.rm=T) == length(NavnBTsenkUt)] <- 2
+RegData$PostMedHoytBT[indFor2016] <- RegData$PostBTsenk[indFor2016]
+
+
 
   return(invisible(RegData))
 }

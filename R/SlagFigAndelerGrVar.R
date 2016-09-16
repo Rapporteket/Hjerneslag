@@ -65,7 +65,8 @@ utvalgTxt <- SlagUtvalg$utvalgTxt
 
 
 if (valgtVar == 'BehSlagenhet') {
-	RegData$Variabel[union(which(RegData$AvdForstInnlagt==1), which(RegData$AvdUtskrFra==1))] <- 1 
+	RegData$Variabel[intersect(union(which(RegData$AvdForstInnlagt==1), which(RegData$AvdUtskrFra==1)), 
+	                 which(RegData$AvdUtskrFra ==1))] <- 1 
 }
 if (valgtVar == 'InnlSlagenh') {
 	indDirInnlSlag <- union(which(RegData$AvdForstInnlagt==1), 
