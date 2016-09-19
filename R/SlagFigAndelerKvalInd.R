@@ -25,6 +25,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
     RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
   }
   
+  '%i%' <- intersect
   #------------Gjøre utvalg-------------------------
   
   datoFra <- max(as.POSIXlt(datoFra, format="%Y-%m-%d"), as.POSIXlt('2014-01-01', format="%Y-%m-%d"))
@@ -114,10 +115,10 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
         
         Dagensdato <- as.POSIXlt(Sys.Date(), format="%Y-%m-%d")
         ind90d <- which(RegData$InnDato < as.Date(Dagensdato-90*24*60*60)) #Innleggelsesdatoer 90 dager før dagens dato.
-        indDirInnlSlag <- intersect(union(which(RegData$AvdForstInnlagt==1), 
-                                which(RegData$AvdForstInnlagtHvilken %in% 3:4)),
-                                which(RegData$AvdUtskrFra ==1))
-        Ntrombolyse <- sum(RegDataI63$Trombolyse %in% c(1,3))
+        indDirInnlSlag <- union(which(RegData$AvdForstInnlagt==1), 
+                                intersect(which(RegData$AvdForstInnlagtHvilken %in% 3:4),
+                                which(RegData$AvdUtskrFra ==1)))
+        Ntrombolyse <- length(which(RegDataI63$Trombolyse %in% c(1,3)) %i% which(is.na(RegDataI63$TidInnleggTrombolyse)==FALSE))
         Ni63 <- dim(RegDataI63)[1]
         N <- dim(RegData)[1]
         #Svelgfunksjon: Alle, dvs. andel av alle også ukjente. Dvs. de som helt sikkert er testet.

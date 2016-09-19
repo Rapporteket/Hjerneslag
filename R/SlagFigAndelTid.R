@@ -66,8 +66,8 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
     VarTxt <- 'slag behandlet i slagenhet'
   }
   if (valgtVar == 'InnlSlagenh') {
-    indDirInnlSlag <- intersect(union(which(RegData$AvdForstInnlagt==1), 
-                            which(RegData$AvdForstInnlagtHvilken %in% 3:4)),
+    indDirInnlSlag <- union(which(RegData$AvdForstInnlagt==1), 
+                            intersect(which(RegData$AvdForstInnlagtHvilken %in% 3:4)),
                             which(RegData$AvdUtskrFra ==1))
     RegData$Variabel[indDirInnlSlag] <- 1 
     VarTxt <- 'innleggelser direkte i slagehet'
@@ -115,8 +115,8 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
     #RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
     #RegData$TidInnleggTromb <- as.numeric(difftime(RegData$TrombolyseStarttid,
     #                                               RegData$Innleggelsestidspunkt, units='mins'))
+    RegData <- RegData[which(is.na(RegData$TidInnleggTrombolyse)==FALSE),]
     RegData$Variabel[RegData$TidInnleggTrombolyse <= 40] <- 1 
-    RegData$Variabel[is.na(RegData$TidInnleggTrombolyse)] <- NA
     VarTxt <- 'som har fått trombolyse innen 40 min.'
   }
   if (valgtVar == 'TrombolyseI63') {

@@ -65,12 +65,14 @@ utvalgTxt <- SlagUtvalg$utvalgTxt
 
 
 if (valgtVar == 'BehSlagenhet') {
-	RegData$Variabel[intersect(union(which(RegData$AvdForstInnlagt==1), which(RegData$AvdUtskrFra==1)), 
-	                 which(RegData$AvdUtskrFra ==1))] <- 1 
+	indBehSlagenh  <- union(which(RegData$AvdForstInnlagt==1), 
+                      intersect(which(RegData$AvdForstInnlagtHvilken %in% 3:4),
+                      which(RegData$AvdUtskrFra ==1)))
+	RegData$Variabel[indBehSlagenh] <- 1 
 }
 if (valgtVar == 'InnlSlagenh') {
 	indDirInnlSlag <- union(which(RegData$AvdForstInnlagt==1), 
-						which(RegData$AvdForstInnlagtHvilken %in% 3:4))
+						intersect(which(RegData$AvdForstInnlagtHvilken %in% 3:4))
 	RegData$Variabel[indDirInnlSlag] <- 1 
 }
 if (valgtVar == 'InnlInnen4eSymptom') {
@@ -93,10 +95,11 @@ if (valgtVar == 'SvelgtestUtfort') {
 }
 if (valgtVar == 'TidInnTrombolyse40min') {	
 	diagnose <- 2	#'I63'
-	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
-	RegData$TidInnleggTromb <- as.numeric(difftime(RegData$TrombolyseStarttid,
-			RegData$Innleggelsestidspunkt, units='mins'))
-	RegData$Variabel[RegData$TidInnleggTromb <= 40] <- 1 
+#	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
+#	RegData$TidInnleggTromb <- as.numeric(difftime(RegData$TrombolyseStarttid,
+#			RegData$Innleggelsestidspunkt, units='mins'))
+	RegData <- RegData[which(is.na(RegData$TidInnleggTrombolyse)==FALSE),]
+    	RegData$Variabel[RegData$TidInnleggTrombolyse <= 40] <- 1 
 }
 if (valgtVar == 'TrombolyseI63') {
 	#RegData <- RegData[which(RegData$Slagdiagnose==2), ]		#Slagdiagnose I63

@@ -27,8 +27,8 @@ rm(list=ls())
 #SlagData <- SlagDataALLE[sample(1:dim(SlagDataALLE)[1], 5000), ]
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/SlagEksempel.csv', sep=';', header=T) #, 
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-#load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-08-16.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
+#SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-08-16.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
 
@@ -68,23 +68,23 @@ SlagFigAntReg(RegData=RegData,
 
 #------------------------------ Andeler flere var --------------------------
 #------------------------------ (erstatter Fordelinger) --------------------------
-rm(list=ls())
-#load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
-#SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21ansi.csv', sep=';', header=T) #, 
-RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-06-20.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-
-# Inndata til funksjon:
-reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
-minald <- 0	#alder, fra og med
-maxald <- 130	#alder, til og med
-datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-08-01'
-erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-diagnose <- ''	#diagnose: 1,2,3  Infarkt(I61), Blødning(I63), Udefinert(I64), standard: '' (alt annet)
-innl4t <- '' 	#Innlagt innen 4t: 'Ja', 'Nei', standard:'' (alt annet)
-enhetsUtvalg <-1 #0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
-				#6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-NIHSSinn <- ''	#NIHSS grupper: 1-6, tilsv. verdi: 0-5,6-10,11-15,..., standard: '' (alt annet)
+  rm(list=ls())
+  #load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
+  #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21ansi.csv', sep=';', header=T) #, 
+  RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-06-20.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+  
+  # Inndata til funksjon:
+  reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
+  minald <- 0	#alder, fra og med
+  maxald <- 130	#alder, til og med
+  datoFra <- '2015-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+  datoTil <- '2015-12-31'
+  erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
+  diagnose <- ''	#diagnose: 1,2,3  Infarkt(I61), Blødning(I63), Udefinert(I64), standard: '' (alt annet)
+  innl4t <- '' 	#Innlagt innen 4t: 'Ja', 'Nei', standard:'' (alt annet)
+  enhetsUtvalg <-1 #0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+  				#6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
+  NIHSSinn <- ''	#NIHSS grupper: 1-6, tilsv. verdi: 0-5,6-10,11-15,..., standard: '' (alt annet)
 				#Velges denne, blir registreringer hvor NIHSS ikke er utført, tatt bort.
 valgtVar <- 'Slagdiagnose'	#Må velge... Alder, Transportmetode,
 		#AntDagerInnl, TidSymptInnlegg, TidSymptTrombolyse, TidInnleggTrombolyse
@@ -153,6 +153,8 @@ for (valgtVar in c('Boligforh', 'Bosituasjon', 'Toalett', 'Forflytning', 'Paakle
 
 #------------------------------ AndelTid --------------------------
 rm(list=ls())
+datoFra <- '2015-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoTil <- '2015-12-31'
 
 # Inndata til funksjon:
 reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
@@ -200,7 +202,7 @@ RegData <- SlagData
 # Inndata til funksjon:
 enhetsUtvalg <- 0	#0:Alle, 7:Egen region
 valgtVar <- 'InnlSlagenh'	#Må velge... BehSlagenhet, InnlSlagenh, InnlInnen4eSymptom, 
-			#LipidI63u80, SvelgtestUtfort, TidInnTrombolyse30min, TrombolyseI63, UtAntitrombotiskI63, 
+			#LipidI63u80, SvelgtestUtfort, TidInnTrombolyse40min, TrombolyseI63, UtAntitrombotiskI63, 
 			#UtAntikoagI63atrie, UtBT
 outfile <- paste(valgtVar, '.pdf', sep='')	#Navn angis av Jasper
 

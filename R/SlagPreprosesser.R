@@ -39,8 +39,9 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 	RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
 	SjekkTidsPktTrombStart <- format(RegData$TrombolyseStarttid, "%H:%M")
 	#Ta ut ugyldige tidspunkt og filtrere bort de som ikke har fått trombolyse
-	indUtTrombStart <- which(SjekkTidsPktTrombStart == '00:00') %u% which(!(RegData$Trombolyse %in% c(1,3)))
-	 
+	indUtTrombStart <- which(SjekkTidsPktTrombStart == '00:00') 
+	                %u% which(!(RegData$Trombolyse %in% c(1,3)))  #Bare de som har fått trombolyse
+	                %u% which(RegData$Slagdiagnose!=2)  #Bare de med hjerneinfarkt
 	
 	#------Definere nye tidsvariable. Ugyldige tidspunkt settes til NA.
 	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut, units='hours'))
