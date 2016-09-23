@@ -41,7 +41,7 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 	#Ta ut ugyldige tidspunkt og filtrere bort de som ikke har fått trombolyse
 	indUtTrombStart <- which(SjekkTidsPktTrombStart == '00:00') 
 	                %u% which(!(RegData$Trombolyse %in% c(1,3)))  #Bare de som har fått trombolyse
-	                %u% which(RegData$Slagdiagnose!=2)  #Bare de med hjerneinfarkt
+#	                %u% which(RegData$Slagdiagnose!=2)  #Bare de med hjerneinfarkt (ikke fra sept.2016)
 	
 	#------Definere nye tidsvariable. Ugyldige tidspunkt settes til NA.
 	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut, units='hours'))

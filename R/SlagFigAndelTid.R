@@ -110,7 +110,7 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
     VarTxt <- 'med svelgfunksjon vurdert'
   }
   if (valgtVar == 'TidInnTrombolyse40min') {	
-    diagnose <- 2	#'I63'
+#    diagnose <- 2	#'I63' Fjernet sept. 2016
     #RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]  GJØRES NÅ I PREPROSESSERINGA
     #RegData$TrombolyseStarttid <- as.POSIXlt(RegData$TrombolyseStarttid, format="%Y-%m-%d %H:%M:%S" )
     #RegData$TidInnleggTromb <- as.numeric(difftime(RegData$TrombolyseStarttid,

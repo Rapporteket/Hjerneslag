@@ -69,8 +69,6 @@ SlagFigAntReg(RegData=RegData,
 #------------------------------ Andeler flere var --------------------------
 #------------------------------ (erstatter Fordelinger) --------------------------
   rm(list=ls())
-  #load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
-  #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21ansi.csv', sep=';', header=T) #, 
   RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-06-20.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
   
   # Inndata til funksjon:

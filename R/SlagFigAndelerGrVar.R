@@ -94,7 +94,7 @@ if (valgtVar == 'SvelgtestUtfort') {
 	RegData$Variabel[which(RegData$SvelgtestUtfort %in% c(1,3))] <- 1
 }
 if (valgtVar == 'TidInnTrombolyse40min') {	
-	diagnose <- 2	#'I63'
+	#diagnose <- 2	#'I63' Ikke lenger bare I63 (sept. 2016)
 #	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
 #	RegData$TidInnleggTromb <- as.numeric(difftime(RegData$TrombolyseStarttid,
 #			RegData$Innleggelsestidspunkt, units='mins'))

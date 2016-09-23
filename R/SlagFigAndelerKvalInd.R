@@ -118,7 +118,8 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
         indDirInnlSlag <- union(which(RegData$AvdForstInnlagt==1), 
                                 intersect(which(RegData$AvdForstInnlagtHvilken %in% 3:4),
                                 which(RegData$AvdUtskrFra ==1)))
-        Ntrombolyse <- length(which(RegDataI63$Trombolyse %in% c(1,3)) %i% which(is.na(RegDataI63$TidInnleggTrombolyse)==FALSE))
+        Ntrombolyse <- length(which(RegData$Trombolyse %in% c(1,3)) %i% which(is.na(RegDataI63$TidInnleggTrombolyse)==FALSE))
+#        Ntrombolyse <- length(which(RegDataI63$Trombolyse %in% c(1,3)) %i% which(is.na(RegDataI63$TidInnleggTrombolyse)==FALSE))
         Ni63 <- dim(RegDataI63)[1]
         N <- dim(RegData)[1]
         #Svelgfunksjon: Alle, dvs. andel av alle også ukjente. Dvs. de som helt sikkert er testet.
@@ -135,8 +136,9 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
           'Hjerneinfarkt, <=80 år, trombolysebehandlet' = 
             length(intersect(which(RegDataI63$Trombolyse %in% c(1,3)),which(RegDataI63$Alder <=80)))/
             sum(RegDataI63$Alder <=80),	
-          'Trombolyse innen 40 min.' = sum((RegDataI63$TidInnleggTrombolyse <= 40) & (RegDataI63$Trombolyse %in% c(1,3)), na.rm = TRUE)
-          /Ntrombolyse,	#
+          'Trombolyse innen 40 min.' = sum((RegDataI$TidInnleggTrombolyse <= 40), na.rm = TRUE)/Ntrombolyse,	#med i def: & (RegData$Trombolyse %in% c(1,3))
+ #         'Trombolyse innen 40 min.' = sum((RegDataI63$TidInnleggTrombolyse <= 40) & (RegDataI63$Trombolyse %in% c(1,3)), na.rm = TRUE)
+  #        /Ntrombolyse,	#
           'Hjerneinfarkt, utskrevet med \nantitrombotisk behandling' = sum(RegDataI63leve$UtAntitrombotisk)/NI63leve,
           'Hjerneinfarkt, atrieflimmer, \nutskrevet med antikoagulasjon' = 
             length(unique(which(RegDataI63leve[indAtrI63leve ,Antikoag]==1, arr.ind=T)[,1]))/
