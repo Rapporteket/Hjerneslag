@@ -259,9 +259,9 @@ AlderMann <- na.omit(SlagDataUtv$Alder[which(SlagDataUtv$erMann == 1)])
 AlderKv <- na.omit(SlagDataUtv$Alder[which(SlagDataUtv$erMann == 0)])
 
 DagerInnlagt <- na.omit(as.numeric(SlagDataUtv$AntDagerInnl))
-TidSymptInnl <- na.omit(as.numeric(SlagDataUtv$TimerSymptomdebutInnlegg))
+TidSymptInnl <- na.omit(as.numeric(SlagDataUtv$TidSymptInnlegg))
 #TidInnTromb <- na.omit(as.numeric(SlagDataUtv$TidInnleggTrombolyse)*60)
-TidInnTromb <- na.omit(as.numeric(SlagDataUtv$TidInnleggTrombolyse[which(SlagDataUtv$TidInnleggTrombolyse>0)])*60)
+TidInnTromb <- na.omit(as.numeric(SlagDataUtv$TidInnleggTrombolyse[which(SlagDataUtv$TidInnleggTrombolyse>=0)])*60)
 MRSinn <- na.omit(as.numeric(SlagDataUtv$MRSPre))
 NIHSSinnl <- na.omit(as.numeric(SlagDataUtv$NIHSSinnkomst[which(SlagData$NIHSSikkeUtfort == 0)])) 
 
@@ -278,7 +278,7 @@ Pasientkarakteristika6 <- rbind(
 	'Timer, symptomdebut - innleggelse' = c(mean(TidSymptInnl), sd(TidSymptInnl), 
 			median(TidSymptInnl), min(TidSymptInnl), max(TidSymptInnl), sum(TidSymptInnl>-1)),
 	'Minutter, innleggelse - trombolyse' = c(mean(TidInnTromb), sd(TidInnTromb), 
-			median(TidInnTromb), min(TidInnTromb, na.rm=T), max(TidInnTromb), sum(TidInnTromb>0)),
+			median(TidInnTromb), min(TidInnTromb), max(TidInnTromb), sum(TidInnTromb>=0)),
 #	'Mod. Rankin Scale, før slag' = c(mean(MRSinn), sd(MRSinn), 
 #			median(MRSinn), min(MRSinn), max(MRSinn), length(MRSinn)),
 	'NIHSS, innleggelse' = c(mean(NIHSSinnl), sd(NIHSSinnl), 
@@ -418,7 +418,7 @@ SlagData$TidlHjerteinfarkt <- factor(SlagData$TidlHjerteinfarkt, levels=c(1,2,9)
 #SlagData$RoykerPre <- factor(SlagData$RoykerPre, levels=c(1,2,9))
 SlagData$RoykerPre <- factor(SlagData$RoykerPre, levels=c(0,1,2,9))
 SlagData$PreDiabetes <- factor(SlagData$PreDiabetes, levels=c(1,2,9))
-SlagData$PreMedikBehHoytBT <- factor(SlagData$PreMedikBehHoytBT, levels=c(1,2,9))
+SlagData$PreMedHoytBT <- factor(SlagData$PreMedHoytBT, levels=c(1,2,9))
 SlagData$PreStatinerLipid <- factor(SlagData$PreStatinerLipid, levels=c(1,2,9))
 SlagData$Atrieflimmer <- factor(SlagData$Atrieflimmer, levels=c(1,2,9))
 
@@ -429,7 +429,7 @@ TidlTIA <- ftable(SlagDataUtv$TidlTIA, SlagDataUtv$erMann)[-3,]
 TidlInfarkt <- ftable(SlagDataUtv$TidlHjerteinfarkt, SlagDataUtv$erMann)[-3,]
 PreRoyk <- ftable(SlagDataUtv$RoykerPre, SlagDataUtv$erMann)[-4,]
 PreDiabetes <- ftable(SlagDataUtv$PreDiabetes, SlagDataUtv$erMann)[-3,]
-PreMedikBehHoytBT <- ftable(SlagDataUtv$PreMedikBehHoytBT, SlagDataUtv$erMann)[-3,]
+PreMedHoytBT <- ftable(SlagDataUtv$PreMedHoytBT, SlagDataUtv$erMann)[-3,]
 PreMedikBehStatinerLipid <- ftable(SlagDataUtv$PreStatinerLipid, SlagDataUtv$erMann)[-3,]
 Atrieflimmer <- ftable(SlagDataUtv$Atrieflimmer, SlagDataUtv$erMann)[-3,]
 			
@@ -439,7 +439,7 @@ Risikofakt <- rbind(
 	'Tidligere hjerteinfarkt' = c(100*TidlInfarkt[1,]/colSums(TidlInfarkt), sum(TidlInfarkt)),
 	'Røyking før hjerneslaget' = c(100*PreRoyk[2,]/colSums(PreRoyk), sum(PreRoyk)),
 	'Diabetes' = c(100*PreDiabetes[1,]/colSums(PreDiabetes), sum(PreDiabetes)),
-	'Behandling høyt BT' = c(100*PreMedikBehHoytBT[1,]/colSums(PreMedikBehHoytBT),sum(PreMedikBehHoytBT)),
+	'Behandling høyt BT' = c(100*PreMedHoytBT[1,]/colSums(PreMedHoytBT),sum(PreMedHoytBT)),
 	'Lipidsenkende behandling' = c(100*PreMedikBehStatinerLipid[1,]/colSums(PreMedikBehStatinerLipid),
 					sum(PreMedikBehStatinerLipid)),
 	'Atrieflimmer' = c(100*Atrieflimmer[1,]/colSums(Atrieflimmer), sum(Atrieflimmer))
@@ -488,8 +488,8 @@ SlagData$PreBeggeAntikoag <- c(1,2,2,9,9,9)[SlagData$PreAntikoagsum]
 
 
 #BT-senkende
-#Variabelen PreMedikBehHoytBT er verdiløs, dvs. feil ift hva som er reg. i de enkelte BT-variable
-NavnBTsenk <- c('PreDiuretica','PreACEhemmer', 'PreA2Antagonist', 'PreBetablokker', 'PreKalsiumanatgonist')
+#Variabelen PreMedHoytBT er verdiløs, dvs. feil ift hva som er reg. i de enkelte BT-variable
+NavnBTsenk <- c('PreDiuretica','PreACEhemmer', 'PreA2Antagonist', 'PreBetablokker', 'PreKalsiumantagonist')
 SlagData$PreBTsenk <- 9
 TF <- (SlagData[ ,NavnBTsenk])==1
 SlagData$PreBTsenk[rowSums(TF, na.rm=T)>0] <- 1
@@ -521,7 +521,7 @@ N_A2 <- sum(SlagDataUtv$PreBeggeAntikoag == 1, na.rm=T)
 N_BTsenk <- sum(SlagDataUtv$PreMedHoytBT == 1)
 
 #SlagDataUtv$PreBTsenkSum <- rowSums(SlagDataUtv[ ,NavnBTsenk], na.rm=T)Torunn: kommentert ut og endret
-SlagDataUtv$PreBTsenkSum <- rowSums(SlagDataUtv[ ,PreMedHoytBT], na.rm=T)
+#SlagDataUtv$PreBTsenkSum <- rowSums(SlagDataUtv[ ,PreMedHoytBT], na.rm=T)
 #Gir verdiene c(5:10,13:17,21:24,29:31,37,38,45), hvorav 8 betyr kun to, 9 kun én, 10 ingen
 #indIngen <- which(SlagDataUtv$PreBTsenkSum == 10) Torunn: Kommentert ut linje 525-530
 #ind1kun <- which(SlagDataUtv$PreBTsenkSum == 9)
@@ -531,7 +531,7 @@ SlagDataUtv$PreBTsenkSum <- rowSums(SlagDataUtv[ ,PreMedHoytBT], na.rm=T)
 #indAlle <- which(SlagDataUtv$PreBTsenkSum == 5)
 
 #indSjekk <- setdiff(1:N_BTsenk, unique(c(ind1kun, ind2kun, ind3kun, ind4kun, indAlle)))
-N_DiuA2 <- length(intersect(which(SlagDataUtv$PreDiuretica==1 | SlagDataUtv$PreA2Antagonist==1), ind2kun))
+#N_DiuA2 <- length(intersect(which(SlagDataUtv$PreDiuretica==1 | SlagDataUtv$PreA2Antagonist==1), ind2kun))
 #osv...
 
 MedBehPrePst <- 100*rbind( 
@@ -1112,20 +1112,20 @@ xtable(MedBehUtDivPst, digits=1, align=c('l', 'r'),
 
 #N_BTsenkUt <- sum(SlagDataUtv$UtBTsenk == 1)
 N_BTsenkUt <- sum(SlagDataUtv$PostMedHoytBT == 1)
-N_DiuA2 <- length(intersect(which(SlagDataUtv$UtDiuretica==1 | SlagDataUtv$UtA2Antagonist==1), ind2kun))
+#N_DiuA2 <- length(intersect(which(SlagDataUtv$UtDiuretica==1 | SlagDataUtv$UtA2Antagonist==1), ind2kun))
 #osv...
 
 MedBehUtBTstatPst <- 100*rbind( 
 	'BT-senkende' = c(N_BTsenkUt, sum(SlagDataUtv$UtBTsenk == 9))/Nutv,
-	'...Diuretica' = c(length(intersect(which(SlagDataUtv$UtDiuretica==1), ind1kun))/N_BTsenkUt , NA),
-	'...ACE-hemmer' = c(length(intersect(which(SlagDataUtv$UtACEhemmer==1), ind1kun))/N_BTsenkUt , NA),
-	'...A2-antagonist' = c(length(intersect(which(SlagDataUtv$UtA2Antagonist==1), ind1kun))/N_BTsenkUt , NA),
-	'...Betablokker' = c(length(intersect(which(SlagDataUtv$UtBetablokker==1), ind1kun))/N_BTsenkUt , NA),
-	'...Kalsiumantagonist' = c(length(intersect(which(SlagDataUtv$UtKalsiumantagonist==1), ind1kun))/N_BTsenkUt , NA),
-	'...Komb. 2 BT-senkende' = c(length(ind2kun)/N_BTsenkUt, NA),
-	'...Komb. 3 BT-senkende' = c(length(ind3kun)/N_BTsenkUt, NA),
-	'...Komb. 4 BT-senkende' = c(length(ind4kun)/N_BTsenkUt, NA),
-	'...Komb. alle BT-senkende' = c(length(indAlle)/N_BTsenkUt, NA),
+#	'...Diuretica' = c(length(intersect(which(SlagDataUtv$UtDiuretica==1), ind1kun))/N_BTsenkUt , NA),
+#	'...ACE-hemmer' = c(length(intersect(which(SlagDataUtv$UtACEhemmer==1), ind1kun))/N_BTsenkUt , NA),
+#	'...A2-antagonist' = c(length(intersect(which(SlagDataUtv$UtA2Antagonist==1), ind1kun))/N_BTsenkUt , NA),
+#	'...Betablokker' = c(length(intersect(which(SlagDataUtv$UtBetablokker==1), ind1kun))/N_BTsenkUt , NA),
+#	'...Kalsiumantagonist' = c(length(intersect(which(SlagDataUtv$UtKalsiumantagonist==1), ind1kun))/N_BTsenkUt , NA),
+#	'...Komb. 2 BT-senkende' = c(length(ind2kun)/N_BTsenkUt, NA),
+#	'...Komb. 3 BT-senkende' = c(length(ind3kun)/N_BTsenkUt, NA),
+#	'...Komb. 4 BT-senkende' = c(length(ind4kun)/N_BTsenkUt, NA),
+#	'...Komb. alle BT-senkende' = c(length(indAlle)/N_BTsenkUt, NA),
 
 	'Statin-Lipidsenkende' = table(SlagDataUtv$UtStatinerLipid)[c(1,3)]/Nutv
 	)

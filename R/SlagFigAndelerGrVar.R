@@ -72,13 +72,14 @@ if (valgtVar == 'BehSlagenhet') {
 }
 if (valgtVar == 'InnlSlagenh') {
 	indDirInnlSlag <- union(which(RegData$AvdForstInnlagt==1), 
-						intersect(which(RegData$AvdForstInnlagtHvilken %in% 3:4))
+						intersect(which(RegData$AvdForstInnlagtHvilken %in% 3:4), which(RegData$AvdUtskrFra==1)))
 	RegData$Variabel[indDirInnlSlag] <- 1 
 }
 if (valgtVar == 'InnlInnen4eSymptom') {
 #	Tar ut oppvåkningsslag
-	RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
-	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut,  units='hours'))
+#	RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
+#	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut,  units='hours'))
+	RegData <- RegData[which(is.na(RegData$TidSymptInnlegg)==FALSE),]
 	RegData$Variabel[RegData$TidSymptInnlegg <= 4] <- 1 
 }
 if (valgtVar == 'LipidI63u80') {

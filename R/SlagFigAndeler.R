@@ -193,7 +193,7 @@ flerevar <- 0
 		RegData$Variabel <- as.numeric(RegData$Variabel)
 		tittel <- 'Antall timer fra innleggelse til trombolyse'
 		#gr <- c(0,0.5,1,1.5,2,2.5,10000)	#*60
-		gr <- c(0,30,60,90,120,150,10000)	#*60
+		gr <- c(0,30,60,90,120,150,10000000)	#*60
 		RegData$VariabelGr <- cut(RegData$Variabel, breaks=gr, include.lowest=TRUE, right=FALSE)
 		grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '2.5+')	
 		grtxt <- c('[0-0.5)','[0.5-1)', '[1-1.5)', '[1.5-2)', '[2-2.5)' , '2.5+')	
@@ -427,7 +427,7 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 if (valgtVar %in% c('Boligforhold3mnd','MRS3mnd', 'Royker3mnd', 'Sivilstatus3mnd')) {
 	datoTil <- min(datoTil, as.character(Sys.Date()-90))}
 	
-#Tar ut de med manglende registrering av valgt variabel og gjør utvalg
+#Gjør utvalg
 SlagUtvalg <- SlagUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
 		erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn)
 RegData <- SlagUtvalg$RegData

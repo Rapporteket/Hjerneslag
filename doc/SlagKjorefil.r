@@ -19,16 +19,14 @@ table(table(SlagData$PatientInRegistryKey[which(SlagData$SkjemaID==1)]))
 
 
 #--------------------------------------SAMLERAPPORT-----------------------------------
-
+library(tools)
 rm(list=ls())
 
-#SlagDataALLE <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 #names(SlagData[which(names(SlagData) == 'PreMedHoytBT')]) <- 'PreMedikBehHoytBT'
 #SlagData <- SlagDataALLE[sample(1:dim(SlagDataALLE)[1], 5000), ]
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/SlagEksempel.csv', sep=';', header=T) #, 
-#SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
-#SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-08-16.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+#load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
+SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-09-19.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
 
@@ -36,6 +34,7 @@ library(Hjerneslag)
 library(knitr)
 setwd('C:/ResultattjenesteGIT/Hjerneslag/inst')
 knit('SlagSamleDok.Rnw')
+
 
 
 #knit('SlagSamleDok_AlleTabOgKomm.Rnw')

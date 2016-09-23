@@ -85,12 +85,12 @@ if (valgtVar == 'NIHSSpreTrombektomi') {
 if (valgtVar == 'NIHSSetterTrombektomi') {
 	RegData <- RegData[which(RegData$Trombektomi %in% c(1,3)), ]
 	}
-if (valgtVar == 'TidInnleggTrombolyse') {   DEFINERT I PREPROSESS
+#if (valgtVar == 'TidInnleggTrombolyse') {   DEFINERT I PREPROSESS
 #	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
 #	RegData$TidInnleggTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, 
 #			RegData$Innleggelsestidspunkt, units='mins'))
 #diagnose <- 2 Skal ikke lenger se på bare de med infarkt.
-	}
+#	}
 if (valgtVar == 'NIHSSinnkomst') {
 	RegData <- RegData[which(RegData$NIHSSikkeUtfort == 0), ]
 	}

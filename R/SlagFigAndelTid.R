@@ -79,6 +79,7 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
     #RegData$TidSymptInnlegg <- as.numeric(
     #  difftime(as.POSIXlt(RegData$Innleggelsestidspunkt,format = "%Y-%m-%d %H:%M:%S"),
      #          as.POSIXlt(RegData$Symptomdebut,format = "%Y-%m-%d %H:%M:%S"),units='hours'))
+ 	RegData <- RegData[which(is.na(RegData$TidSymptInnlegg)==FALSE),]
     RegData$Variabel[RegData$TidSymptInnlegg <= 4] <- 1 
     VarTxt <- 'innlagt innen 4t etter symptomdebut'
   }

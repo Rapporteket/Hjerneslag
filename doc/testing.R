@@ -1,8 +1,8 @@
 
 
 rm(list=ls())
-#RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-06-20.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-09-19.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2015.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+#RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-09-19.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 
 # Inndata til funksjon:
@@ -52,6 +52,24 @@ SlagFigGjsnTid(RegData=RegData, datoFra=datoFra, datoTil=datoTil, valgtVar=valgt
 
 
 #------------Variabel: TidSymptInnlegg-------------------------
-TidInnleggTrombolyse
-TidSymptInnlegg
-TidSymptTrombolyse
+
+valgtVar <- 'InnlInnen4eSymptom'
+outfile <- paste(valgtVar, 'ATid.pdf', sep='')	#Navn angis av Jasper
+SlagFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+                datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
+                NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
+
+valgtVar <- 'InnlInnen4eSymptom'
+outfile <- paste(valgtVar, 'AGrVar.pdf', sep='')	#Navn angis av Jasper
+SlagFigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, 
+                    datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
+                    innl4t=innl4t, enhetsUtvalg=enhetsUtvalg, reshID=reshID, outfile=outfile)
+
+valgtVar <- 'TidSymptInnlegg'
+outfile <- paste(valgtVar, 'Ford.pdf', sep='')	#Navn angis av Jasper
+SlagFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+               datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
+               NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
+
+#------------Variabel: TidSymptTrombolyse-------------------------
+#Bare resultater med gjennomsnitt. Ok.
