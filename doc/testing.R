@@ -1,8 +1,8 @@
 
 
 rm(list=ls())
-RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2015.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-#RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-09-19.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+#RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2015.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-09-19.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 
 # Inndata til funksjon:

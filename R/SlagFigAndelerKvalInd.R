@@ -132,7 +132,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
           'Innlagt direkte i slagenhet' = length(indDirInnlSlag)/N,
           'Behandlet i slagenhet' = length(union(which(RegData$AvdForstInnlagt==1), 
                                                  which(RegData$AvdUtskrFra==1)))/N,
-          'Vurdert svelgfunksjon' = sum(RegData$SvelgtestUtfort==1)/N,		#Av alle, dvs. andel er  de som helt sikkert fått utf. svelgtest
+          'Vurdert svelgfunksjon' = sum(RegData$SvelgtestUtfort %in% c(1,3))/N,		#Av alle, dvs. andel er  de som helt sikkert fått utf. svelgtest
           'Hjerneinfarkt, <=80 år, trombolysebehandlet' = 
             length(intersect(which(RegDataI63$Trombolyse %in% c(1,3)),which(RegDataI63$Alder <=80)))/
             sum(RegDataI63$Alder <=80),	
