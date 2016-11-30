@@ -142,7 +142,8 @@ YrkesaktivNaa,
 YrkesaktivUnderHjerneslag2
 FROM
      HjerneSlagPROD
-                 WHERE Innleggelsestidspunkt >= \'', datoFra, '\' AND Innleggelsestidspunkt <= \'', datoTil, '\'')
+                 WHERE cast(Innleggelsestidspunkt AS date) >= \'', datoFra, '\' AND 
+                  cast(Innleggelsestidspunkt AS date) <= \'', datoTil, '\'')
   
 
 #TidInnTrombolyse, - feil format
