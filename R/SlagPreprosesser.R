@@ -4,7 +4,7 @@
 #'
 #' @inheritParams SlagFigAndeler
 #'
-#' @return Data En list med det filtrerte datasettet og sykehusnavnet som tilsvarer reshID
+#' @return Data Dataramme med det filtrerte datasettet og sykehusnavnet som tilsvarer reshID
 #'
 #' @export
 #'
