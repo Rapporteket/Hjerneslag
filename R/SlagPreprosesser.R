@@ -16,8 +16,8 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
   #Kun ferdigstilte registreringer:
   # Rapporteket får kun levert ferdigstilte registreringer
   #Kjønn
-  RegData$erMann[RegData$Kjonn == 'K'] <- 0
-  RegData$erMann[RegData$Kjonn == 'M'] <- 1
+  RegData$erMann[RegData$PatientGender == 'Female'] <- 0
+  RegData$erMann[RegData$PatientGender == 'Male'] <- 1
   #RegData$erMann <- 0
 	#RegData$erMann[RegData$Kjonn == 'M'] <- 1	#kjVar <- 'Kjonn'
   

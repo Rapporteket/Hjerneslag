@@ -1,34 +1,16 @@
-
-save(SlagDataTest, file='SlagDataTest.Rdata')
-load('C:/Registre/Hjerneslag/data/SlagDataTest.Rdata')
-
+#---------------Hente Data--------------------------------------
 
 rm(list=ls())
-load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2013-12-11.csv', 
-		sep=';', header=T) #, encoding='UTF-8')
-save(SlagData, file='C:/Registre/Hjerneslag/data/HjerneSlag2013-12-11.Rdata')
-write.table(SlagData, file='SlagDataTest.csv', row.names=FALSE, sep=';')
+#load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
+#SlagData <- SlagDataALLE[sample(1:dim(SlagDataALLE)[1], 5000), ]
+#save(SlagData, file='C:/Registre/Hjerneslag/data/HjerneSlagTest.Rdata')
+SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-09-19.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
-
-
-table(table(SlagData$PatientInRegistryKey))
-#Flere pasienter som har mer enn tre registreringer
-
-table(table(SlagData$PatientInRegistryKey[which(SlagData$SkjemaID==1)]))
+reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
 
 
 #--------------------------------------SAMLERAPPORT-----------------------------------
 library(tools)
-rm(list=ls())
-
-#names(SlagData[which(names(SlagData) == 'PreMedHoytBT')]) <- 'PreMedikBehHoytBT'
-#SlagData <- SlagDataALLE[sample(1:dim(SlagDataALLE)[1], 5000), ]
-#SlagData <- read.table('C:/Registre/Hjerneslag/data/SlagEksempel.csv', sep=';', header=T) #, 
-#load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-09-19.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-
-reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
 
 library(Hjerneslag)
 library(knitr)
