@@ -394,8 +394,7 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		
 #FIGURER SATT SAMMEN AV FLERE VARIABLE FRA SAMME TOTALUTVALG	
 	if (valgtVar == 'FokaleUtf') {
-	  #******************************Her mangler vel Afasi...??
-		flerevar <- 1
+	  flerevar <- 1
 		retn <- 'H'
 		tittel <- 'Fokale utfall'
 		subtxt <- 'Andel med svar "ja" av alle totalt'

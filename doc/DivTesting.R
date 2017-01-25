@@ -1,15 +1,25 @@
-Navn2 <- names(table(SlagData$HovedskjemaGUID)[table(SlagData$HovedskjemaGUID)>1])
+HovedSkjema <- read.table('C:/Registre/HjerneslagD/Akuttskjema2017-01-24.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+OppfSkjema <- read.table('C:/Registre/HjerneslagD/AkuttskjemaOppfolging2017-01-24.csv', sep=';', 
+                         header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
-TestTab <- SlagData[(SlagData$HovedskjemaGUID %in% Navn2),
-                    c("HovedskjemaGUID", "SkjemaGUID.x", "SkjemaGUID.y", "HSkjemaGUID", "PasientGUID.y", "Innleggelsestidspunkt")]
-write.table(TestTab, file='Test2HovedskjemaGUID.csv', sep = ';', row.names = F)
+OppfSkjema$HovedskjemaGUID <- toupper(OppfSkjema$HovedskjemaGUID)
+#names(OppfSkjema)[which(names(OppfSkjema)== 'SkjemaGUID')] <- 'OSkjemaGUID'
+SlagData <- merge(HovedSkjema, OppfSkjema, by.x='SkjemaGUID',by.y="HovedskjemaGUID", all.x = TRUE, all.y = FALSE)
 
 
 #Sjekk for dobbeltregistreringer
-#Sjekk i oppfølgingsskjema
-SkjemaGUID	HovedskjemaGUID
-A31A3E8B-9F9A-4912-A2FA-CB9DC7E10FB1	009e5475-6ea0-4ddb-941f-869a35ba3ef0
-D784A3D5-5E94-492E-9CAB-227B55613311	009e5475-6ea0-4ddb-941f-869a35ba3ef0
+Navn2 <- names(table(HovedSkjema$HovedskjemaGUID)[table(HovedSkjema$HovedskjemaGUID)>1])
+TestTab <- HovedSkjema[(HovedSkjema$HSkjemaGUID %in% Navn2),
+                    c("SkjemaGUID", 'UnitId')]
+write.table(TestTab, file='Test2Hovedskjema.csv', sep = ';', row.names = F)
 
-Navn2Oppf <- names(table(OppfSkjema$HovedskjemaGUID)[table(OppfSkjema$HovedskjemaGUID)>1])
+
+Navn2 <- names(table(OppfSkjema$HovedskjemaGUID)[table(OppfSkjema$HovedskjemaGUID)>1])
+TestTab <- OppfSkjema[(OppfSkjema$HovedskjemaGUID %in% Navn2),
+                       c("HovedskjemaGUID","SkjemaGUID", 'UnitId')]
+write.table(TestTab, file='Test2OppfSkjema.csv', sep = ';', row.names = F)
+
+
+
+
 

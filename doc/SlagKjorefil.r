@@ -1,3 +1,19 @@
+NB: Variabelen RHF/Region leveres ikke. VI kan derfor ikke lenger vise resultater på RHF-nivå
+Eller har variabelen nå et annet navn???
+
+
+Variabelen Afasi er fjernet. Da kan vi ikke lenger "mappe" de gamle verdiene inn i SpraakTaleproblem.
+Er den gamle variabelen konvertert eller mister vi nå disse registreringene?
+
+indAfasi <- which(RegData$Afasi %in% c(1,2,9))
+RegData$SpraakTaleproblem[indAfasi] <- RegData$Afasi[indAfasi]
+
+
+
+
+
+
+
 #---------------Hente Data--------------------------------------
 
 rm(list=ls())
@@ -7,14 +23,24 @@ rm(list=ls())
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-09-19.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 
-HovedSkjema <- read.table('C:/Registre/Hjerneslag/data/Akuttskjema2017-01-24.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-OppfSkjema <- read.table('C:/Registre/Hjerneslag/data/AkuttskjemaOppfolging2017-01-24.csv', sep=';', 
+HovedSkjema <- read.table('C:/Registre/HjerneslagD/Akuttskjema2017-01-24.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+OppfSkjema <- read.table('C:/Registre/HjerneslagD/AkuttskjemaOppfolging2017-01-24.csv', sep=';', 
                          header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-#SlagData <- merge(HovedSkjema, OppfSkjema, by="HovedskjemaGUID", all.x = TRUE, all.y = FALSE)
 
-HovedSkjema$HSkjemaGUID <- toupper(HovedSkjema$SkjemaGUID)
-#SlagData <- merge(HovedSkjema, OppfSkjema, by.x='HSkjemaGUID',by.y="HovedskjemaGUID", all.x = TRUE, all.y = FALSE)
+#Bør lage automatisk sjekk for hvilke variabelnavn som finnes i begge datasett
+#varBegge <- c('PatientAge', 'PatientGender', 'DeathDate')
+#OppfSkjema <- OppfSkjema[ ,-which(names(OppfSkjema) %in% varBegge)]
+#OppfSkjema$HovedskjemaGUID <- toupper(OppfSkjema$HovedskjemaGUID)
+#names(OppfSkjema)[which(names(OppfSkjema)== 'SkjemaGUID')] <- 'OSkjemaGUID'
 
+OppfSkjema$HovedskjemaGUID <- toupper(OppfSkjema$HovedskjemaGUID)
+
+varBegge <- intersect(names(OppfSkjema),names(HovedSkjema))
+OppfSkjema <- OppfSkjema[ ,c("HovedskjemaGUID", "SkjemaGUID", names(OppfSkjema)[!(names(OppfSkjema) %in% varBegge)])]
+SlagData <- merge(HovedSkjema, OppfSkjema, by.x='SkjemaGUID',by.y="HovedskjemaGUID", all.x = TRUE, all.y = FALSE)
+RegData <- SlagData
+
+names(SlagData)[grep('.x', names(SlagData))]
 
 #.---------------------- Sette parametre-----------------------------------
 

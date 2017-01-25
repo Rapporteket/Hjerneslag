@@ -22,7 +22,7 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 	#RegData$erMann[RegData$Kjonn == 'M'] <- 1	#kjVar <- 'Kjonn'
   
   #Riktig navn på regions-variabel:
-  RegData$Region <- RegData$RHF
+  #RegData$Region <- RegData$RHF   #
   
   #-------Riktig format på datovariable, samt identifisere registreringer som ikke har gyldig tidspunkt
 	RegData$InnDato <- as.Date(RegData$Innleggelsestidspunkt, format="%Y-%m-%d") # %H:%M:%S" )	#"%d.%m.%Y"	"%Y-%m-%d"
@@ -77,12 +77,12 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 	
 	
 	
-	#Div. variabel"mapping"
+	#Div. variabel"mapping" -> Navneendringer gjøres i spørring
 	#RegData$PreMedikBehHoytBT <- RegData$PreMedHoytBT 
 	#RegData$PreKalsiumanatgonist <- RegData$PreKalsiumantagonist
 	
-	indAfasi <- which(RegData$Afasi %in% c(1,2,9))
-	RegData$SpraakTaleproblem[indAfasi] <- RegData$Afasi[indAfasi]
+#	indAfasi <- which(RegData$Afasi %in% c(1,2,9))
+#	RegData$SpraakTaleproblem[indAfasi] <- RegData$Afasi[indAfasi]
 
 	#Da har vi ikke sikret oss mot evt. «villregistrering» i SpraakTaleproblem.
 	#Evt. kan vi gjøre sånn:
