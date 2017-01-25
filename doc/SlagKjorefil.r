@@ -7,6 +7,7 @@ Er den gamle variabelen konvertert eller mister vi nå disse registreringene?
 
 indAfasi <- which(RegData$Afasi %in% c(1,2,9))
 RegData$SpraakTaleproblem[indAfasi] <- RegData$Afasi[indAfasi]
+Se også Arbdok.
 
 
 
