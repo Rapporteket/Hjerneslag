@@ -1,20 +1,3 @@
-NB: Variabelen RHF/Region leveres ikke. VI kan derfor ikke lenger vise resultater på RHF-nivå
-Eller har variabelen nå et annet navn???
-
-
-Variabelen Afasi er fjernet. Da kan vi ikke lenger "mappe" de gamle verdiene inn i SpraakTaleproblem.
-Er den gamle variabelen konvertert eller mister vi nå disse registreringene?
-
-indAfasi <- which(RegData$Afasi %in% c(1,2,9))
-RegData$SpraakTaleproblem[indAfasi] <- RegData$Afasi[indAfasi]
-Se også Arbdok.
-
-
-
-
-
-
-
 #---------------Hente Data--------------------------------------
 
 rm(list=ls())
