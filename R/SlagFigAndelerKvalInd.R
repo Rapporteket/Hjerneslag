@@ -90,10 +90,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
       RegData$UtAntitrombotisk <- 0
       RegData$UtAntitrombotisk[indAntitrombotisk] <- 1		#4884
       
-      NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist')
-      indBTsenkUt <- which(RegData[ ,NavnBTsenkUt]==1, arr.ind=T)[,1]
-      RegData$UtBTsenk <- 0
-      RegData$UtBTsenk[indBTsenkUt] <- 1
+      #NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist')
       
       
       utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
@@ -146,7 +143,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
           'Hjerneinfarkt, <80 utskr. kolesterolsenk.' = 
             length(which(RegDataI63leve$Alder<=80 & RegDataI63leve$UtStatinerLipid==1))/
             sum(RegDataI63leve$Alder<=80),
-          'Blodtrykksmedikament \nved utskriving' = length(which(RegData$UtBTsenk==1 & RegData$UtskrTil != 10))
+          'Blodtrykksmedikament \nved utskriving' = length(which(RegData$PostMedikBehHoytBT==1 & RegData$UtskrTil != 10))
               /sum(RegData$UtskrTil != 10),
           'Fått oppfølging eller død \netter 3 mnd.' = 
 					length(intersect(which(RegData$OppfolgUtf==1 | RegData$Dod98 == 1), ind90d))

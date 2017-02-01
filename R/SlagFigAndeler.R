@@ -399,7 +399,7 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		tittel <- 'Fokale utfall'
 		subtxt <- 'Andel med svar "ja" av alle totalt'
 	#Verdier 1,2,9. 0 kan forekomme.
-		variableOrig <- c('Facialisparese', 'Beinparese', 'Armparese', 'SpraakTaleproblem', 
+		variableOrig <- c('Facialisparese', 'Beinparese', 'Armparese', 'Spraakproblem', 
 				'AndreFokaleSympt')
 		variable <- c('Facialisparese01', 'Beinparese01', 'Armparese01', 'Spraakproblem01', 
 				'AndreFokaleSympt01')

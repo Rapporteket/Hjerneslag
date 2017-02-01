@@ -7,8 +7,9 @@ rm(list=ls())
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-09-19.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 
-HovedSkjema <- read.table('C:/Registre/HjerneslagD/Akuttskjema2017-01-24.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-OppfSkjema <- read.table('C:/Registre/HjerneslagD/AkuttskjemaOppfolging2017-01-24.csv', sep=';', 
+HovedSkjema <- read.table('C:/Registre/Hjerneslag/data/Akuttskjema2017-01-24.csv', sep=';', 
+                          header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+OppfSkjema <- read.table('C:/Registre/Hjerneslag/data/AkuttskjemaOppfolging2017-01-24.csv', sep=';', 
                          header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 #Bør lage automatisk sjekk for hvilke variabelnavn som finnes i begge datasett
@@ -44,7 +45,7 @@ enhetsUtvalg <- 0 	#0-hele landet, 1-egen enhet mot resten av landet, 2-egen enh
 
 
 #--------------------------------------SAMLERAPPORT-----------------------------------
-Last data
+#Last data
 library(tools)
 library(Hjerneslag)
 library(knitr)

@@ -147,8 +147,8 @@ SlagFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='30
   }
   if (valgtVar == 'UtBT') {
     #Bare levende pasienter og de vi vet om har fått bt-medikament eller ikke.
-    RegData <- RegData[(which(RegData$UtskrTil != 10) & (RegData$PostMedHoytBT %in% 1:2)), ]
-    RegData$Variabel[which(RegData$PostMedHoytBT == 1)] <- 1 #-1:None, 1:Ja, 9:Ukjent, 2:Nei
+    RegData <- RegData[(which(RegData$UtskrTil != 10) & (RegData$PostMedikBehHoytBT %in% 1:2)), ]
+    RegData$Variabel[which(RegData$PostMedikBehHoytBT == 1)] <- 1 #-1:None, 1:Ja, 9:Ukjent, 2:Nei
     VarTxt <- 'utskrevet med blodtrykksmedikament'
   }
   

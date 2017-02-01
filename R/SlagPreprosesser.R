@@ -13,18 +13,17 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
   #Definerer operator
   "%u%" <- union
   
-  #Kun ferdigstilte registreringer:
+  #-----Kun ferdigstilte registreringer:
   # Rapporteket får kun levert ferdigstilte registreringer
   #Kjønn
   RegData$erMann[RegData$PatientGender == 'Female'] <- 0
   RegData$erMann[RegData$PatientGender == 'Male'] <- 1
-  #RegData$erMann <- 0
-	#RegData$erMann[RegData$Kjonn == 'M'] <- 1	#kjVar <- 'Kjonn'
-  
-  #Riktig navn på regions-variabel:
-  #RegData$Region <- RegData$RHF   #
-  
-  #-------Riktig format på datovariable, samt identifisere registreringer som ikke har gyldig tidspunkt
+
+	#-----Navneendringer gjøres i spørring... Vanskelig for lokal kjøring...
+  names(RegData)[which(names(RegData))=='PatientAge'] <- 'Alder'
+  names(RegData)[which(names(RegData))=='UnitId'] <-  'ReshId'
+
+  #-----Riktig format på datovariable, samt identifisere registreringer som ikke har gyldig tidspunkt
 	RegData$InnDato <- as.Date(RegData$Innleggelsestidspunkt, format="%Y-%m-%d") # %H:%M:%S" )	#"%d.%m.%Y"	"%Y-%m-%d"
 	
 	RegData$Innleggelsestidspunkt <- strptime(RegData$Innleggelsestidspunkt, "%Y-%m-%d %H:%M:%S")
@@ -76,47 +75,59 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 	
 	
 	
-	
-	#Div. variabel"mapping" -> Navneendringer gjøres i spørring
-	#RegData$PreMedikBehHoytBT <- RegData$PreMedHoytBT 
-	#RegData$PreKalsiumanatgonist <- RegData$PreKalsiumantagonist
-	
-#	indAfasi <- which(RegData$Afasi %in% c(1,2,9))
-#	RegData$SpraakTaleproblem[indAfasi] <- RegData$Afasi[indAfasi]
-
-	#Da har vi ikke sikret oss mot evt. «villregistrering» i SpraakTaleproblem.
-	#Evt. kan vi gjøre sånn:
-#	indAfasi <- which(RegData$Afasi %in% c(1,2,9))
-#	indSprTale <- which(RegData$ SpraakTaleproblem %in% c(1,2,9))
-#	RegData$Spraakproblem <- -1
-#	RegData$Spraakproblem[indSprTale] <- RegData$SpraakTaleproblem[indSprTale]
-	#	RegData$Spraakproblem[indAfasi] <- RegData$Afasi[indAfasi]
-
-#BT-senkende ved innkomst
+#-------BT-senkende ved innkomst
 #Variabelen PreMedikBehHoytBT er verdiløs, dvs. feil ift hva som er reg. i de enkelte BT-variable
+#Ny variabel(?): PreMedHoytBT - denne ser også ut til å være fullstendig feil...
 NavnBTsenk <- c('PreDiuretica','PreACEhemmer', 'PreA2Antagonist', 'PreBetablokker', 'PreKalsiumantagonist')
 RegData$PreBTsenk <- 9
 TF <- (RegData[ ,NavnBTsenk])==1
 RegData$PreBTsenk[rowSums(TF, na.rm=T)>0] <- 1
 Nei <- (RegData[ ,NavnBTsenk])==2
 RegData$PreBTsenk[rowSums(Nei, na.rm=T) == length(NavnBTsenk)] <- 2
-	indFor2016<- which(RegData$InnDato < as.Date('2016-01-01'))
-RegData$PreMedHoytBT[indFor2016] <- RegData$PreBTsenk[indFor2016]
+indFor2016<- which(RegData$InnDato < as.Date('2016-01-01'))
+RegData$PreMedikHoytBT[indFor2016] <- RegData$PreBTsenk[indFor2016]
+
+#TestData <- RegData[ , c(NavnBTsenk, 'PreBTsenk', 'PreMedHoytBT')]
+
 
 #BT-senkende ved utreise
 NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist')
 RegData$PostBTsenk <- 9
-TF <- (RegData[ ,NavnBTsenkUt])==1
+TF <- (RegData[ ,NavnBTsenkUt])==1  #TRUE for de som har minst en "ja"
 RegData$PostBTsenk[rowSums(TF, na.rm=T)>0] <- 1
-Nei <- (RegData[ ,NavnBTsenkUt])==2
+Nei <- (RegData[ ,NavnBTsenkUt])==2  #Nei for alle
 RegData$PostBTsenk[rowSums(Nei, na.rm=T) == length(NavnBTsenkUt)] <- 2
-RegData$PostMedHoytBT[indFor2016] <- RegData$PostBTsenk[indFor2016]
+RegData$PostMedikBehHoytBT[indFor2016] <- RegData$PostBTsenk[indFor2016] 
+
+#TestData <- RegData[ , c(NavnBTsenkUt, 'PostBTsenk', 'PostMedikBehHoytBT')]
+
+
+#---Platehemmende ved utreise: UtPlatehem
+NavnUtPlate <- c('UtASA', 'UtDipyridamol', 'UtKlopidogrel') 
+RegData$UtPlatehem <- 9
+TF <- (RegData[ ,NavnUtPlate])==1  #TRUE for de som har minst en "ja"
+RegData$UtPlatehem[rowSums(TF, na.rm=T)>0] <- 1
+Nei <- (RegData[ ,NavnUtPlate])==2  #Nei for alle
+RegData$UtPlatehem[rowSums(Nei, na.rm=T) == length(NavnUtPlate)] <- 2
+
+
+#---Antikoagulanter ved utreise: UtAntikoag
+#UtAntikoag	Kommer fra UtWarfarin og UtAndreEnnWarfarin
+NavnUtAntikoag <- c('UtWarfarin', 'UtAndreEnnWarfarin') 
+RegData$UtAntikoag <- 9
+TF <- (RegData[ ,NavnUtAntikoag])==1  #TRUE for de som har minst en "ja"
+RegData$UtAntikoag[rowSums(TF, na.rm=T)>0] <- 1
+Nei <- (RegData[ ,NavnUtAntikoag])==2  #Nei for alle
+RegData$UtAntikoag[rowSums(Nei, na.rm=T) == length(NavnUtAntikoag)] <- 2
+
+
+#Tidligere beregnet hos HN-IKT:
+#UtPlatehem	Kommer fra UtASA, UtDipyridamol og UtKlopidogrel: 
+#         Brukt i KvalInd, AndelGrVar og AndelTid. Def selv i Samledokumentene.
+#UtAntikoag	Kommer fra UtWarfarin og UtAndreEnnWarfarin
+#         Brukt i KvalInd, AndelGrVar og AndelTid, samt SlagSamleDok og -Land.
 
 
 
   return(invisible(RegData))
 }
-
-
-# RegData$ShNavn <- RegData$Avdeling	#factor(RegData$ReshId)
-

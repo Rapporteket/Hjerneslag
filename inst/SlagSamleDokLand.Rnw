@@ -370,10 +370,10 @@ de ulike medikamentene ut fra totalantallet.
 #ukjent - ingen 1'ere, minst 1 9'er.
 #NEI - alle =2
 SlagData$FAST <- 9
-ind1 <- which(SlagData[ ,c('Facialisparese', 'Armparese', 'SpraakTaleproblem', 'Beinparese')]==1, arr.ind=T)
+ind1 <- which(SlagData[ ,c('Facialisparese', 'Armparese', 'Spraakproblem', 'Beinparese')]==1, arr.ind=T)
 SlagData$FAST[ind1[,1]] <- 1
-SlagData$FAST[with(SlagData, which((Facialisparese+Armparese+SpraakTaleproblem+Beinparese)==8))] <- 2 
-#test: SlagData[1:50 ,c('Facialisparese', 'Armparese', 'SpraakTaleproblem', 'Beinparese','FAST')]
+SlagData$FAST[with(SlagData, which((Facialisparese+Armparese+Spraakproblem+Beinparese)==8))] <- 2 
+#test: SlagData[1:50 ,c('Facialisparese', 'Armparese', 'Spraakproblem', 'Beinparese','FAST')]
 SlagData$Facialisparese[SlagData$Facialisparese==0] <- 9
 SlagData$FAST <- factor(SlagData$FAST, levels=c(1,2,9))
 
@@ -388,9 +388,9 @@ StatusAkutt <- rbind(
 			#table(SlagDataUtv$Facialisparese[which(SlagDataUtv$Facialisparese %in% c(1,2,9))]),
 	'Armparese' = c(sum(SlagDataUtv$Armparese==1, na.rm=T), sum(SlagDataUtv$Armparese==9, na.rm=T), 
 				sum(SlagDataUtv$Armparese %in% c(1,2,9), na.rm=T)), #table(SlagDataUtv$Armparese),
-	'Språkproblemer' = c(sum(SlagDataUtv$SpraakTaleproblem==1, na.rm=T),
-								sum(SlagDataUtv$SpraakTaleproblem==9, na.rm=T),
-								sum(SlagDataUtv$SpraakTaleproblem %in% c(1,2,9), na.rm=T)),	#table(SlagDataUtv$SpraakTaleproblem),
+	'Språkproblemer' = c(sum(SlagDataUtv$Spraakproblem==1, na.rm=T),
+								sum(SlagDataUtv$Spraakproblem==9, na.rm=T),
+								sum(SlagDataUtv$Spraakproblem %in% c(1,2,9), na.rm=T)),	#table(SlagDataUtv$Spraakproblem),
 	'Beinparese' = c(sum(SlagDataUtv$Beinparese==1, na.rm=T), sum(SlagDataUtv$Beinparese==9, na.rm=T),
 					sum(SlagDataUtv$Beinparese %in% c(1,2,9), na.rm=T)), #table(SlagDataUtv$Beinparese),
 	'Minst ett FAST-symptom' = c(table(SlagDataUtv$FAST)[c(1,3)], sum(SlagDataUtv$FAST %in% c(1,2,9))),
@@ -517,22 +517,7 @@ N_AndreWarf <- length(which(SlagDataUtv$PreWarfarin==2 & SlagDataUtv$PreAndreEnn
 N_A2 <- sum(SlagDataUtv$PreBeggeAntikoag == 1, na.rm=T)
 
 #BT-senkende
-#N_BTsenk <- sum(SlagDataUtv$PreBTsenk == 1) Torunn: kommentert ut og endret
 N_BTsenk <- sum(SlagDataUtv$PreMedHoytBT == 1)
-
-#SlagDataUtv$PreBTsenkSum <- rowSums(SlagDataUtv[ ,NavnBTsenk], na.rm=T)Torunn: kommentert ut og endret
-#SlagDataUtv$PreBTsenkSum <- rowSums(SlagDataUtv[ ,PreMedHoytBT], na.rm=T)
-#Gir verdiene c(5:10,13:17,21:24,29:31,37,38,45), hvorav 8 betyr kun to, 9 kun én, 10 ingen
-#indIngen <- which(SlagDataUtv$PreBTsenkSum == 10) Torunn: Kommentert ut linje 525-530
-#ind1kun <- which(SlagDataUtv$PreBTsenkSum == 9)
-#ind2kun <- which(SlagDataUtv$PreBTsenkSum == 8)
-#ind3kun <- which(SlagDataUtv$PreBTsenkSum == 7)
-#ind4kun <- which(SlagDataUtv$PreBTsenkSum == 6)
-#indAlle <- which(SlagDataUtv$PreBTsenkSum == 5)
-
-#indSjekk <- setdiff(1:N_BTsenk, unique(c(ind1kun, ind2kun, ind3kun, ind4kun, indAlle)))
-#N_DiuA2 <- length(intersect(which(SlagDataUtv$PreDiuretica==1 | SlagDataUtv$PreA2Antagonist==1), ind2kun))
-#osv...
 
 MedBehPrePst <- 100*rbind( 
 	'Platehemmende beh.' = c(N_Plate , sum(SlagDataUtv$PrePlatehemmere == 9))/Nutv,
@@ -546,16 +531,6 @@ MedBehPrePst <- 100*rbind(
 	'...Andre perorale antikoag.' = c(N_AndreWarf, NA)/N_Anti, 
 	
 	'BT-senkende' = c(N_BTsenk/Nutv, sum(SlagDataUtv$PreBTsenk == 9, na.rm=T)/Nutv),
-	#'...Diuretica' = c(length(intersect(which(SlagDataUtv$PreDiuretica==1), ind1kun))/N_BTsenk , NA),
-	#'...ACE-hemmer' = c(length(intersect(which(SlagDataUtv$PreACEhemmer==1), ind1kun))/N_BTsenk , NA),
-	#'...A2-antagonist' = c(length(intersect(which(SlagDataUtv$PreA2Antagonist==1), ind1kun))/N_BTsenk , NA),
-	#'...Betablokker' = c(length(intersect(which(SlagDataUtv$PreBetablokker==1), ind1kun))/N_BTsenk , NA),
-	#'...Kalsiumantagonist' = c(length(intersect(which(SlagDataUtv$PreKalsiumanatgonist==1), ind1kun))/N_BTsenk , NA),
-	#'...Komb. 2 BT-senkende' = c(length(ind2kun)/N_BTsenk, NA),
-	#'...Komb. 3 BT-senkende' = c(length(ind3kun)/N_BTsenk, NA),
-	#'...Komb. 4 BT-senkende' = c(length(ind4kun)/N_BTsenk, NA),
-	#'...Komb. alle BT-senkende' = c(length(indAlle)/N_BTsenk, NA),Torunn: kommentert ut linje 549-557
-
 	'Statin-Lipidsenkende' = table(SlagDataUtv$PreStatinerLipid)[c(1,3)]/Nutv
 	#'Medikamentell behandling?' = table(SlagDataUtv$PreIngenMedikam, useNA='a') 
 	)
@@ -985,22 +960,14 @@ dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkHjerte', dato
 
 <<'UtMedBehandling',echo=FALSE, results='asis', eval=T>>= 
 #Medikamentell behandling ved utreise, dvs. tot tre.
-#HER PROGRAMMERES SOM OM variabelen ASA+Dipyridamol er tatt bort. Sånn vil det være fra 1.januar 2014.
-
-#PLATEHEMMERE
-NavnPlatehemmereUt <- c('UtASA','UtKlopidogrel','UtDipyridamol')
-SlagData$UtPlatehemmere <- 9
-TF <- (SlagData[ ,NavnPlatehemmereUt])==1
-SlagData$UtPlatehemmere[rowSums(TF)>0] <- 1	#Alle som har "ja" på minst en av variablene.
-Nei <- (SlagData[ ,NavnPlatehemmereUt])==2
-SlagData$UtPlatehemmere[which(rowSums(Nei) == length(NavnPlatehemmereUt))] <- 2 #Må ha "nei" på alle variablene.
+#Variabelen ASA+Dipyridamol er tatt bort fra 1.januar 2014.
 
 #ANTIKOAGULASJON
 SlagData$UtAntikoagsum <- factor(with(SlagData, UtWarfarin+UtAndreEnnWarfarin), levels=c(2,3,4,10,11,18))	#Gir 2,3,4,10,11,18
 SlagData$UtBeggeAntikoag <- c(1,2,2,9,9,9)[SlagData$UtAntikoagsum]
 SlagData$UtAntikoagul <- c(1,1,2,1,9,9)[SlagData$UtAntikoagsum]
 
-SlagData$AntitrombotiskSum <- as.factor(with(SlagData, UtPlatehemmere+UtAntikoagul) )		#Platehemmende eller antikoagulerende
+SlagData$AntitrombotiskSum <- as.factor(with(SlagData, UtPlatehem+UtAntikoagul) )		#Platehemmende eller antikoagulerende
 SlagData$Antitrombotisk <- c(1,1,2,1,9,9)[SlagData$AntitrombotiskSum]
 
 #PLATEHEMMERE OG ANTIKOAGULASJON FOR I63 og levende utskrevet
@@ -1012,7 +979,7 @@ SlagDataI63Utv <- SlagDataI63
 Nutv <- dim(SlagDataI63Utv)[1]
 
 #PLATEHEMMERE
-N_PlateI63ut <- sum(SlagDataI63Utv$UtPlatehemmere == 1, na.rm=T)
+N_PlateI63ut <- sum(SlagDataI63Utv$UtPlatehem == 1, na.rm=T)
 N_Ai63ut <- length(which(with(SlagDataI63Utv, ((UtASA == 1 & UtKlopidogrel == 2) & UtDipyridamol == 2)))) 
 N_Di63ut <- length(which(with(SlagDataI63Utv, ((UtASA == 2 & UtKlopidogrel == 2) & UtDipyridamol == 1)))) 
 N_Ki63ut <- length(which(with(SlagDataI63Utv, ((UtASA == 2 & UtKlopidogrel == 1) & UtDipyridamol == 2)))) 
@@ -1026,7 +993,7 @@ N_AndreWarfI63ut <- length(which(with(SlagDataI63Utv, UtWarfarin == 2 & UtAndreE
 
 MedBehUtPlateAntiPstI63 <- 100*rbind( 
 	'Antitrombotisk beh.' = (table(factor(SlagDataI63Utv$Antitrombotisk, levels=c(1,2,9)))[c(1,3)])/Nutv,
-	'Platehemmende beh.' = c(N_PlateI63ut , sum(SlagDataI63Utv$UtPlatehemmere == 9))/Nutv,
+	'Platehemmende beh.' = c(N_PlateI63ut , sum(SlagDataI63Utv$UtPlatehem == 9))/Nutv,
 	'...ASA' = c(N_Ai63ut, NA)/N_PlateI63ut,
 	'...Dipyridamol'= c(N_Di63ut, NA)/N_PlateI63ut,
 	'...Klopidogrel' = c(N_Ki63ut, NA)/N_PlateI63ut,
@@ -1091,42 +1058,12 @@ xtable(MedBehUtDivPst, digits=1, align=c('l', 'r'),
 #BT-senkende
 #NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist') Torunn: kommentert ut linje 1092-1113
  
-#SlagData$UtBTsenk <- 9
-#TF <- (SlagData[ ,NavnBTsenkUt])==1		#TRUE for de som har minst en "ja"
-#SlagData$UtBTsenk[rowSums(TF)>0] <- 1
-#Nei <- (SlagData[ ,NavnBTsenkUt])==2
-#SlagData$UtBTsenk[rowSums(Nei) == length(NavnBTsenkUt)] <- 2	#Nei for alle
 
-#SlagData$UtBTsenkSum <- rowSums(SlagData[ ,NavnBTsenkUt])
-#Gir verdiene c(5:10,13:17,21:24,29:31,37,38,45), hvorav 8 betyr kun to, 9 kun én, 10 ingen
 
-#SlagDataUtv <- SlagData
-#Nutv <- dim(SlagDataUtv)[1]
-
-#indIngen <- which(SlagDataUtv$UtBTsenkSum == 10)
-#ind1kun <- which(SlagDataUtv$UtBTsenkSum == 9)
-#ind2kun <- which(SlagDataUtv$UtBTsenkSum == 8)
-#ind3kun <- which(SlagDataUtv$UtBTsenkSum == 7)
-#ind4kun <- which(SlagDataUtv$UtBTsenkSum == 6)
-#indAlle <- which(SlagDataUtv$UtBTsenkSum == 5)
-
-#N_BTsenkUt <- sum(SlagDataUtv$UtBTsenk == 1)
-N_BTsenkUt <- sum(SlagDataUtv$PostMedHoytBT == 1)
-#N_DiuA2 <- length(intersect(which(SlagDataUtv$UtDiuretica==1 | SlagDataUtv$UtA2Antagonist==1), ind2kun))
-#osv...
+N_BTsenkUt <- sum(SlagDataUtv$PostMedikBehHoytBT == 1)
 
 MedBehUtBTstatPst <- 100*rbind( 
-	'BT-senkende' = c(N_BTsenkUt, sum(SlagDataUtv$UtBTsenk == 9))/Nutv,
-#	'...Diuretica' = c(length(intersect(which(SlagDataUtv$UtDiuretica==1), ind1kun))/N_BTsenkUt , NA),
-#	'...ACE-hemmer' = c(length(intersect(which(SlagDataUtv$UtACEhemmer==1), ind1kun))/N_BTsenkUt , NA),
-#	'...A2-antagonist' = c(length(intersect(which(SlagDataUtv$UtA2Antagonist==1), ind1kun))/N_BTsenkUt , NA),
-#	'...Betablokker' = c(length(intersect(which(SlagDataUtv$UtBetablokker==1), ind1kun))/N_BTsenkUt , NA),
-#	'...Kalsiumantagonist' = c(length(intersect(which(SlagDataUtv$UtKalsiumantagonist==1), ind1kun))/N_BTsenkUt , NA),
-#	'...Komb. 2 BT-senkende' = c(length(ind2kun)/N_BTsenkUt, NA),
-#	'...Komb. 3 BT-senkende' = c(length(ind3kun)/N_BTsenkUt, NA),
-#	'...Komb. 4 BT-senkende' = c(length(ind4kun)/N_BTsenkUt, NA),
-#	'...Komb. alle BT-senkende' = c(length(indAlle)/N_BTsenkUt, NA),
-
+	'BT-senkende' = c(N_BTsenkUt, sum(SlagDataUtv$PostMedikBehHoytBT == 9))/Nutv,
 	'Statin-Lipidsenkende' = table(SlagDataUtv$UtStatinerLipid)[c(1,3)]/Nutv
 	)
 
