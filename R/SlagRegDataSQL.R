@@ -137,15 +137,8 @@ FROM
 LEFT JOIN AkuttskjemaOppfolging o
 ON a.SkjemaGUID = o.HovedskjemaGUID
 
-                 WHERE cast(Innleggelsestidspunkt AS date) >= \'', datoFra, '\' AND 
-                  cast(Innleggelsestidspunkt AS date) <= \'', datoTil, '\'')
+WHERE cast(Innleggelsestidspunkt AS date) BETWEEN \'', datoFra, '\' AND \'', datoTil, '\'')
  
-
-
-
-
-#TidInnTrombolyse, - feil format
-  
   RegData <- rapbase::LoadRegData(registryName, query, dbType)
   
   return(RegData)

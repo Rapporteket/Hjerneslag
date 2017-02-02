@@ -25,7 +25,8 @@ OppfSkjema <- OppfSkjema[ ,c("HovedskjemaGUID", "SkjemaGUID", names(OppfSkjema)[
 SlagData <- merge(HovedSkjema, OppfSkjema, by.x='SkjemaGUID',by.y="HovedskjemaGUID", all.x = TRUE, all.y = FALSE)
 RegData <- SlagData
 
-names(SlagData)[grep('.x', names(SlagData))]
+
+
 
 #.---------------------- Sette parametre-----------------------------------
 
@@ -34,13 +35,13 @@ reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand) 
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2015-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2015-12-31'
+datoTil <- '2016-10-01'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 diagnose <- ''	#diagnose: 1,2,3  Infarkt(I61), Blødning(I63), Udefinert(I64), standard: '' (alt annet)
 innl4t <- '' 	#Innlagt innen 4t: 'Ja', 'Nei', standard:'' (alt annet)
 NIHSSinn <- ''	#NIHSS grupper: 1-6, tilsv. verdi: 0-5,6-10,11-15,..., standard: '' (alt annet)
 valgtMaal=''	#'Med' - median, alt annet gir gjennomsnitt
-enhetsUtvalg <- 0 	#0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+enhetsUtvalg <- 1 	#0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 
 
@@ -60,10 +61,9 @@ tools::texi2pdf('SlagSamleDok.tex')
 # Inndata til funksjon:
 
 #...NB: SkjemaID
-reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
 reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
 datoTil <- '2016-03-03'
-enhetsUtvalg <-7 #0-hele landet, 2-egen enhet, 7–egen region, 
+enhetsUtvalg <-0 #0-hele landet, 2-egen enhet, 7–egen region, 
 outfile <- paste('Registreringer',enhetsUtvalg, 'NY.pdf', sep='')	#Navn angis av Jasper
 
 SlagFigAntReg(RegData=RegData,
@@ -75,7 +75,7 @@ SlagFigAntReg(RegData=RegData,
 #------------------------------ Andeler flere var --------------------------
 #------------------------------ (erstatter Fordelinger) --------------------------
 
-valgtVar <- 'Slagdiagnose'	#Må velge... Alder, Transportmetode,
+valgtVar <- 'FokaleUtfAndre'	#Må velge... Alder, Transportmetode,
 		#AntDagerInnl, TidSymptInnlegg, TidSymptTrombolyse, TidInnleggTrombolyse
 		#NIHSSinnkomst, NIHSSendrTrombolyse, NIHSSendrTrombektomi
 		#NIHSSpreTrombolyse','NIHSSetterTrombolyse','NIHSSpreTrombektomi', 'NIHSSetterTrombektomi'
@@ -86,7 +86,7 @@ valgtVar <- 'Slagdiagnose'	#Må velge... Alder, Transportmetode,
 		#AvdForstInnlagtHvilken, AvdUtskrFraHvilken, UtskrTil
 		#FokaleUtf, FokaleUtfAndre,
 		#Tatt ut til egen: 'KvalInd', 
-outfile <- paste(valgtVar, '_ford.pdf', sep='')	#Navn angis av Jasper
+outfile <- paste0(valgtVar, '_ford.pdf')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/Hjerneslag")
 
 SlagFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,

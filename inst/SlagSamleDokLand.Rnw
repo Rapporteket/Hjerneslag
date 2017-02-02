@@ -203,11 +203,11 @@ xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAvdN)), na.rm=T)
 
 #Tabell med antall individer per år og sykehus
 #For fil med ett år:
-#PerPas <- unique(SlagData[ ,c('ShNavn', 'PasientId')])	#aggregate(SlagData$PasientId, by=SlagData[ ,c('ShNavn', 'PasientId')], FUN=length)
+#PerPas <- unique(SlagData[ ,c('ShNavn', 'PasientGUID')])	#aggregate(SlagData$PasientGUID, by=SlagData[ ,c('ShNavn', 'PasientGUID')], FUN=length)
 #tabPasN <- c(table(PerPas$ShNavn), dim(PerPas)[1])
 
 #Fil med flere år:
-PerPasAar <- unique(SlagData[ ,c('ShNavn','Aar', 'PasientId')])#aggregate(SlagData$PasientId, by=SlagData[ ,c('ShNavn', 'Aar','PasientId')], FUN=length)
+PerPasAar <- unique(SlagData[ ,c('ShNavn','Aar', 'PasientGUID')])#aggregate(SlagData$PasientGUID, by=SlagData[ ,c('ShNavn', 'Aar','PasientGUID')], FUN=length)
 tabPasAarN <- addmargins((table(PerPasAar[c('ShNavn','Aar')])))
 
 colnames(tabPasAarN)[dim(tabPasAarN)[2]] <- 'Totalt'

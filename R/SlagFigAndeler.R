@@ -410,17 +410,6 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		grtxt <- c('Facialisparese', 'Beinparese', 'Armparese', 'Språkproblem', 'Andre')
 		}
 	
-	if (valgtVar == 'FokaleUtfAndre'){
-		RegData <- RegData[which(RegData$AndreFokaleSympt==1), ]
-		#************************************Må endres ihht. formatering.
-		flerevar <- 1
-		retn <- 'H'
-		tittel <- 'Andre fokale utfall'
-		subtxt <- 'Andel med svar "ja" av "andre fokale utfall"'
-		variable <- c('Dysartri', 'Ataksi', 'Sensibilitetsutfall', 'Neglekt', 'Dobbeltsyn', 'Synsfeltutfall', 'Vertigo')
-		grtxt <- c('Dysartri', 'Ataksi', 'Sens.utfall', 'Neglekt', 'Dobbeltsyn', 'Synsfeltutfall', 'Vertigo')
-	}
-
 
 	
 if (valgtVar %in% c('Boligforhold3mnd','MRS3mnd', 'Royker3mnd', 'Sivilstatus3mnd')) {
@@ -488,6 +477,49 @@ if (medSml==1) {
 }
 
 
+ #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
+  if (valgtVar %in% c('FokaleUtfAndre')){
+    retn <- 'H'
+    utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
+    RegDataLand <- RegData
+    NHoved <-length(indHoved)
+    NRest <- length(indRest)
+
+    for (teller in 1:(medSml+1)) {
+      #  Variablene kjøres for angitt indeks, dvs. to ganger hvis vi skal ha sammenligning med Resten.
+      RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
+
+	if (valgtVar == 'FokaleUtfAndre'){
+		RegData <- RegData[which(RegData$AndreFokaleSympt==1), ]
+		tittel <- 'Andre fokale utfall'
+		subtxt <- 'Andel med svar "ja" av "andre fokale utfall"'
+		variable <- c('Dysartri', 'Ataksi', 'Sensibilitetsutfall', 'Neglekt', 'Dobbeltsyn', 'Synsfeltutfall', 'Vertigo')
+		grtxt <- c('Dysartri (fra 2016)', 'Ataksi', 'Sens.utfall', 'Neglekt', 'Dobbeltsyn', 'Synsfeltutfall', 'Vertigo')
+	    AntVar <- colSums(RegData[ ,variable], na.rm=T)
+        N <- dim(RegData)[1]
+		Ndys <- length(which(RegData$InnDato >= as.Date('2016-01-01'))) #Ei reg. før den tid
+        NVar <- c(Ndys, rep(N, length(variable)-1))
+}
+ 
+     #Generell beregning for alle figurer med sammensatte variable:
+      if (teller == 1) {
+        AntHoved <- AntVar
+        NHoved <- N #sum(NVar, na.rm=T)	#feil: max(NVar, na.rm=T)
+        Andeler$Hoved <- 100*AntVar/NVar
+      }
+      if (teller == 2) {
+        AntRest <- AntVar
+        NRest <- N #sum(NVar,na.rm=T)	#length(indRest)- Kan inneholde NA
+        Andeler$Rest <- 100*AntVar/NVar
+      }
+    } #end medSml (med sammenligning)
+  }	#end begrensning til valgtVar som inneholder flere variable
+
+
+
+
+
+
 
 
 
@@ -540,7 +572,7 @@ if (retn == 'H') {
 			border=c(fargeSh,NA), col=c(fargeSh,fargeRest), bty='n', pch=c(15,18), pt.cex=2, 
 			lwd=lwdRest,	lty=NA, ncol=1, cex=cexleg)
 		} else {	
-		legend('top', paste(shtxt, ' (N=', NHoved,')', sep=''), 
+		legend('top', paste0(shtxt, ' (N=', NHoved,')'), 
 			border=NA, fill=fargeSh, bty='n', ncol=1, cex=cexleg)
 		}
 }
@@ -555,11 +587,11 @@ if (retn == 'V' ) {
 # 	mtext(at=pos, grtxt3, side=1, las=1, cex=cexgr, adj=0.5, line=2.5)
 if (medSml == 1) {
 	points(pos, as.numeric(Andeler$Rest), col=fargeRest,  cex=2, pch=18) #c("p","b","o"), 
-	legend('top', c(paste(shtxt, ' (N=', NHoved,')', sep=''), paste(smltxt, ' (N=', NRest,')', sep='')), 
+	legend('top', c(paste0(shtxt, ' (N=', NHoved,')'), paste0(smltxt, ' (N=', NRest,')')), 
 		border=c(fargeSh,NA), col=c(fargeSh,fargeRest), bty='n', pch=c(15,18), pt.cex=2, lty=c(NA,NA), 
 		lwd=lwdRest, ncol=2, cex=cexleg)
 	} else {	
-	legend('top', paste(shtxt, ' (N=', NHoved,')', sep=''), 
+	legend('top', paste0(shtxt, ' (N=', NHoved,')'), 
 		border=NA, fill=fargeSh, bty='n', ncol=1, cex=cexleg)
 	}
 } 

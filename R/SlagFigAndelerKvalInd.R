@@ -28,7 +28,8 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
   '%i%' <- intersect
   #------------Gjøre utvalg-------------------------
   
-  datoFra <- max(as.POSIXlt(datoFra, format="%Y-%m-%d"), as.POSIXlt('2014-01-01', format="%Y-%m-%d"))
+  #datoFra <- max(as.POSIXlt(datoFra, format="%Y-%m-%d"), as.POSIXlt('2014-01-01', format="%Y-%m-%d"))
+  datoFra <- max(as.Date(datoFra), as.Date('2014-01-01'))
   tittel <- 'Utvalgte kvalitetsindikatorer'
   
   #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
@@ -69,7 +70,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
                            '8' = which(RegData$Region == RegData$Region[indEgen1]))}	#region
     smltxt <- switch(as.character(enhetsUtvalg),
                      '1' = 'landet forøvrig',
-                     '6' = paste(RegData$Region[indEgen1], ' forøvrig', sep=''),	#RegData inneh. kun egen region
+                     '6' = paste0(RegData$Region[indEgen1], ' forøvrig'),	#RegData inneh. kun egen region
                      '8' = 'andre regioner')
     indRest <- switch(as.character(enhetsUtvalg),
                       '1' = which(as.numeric(RegData$ReshId) != reshID),
@@ -77,7 +78,6 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
                       '8' = which(RegData$Region != RegData$Region[indEgen1]))
   }								
     
-  
       
       #---------------------------------------------------------
       
@@ -134,8 +134,6 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
             length(intersect(which(RegDataI63$Trombolyse %in% c(1,3)),which(RegDataI63$Alder <=80)))/
             sum(RegDataI63$Alder <=80),	
           'Trombolyse innen 40 min.' = sum((RegData$TidInnleggTrombolyse <= 40), na.rm = TRUE)/Ntrombolyse,	#med i def: & (RegData$Trombolyse %in% c(1,3))
- #         'Trombolyse innen 40 min.' = sum((RegDataI63$TidInnleggTrombolyse <= 40) & (RegDataI63$Trombolyse %in% c(1,3)), na.rm = TRUE)
-  #        /Ntrombolyse,	#
           'Hjerneinfarkt, utskrevet med \nantitrombotisk behandling' = sum(RegDataI63leve$UtAntitrombotisk)/NI63leve,
           'Hjerneinfarkt, atrieflimmer, \nutskrevet med antikoagulasjon' = 
             length(unique(which(RegDataI63leve[indAtrI63leve ,Antikoag]==1, arr.ind=T)[,1]))/
@@ -220,31 +218,25 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
       tl2 <- 0.1
       mtext(at=pos[7]+tl1, expression('Hjerneinfarkt,' ~ symbol("\243") ~ '80 år'), side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
       mtext(at=pos[7]-tl2, 'trombolysebehandlet', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      #mtext(at=pos[5]+tl1, 'Hjerneinfarkt, utskrevet med', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      #mtext(at=pos[5]-tl2, 'antitrombotisk behandling', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      #mtext(at=pos[4]+tl1, 'Hjerneinfarkt, atrieflimmer', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      #mtext(at=pos[4]-tl2, 'utskrevet med antikoagulasjon', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
       mtext(at=pos[3]+tl1, expression('Hjerneinfarkt,' ~ ''<=80 ~ 'år utskrevet med'), side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
       mtext(at=pos[3]-tl2, 'kolesterolsenkende behandling', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      #mtext(at=pos[2]+tl1, 'Blodtrykksmedikament', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
-      #mtext(at=pos[2]-tl2, 'ved utskrivning', side=2, las=1, cex=cexmtxt, adj=1, line=0.25)
       
       
       if (medSml == 1) {
         points(as.numeric(rev(Andeler$Rest)), pos, col=fargeRest,  cex=lwdRest, pch=18) #c("p","b","o"), 
-        legend('top', c(paste(shtxt, ' (N=', Nsh,')', sep=''), paste(smltxt, ' (N=', NRest,')', sep='')), 
+        legend('top', c(paste0(shtxt, ' (N=', Nsh,')'), paste0(smltxt, ' (N=', NRest,')')), 
                border=c(fargeSh,NA), col=c(fargeSh,fargeRest), bty='n', pch=c(15,18), pt.cex=lwdRest, 
                lwd=lwdRest, lty=NA, ncol=1, cex=cexmtxt)	#	
       } else {	
-        legend('top', paste(shtxt, ' (N=', Nsh,')', sep=''), 
+        legend('top', paste0(shtxt, ' (N=', Nsh,')'), 
                border=NA, fill=fargeSh, bty='n', ncol=1, cex=cexmtxt)
-        andeltxt <- paste(sprintf('%.1f',as.numeric(Andeler$Hoved)), '%',sep='')
+        andeltxt <- paste0(sprintf('%.1f',as.numeric(Andeler$Hoved)), '%')
         andeltxt[indGrUt] <-''
         text(x=rev(as.numeric(Andeler$Hoved))+1, y=pos+0.1, rev(andeltxt), 
              las=1, cex=cexNpst, adj=0, col=farger[1])	#Andeler
       }
-      Ngrtxt <- paste('N=', Ngr, sep='')	#
-      Ngrtxt[indGrUt] <- paste('N<', Ngrense, sep='')	#paste(' (<', Ngrense,')',sep='')	#
+      Ngrtxt <- paste0('N=', Ngr)	#
+      Ngrtxt[indGrUt] <- paste0('N<', Ngrense)	#paste0(' (<', Ngrense,')')	#
       text(1,pos, rev(Ngrtxt), adj=0, cex=cexNpst, col=farger[4])	#Antall skrives på hver søyle
       
       

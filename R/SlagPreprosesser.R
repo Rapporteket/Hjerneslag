@@ -20,9 +20,16 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
   RegData$erMann[RegData$PatientGender == 'Male'] <- 1
 
 	#-----Navneendringer gjøres i spørring... Vanskelig for lokal kjøring...
-  names(RegData)[which(names(RegData))=='PatientAge'] <- 'Alder'
-  names(RegData)[which(names(RegData))=='UnitId'] <-  'ReshId'
+  names(RegData)[which(names(RegData)=='PatientAge')] <- 'Alder'
+  names(RegData)[which(names(RegData)=='UnitId')] <-  'ReshId'
+  names(RegData)[which(names(RegData)=='Helseenhet')] <- 'Avdeling'
 
+  #-----Endre format 
+  var <- c('Ataksi', 'Dysartri','Dobbeltsyn','Neglekt','NIHSSikkeUtfort',
+                            'PreIngenMedikam', 'Sensibilitetsutfall','Synsfeltutfall','Vertigo')
+  for (k in var) {RegData[ ,k] <- as.logical(RegData[ ,k]) }
+  #Bruke sapply?
+  
   #-----Riktig format på datovariable, samt identifisere registreringer som ikke har gyldig tidspunkt
 	RegData$InnDato <- as.Date(RegData$Innleggelsestidspunkt, format="%Y-%m-%d") # %H:%M:%S" )	#"%d.%m.%Y"	"%Y-%m-%d"
 	
@@ -42,14 +49,19 @@ SlagPreprosess <- function(RegData=RegData, reshID=reshID)
 	indUtTrombStart <- which(SjekkTidsPktTrombStart == '00:00') %u% which(!(RegData$Trombolyse %in% c(1,3)))  #Bare de som har fått trombolyse
 #	                %u% which(RegData$Slagdiagnose!=2)  #Bare de med hjerneinfarkt (ikke fra sept.2016)
 	
+	
+	
 	#------Definere nye tidsvariable. Ugyldige tidspunkt settes til NA.
-	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut, units='hours'))
+	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, 
+	                                               RegData$Symptomdebut, units='hours'))
 	RegData$TidSymptInnlegg[indUtInnlegg %u% indUtSymptomdebut] <- NA   # %u% which(RegData$TidSymptInnlegg<0)
 	
-	RegData$TidInnleggTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Innleggelsestidspunkt, units='mins'))
+	RegData$TidInnleggTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, 
+	                                                    RegData$Innleggelsestidspunkt, units='mins'))
 	RegData$TidInnleggTrombolyse[indUtInnlegg %u% indUtTrombStart] <- NA  # %u% which(RegData$TidInnleggTrombolyse<0)
 	
-	RegData$TidSymptTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, RegData$Symptomdebut, units='hours'))
+	RegData$TidSymptTrombolyse <- as.numeric(difftime(RegData$TrombolyseStarttid, 
+	                                                  RegData$Symptomdebut, units='hours'))
 	RegData$TidSymptTrombolyse[indUtSymptomdebut %u% indUtTrombStart] <- NA   # %u% which(RegData$TidSymptTrombolyse<0)
 	
 	#Antall dager fra innleggelse til død

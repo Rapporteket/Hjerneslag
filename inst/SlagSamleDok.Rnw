@@ -214,24 +214,24 @@ xtable(tabAvdNEget, digits=0, align=c('l', rep('r', ncol(tabAvdNEget))),
 
 
 #Tabell med antall individer per år og sykehus
-#PerPas <- unique(SlagData[ ,c('ShNavn', 'PasientId')])	#aggregate(SlagData$PasientId, by=SlagData[ ,c('ShNavn', 'PasientId')], FUN=length)
-#PerPasAar <- aggregate(SlagData$PasientId, by=SlagData[ ,c('ShNavn', 'Aar','PasientId')], FUN=length)
+#PerPas <- unique(SlagData[ ,c('ShNavn', 'PasientGUID')])	#aggregate(SlagData$PasientGUID, by=SlagData[ ,c('ShNavn', 'PasientGUID')], FUN=length)
+#PerPasAar <- aggregate(SlagData$PasientGUID, by=SlagData[ ,c('ShNavn', 'Aar','PasientGUID')], FUN=length)
 #AntSlagPrPas <- table(PerPas$x)
 #AntPas <- length(PerPas$x)
 #tabPasAarN <- addmargins((table(PerPasAar[c('ShNavn','Aar')])))
 
 
 #Eget sykehus
-#PerPasEget <- table(as.character(SlagDataEget$PasientId))	#aggregate(SlagDataEget$PasientId, by=SlagDataEget[ ,c('ShNavn', 'PasientId')], FUN=length)
-PerPasAarEget <- unique(SlagDataEget[,c('Aar','PasientId')])	#aggregate(SlagDataEget$PasientId, by=SlagDataEget[ ,c('Aar','PasientId')], FUN=length)
+#PerPasEget <- table(as.character(SlagDataEget$PasientGUID))	#aggregate(SlagDataEget$PasientGUID, by=SlagDataEget[ ,c('ShNavn', 'PasientGUID')], FUN=length)
+PerPasAarEget <- unique(SlagDataEget[,c('Aar','PasientGUID')])	#aggregate(SlagDataEget$PasientGUID, by=SlagDataEget[ ,c('Aar','PasientGUID')], FUN=length)
 AntPasAarEget <- table(PerPasAarEget$Aar)
 #AntSlagPrPasEget <- table(PerPasEget)
-#PerPas <- table(as.character(SlagData$PasientId))	#aggregate(SlagDataEget$PasientId, by=SlagDataEget[ ,c('ShNavn', 'PasientId')], FUN=length)
-#PerPasAar <- aggregate(SlagData$PasientId, by=SlagData[ ,c('Aar','PasientId')], FUN=length)
-AntPasAar <- table(unique(SlagData[ ,c('PasientId','Aar')])$Aar)	#table(PerPasAar$Aar)
+#PerPas <- table(as.character(SlagData$PasientGUID))	#aggregate(SlagDataEget$PasientGUID, by=SlagDataEget[ ,c('ShNavn', 'PasientGUID')], FUN=length)
+#PerPasAar <- aggregate(SlagData$PasientGUID, by=SlagData[ ,c('Aar','PasientGUID')], FUN=length)
+AntPasAar <- table(unique(SlagData[ ,c('PasientGUID','Aar')])$Aar)	#table(PerPasAar$Aar)
 tabPasAarNEget <- rbind(
-		'Eget sykehus' = c(AntPasAarEget, length(unique(SlagDataEget$PasientId))),	#length(PerPasEget)),
-		'Alle sykehus' = c(AntPasAar, length(unique(SlagData$PasientId)))
+		'Eget sykehus' = c(AntPasAarEget, length(unique(SlagDataEget$PasientGUID))),	#length(PerPasEget)),
+		'Alle sykehus' = c(AntPasAar, length(unique(SlagData$PasientGUID)))
 			)
 colnames(tabPasAarNEget)[dim(tabPasAarNEget)[2]] <- 'Totalt'
 xtable(tabPasAarNEget, digits=0, align=c('l', rep('r', ncol(tabPasAarNEget))), 
