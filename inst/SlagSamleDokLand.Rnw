@@ -17,10 +17,7 @@
 \pagestyle{fancy}
 \usepackage{amsmath}
 
-%add rotating for plain tables
-\usepackage{rotating}
-
-%add rotating/landcape for pdf
+%add rotating for plain tables  \usepackage{rotating}  add rotating/landcape for pdf
 \usepackage{pdflscape}
 
 %add long tables
@@ -28,7 +25,6 @@
 \usepackage{afterpage} 
 \afterpage{\clearpage} %unngå sideskift etter floatflsuh
 %\restylefloat{figure} %gjør det mulig å angi H som parameter for plassering av floats
-
 
 %bytte font
 \renewcommand{\familydefault}{\sfdefault}
@@ -85,7 +81,6 @@
 knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
 knitr::opts_knit$set(root.dir = './')
 knitr::opts_chunk$set(fig.path='', fig.align='center', fig.show='hold', out.width='.7\\textwidth', cache=FALSE)
-	#out.heigth='.45\\pageheight', #
 @
 
 <<'LasteData', echo=FALSE, eval=T>>=
@@ -181,14 +176,19 @@ Dette kapitlet inneholder resultater for:
 %Alle registreringer
 For hele landet er det gjort registrering av innleggelser i perioden 
 \Sexpr{min(SlagData$InnDato)} til \Sexpr{max(SlagData$InnDato)}.
-Kvinner og menn utgjorde hhv. \Sexpr{tabKjPst[1]}\% og \Sexpr{tabKjPst[2]}\% av innleggelsene.
+Kvinner og menn utgjorde hhv. \Sexpr{tabKjPst['0']}\% og \Sexpr{tabKjPst['1']}\% av innleggelsene.
+Tabellene \ref{tab:AntReg} og \ref{tab:AntPasAar} viser henholdsvis antall registrerte slagtilfeller  
+og antall registrerte pasienter.
+
+
+
+
+
 
 
 <<'TabAlleReg', results='asis', echo=FALSE, eval=T>>=
 #Alle sykehus, flere år (mer enn ett...)
-#indSortSh <- order(levels(SlagData$ShNavn))	#Tror ikke denne er nødvendig...
 if (dim(table(SlagData$Aar)) > 1) {
-#	tabAvdN <- addmargins(as.table(ftable(SlagData[ ,c('ShNavn','Aar')]))[indSortSh,])
 	tabAvdN <- addmargins(as.table(ftable(SlagData[ ,c('ShNavn','Aar')])))
 	colnames(tabAvdN)[dim(tabAvdN)[2] ]<- 'Alle år'
 } else {
@@ -249,6 +249,7 @@ for hele landet. I beregningene for NIHSS ved innleggelse, er pasienter hvor det
 er krysset av for at NIHSS ikke er utført, tatt bort.
 
 \clearpage
+
 
 <<'Pasientkarakteristika',echo=FALSE, results='asis', eval=T>>= 
 
@@ -382,21 +383,17 @@ SlagData$Vaaken <- factor(SlagData$BevissthetsgradInnleggelse, levels=c(0:3,9))	
 SlagDataUtv <- SlagData
 
 StatusAkutt <- rbind(
-	'Våken v/innleggelsen' = c(table(SlagDataUtv$Vaaken)[c(1,5)], sum(SlagDataUtv$Vaaken %in% c(0:3,9))), #,
-	'Facialisparese' = c(sum(SlagDataUtv$Facialisparese==1, na.rm=T), sum(SlagDataUtv$Facialisparese==9, na.rm=T),
-					sum(SlagDataUtv$Facialisparese %in% c(1,2,9), na.rm=T)),
-			#table(SlagDataUtv$Facialisparese[which(SlagDataUtv$Facialisparese %in% c(1,2,9))]),
-	'Armparese' = c(sum(SlagDataUtv$Armparese==1, na.rm=T), sum(SlagDataUtv$Armparese==9, na.rm=T), 
-				sum(SlagDataUtv$Armparese %in% c(1,2,9), na.rm=T)), #table(SlagDataUtv$Armparese),
-	'Språkproblemer' = c(sum(SlagDataUtv$Spraakproblem==1, na.rm=T),
-								sum(SlagDataUtv$Spraakproblem==9, na.rm=T),
-								sum(SlagDataUtv$Spraakproblem %in% c(1,2,9), na.rm=T)),	#table(SlagDataUtv$Spraakproblem),
-	'Beinparese' = c(sum(SlagDataUtv$Beinparese==1, na.rm=T), sum(SlagDataUtv$Beinparese==9, na.rm=T),
-					sum(SlagDataUtv$Beinparese %in% c(1,2,9), na.rm=T)), #table(SlagDataUtv$Beinparese),
-	'Minst ett FAST-symptom' = c(table(SlagDataUtv$FAST)[c(1,3)], sum(SlagDataUtv$FAST %in% c(1,2,9))),
-	'Andre fokale slagsymptomer' = c(sum(SlagDataUtv$AndreFokaleSympt==1, na.rm=T), 
-								sum(SlagDataUtv$AndreFokaleSympt==9, na.rm=T),
-								sum(SlagDataUtv$AndreFokaleSympt %in% c(1,2,9), na.rm=T))	#table(SlagDataUtv$AndreFokaleSympt)
+	'Våken v/innleggelsen' = c(table(SlagDataUtv$Vaaken)[c('0','9')], sum(SlagDataUtv$Vaaken %in% c(0:3,9))),
+	'Facialisparese' = c(table(SlagDataUtv$Facialisparese)[c('1','9')], 
+	                     sum(SlagDataUtv$Facialisparese %in% c(1,2,9), na.rm=T)),
+	'Armparese' = c(table(SlagDataUtv$Armparese)[c('1','9')], sum(SlagDataUtv$Armparese %in% c(1,2,9), na.rm=T)),
+	'Språkproblemer' = c(table(SlagDataUtv$Spraakproblem)[c('1','9')],
+	                     sum(SlagDataUtv$Spraakproblem %in% c(1,2,9), na.rm=T)),
+	'Beinparese' = c(table(SlagDataUtv$Beinparese)[c('1','9')],
+	                 sum(SlagDataUtv$Beinparese %in% c(1,2,9), na.rm=T)), 
+	'Minst ett FAST-symptom' = c(table(SlagDataUtv$FAST)[c('1','9')], sum(SlagDataUtv$FAST %in% c(1,2,9))),
+	'Andre fokale slagsymptomer' = c(table(SlagDataUtv$AndreFokaleSympt)[c('1','9')],
+								sum(SlagDataUtv$AndreFokaleSympt %in% c(1,2,9), na.rm=T))
 )
 
 StatusAkuttPst <- 100*(StatusAkutt[,1:2]/StatusAkutt[,3])	
@@ -531,7 +528,7 @@ MedBehPrePst <- 100*rbind(
 	'...Andre perorale antikoag.' = c(N_AndreWarf, NA)/N_Anti, 
 	
 	'BT-senkende' = c(N_BTsenk/Nutv, sum(SlagDataUtv$PreBTsenk == 9, na.rm=T)/Nutv),
-	'Statin-Lipidsenkende' = table(SlagDataUtv$PreStatinerLipid)[c(1,3)]/Nutv
+	'Statin-Lipidsenkende' = table(SlagDataUtv$PreStatinerLipid)[c('1','9')]/Nutv
 	#'Medikamentell behandling?' = table(SlagDataUtv$PreIngenMedikam, useNA='a') 
 	)
 
@@ -801,8 +798,6 @@ TromO80 <- length(intersect(indTromb, indO80))
 AntInnTromI63 <- length(na.omit(SlagDataI63$TidInnleggTrombolyse))
 
 SlagDataI63$HjerneblInnen36timer <- factor(SlagDataI63$HjerneblInnen36timer, levels=1:2)
-#indSvarHjernebl36t <- which(SlagDataI63$HjerneblInnen36timer %in% 1:2)
-#Hjernebl36timer <- table(SlagDataI63$HjerneblInnen36timer[indSvarHjernebl36t])	#length(which(SlagDataI63$HjerneblInnen36timer[indI63]==1))
 Hjernebl36timer <- table(SlagDataI63$HjerneblInnen36timer[indTromb])	#length(which(SlagDataI63$HjerneblInnen36timer[indI63]==1))
 
 indTrombekt <- which(SlagDataI63$Trombektomi %in% c(1,3))	#Fått trombektomi
@@ -855,22 +850,19 @@ SlagDataUtv <- SlagData
 sumDiag <- sum(SlagDataUtv$Slagdiagnose %in% 1:3, na.rm=T)
 
 KritSupplTab <- rbind(
-	'CT/MR innen 12t' = c(sum(SlagDataUtv$CerebralCTInn == 1, na.rm=T), sum(SlagDataUtv$CerebralCTInn == 9, na.rm=T), 
-					sum(SlagDataUtv$CerebralCTInn %in% c(1,2,9), na.rm=T)), #table(SlagDataUtv$CerebralCTInn[which(SlagDataUtv$CerebralCTInn %in% c(1,2,9))]),
-	'Fokale utf m/pos. bildediag.' = c(sum(SlagDataUtv$AkutteFokaleutfallPosBilleddiag == 1, na.rm=T),
-					sum(is.na(SlagData$AkutteFokaleutfallPosBilleddiag)), dim(SlagDataUtv)[1]),
-	'Hjerneblødning (I61)' = c(sum(SlagDataUtv$Slagdiagnose ==1, na.rm=T), NA,  sumDiag),#c(SlagDiag[1], sum(SlagDiag[-1], na.rm=T), NA),
-	'Hjerneinfarkt (I63)' = c(sum(SlagDataUtv$Slagdiagnose ==2, na.rm=T), NA,  sumDiag),#c(SlagDiag[2], sum(SlagDiag[-2], na.rm=T), NA), 
-	'Uspes. slag (I64)' = c(sum(SlagDataUtv$Slagdiagnose ==3, na.rm=T), NA,  sumDiag),#c(SlagDiag[3], sum(SlagDiag[-3], na.rm=T), NA), 
-	'Svelgfunksjon vurdert' = c(sum(SlagDataUtv$SvelgtestUtfort==1,na.rm=T), 
-								sum(SlagDataUtv$SvelgtestUtfort==9, na.rm=T),
-								sum(SlagDataUtv$SvelgtestUtfort %in% c(1,2,9), na.rm=T)), #table(SlagDataUtv$SvelgtestUtfort[which(SlagDataUtv$SvelgtestUtfort %in% c(1,2,9))]),
-	'Mobilisert ila. 24t' = c(sum(SlagDataUtv$MobiliseringInnen24Timer==1, na.rm=T), 
-								sum(SlagDataUtv$MobiliseringInnen24Timer==9, na.rm=T),
-								sum(SlagDataUtv$MobiliseringInnen24Timer %in% c(1,2,9), na.rm=T)),#table(SlagDataUtv$MobiliseringInnen24Timer),
-	'Tverrfaglig vurdering' = c(sum(SlagDataUtv$TverrfagligVurdering==1, na.rm=T),	
-								sum(SlagDataUtv$TverrfagligVurdering==9, na.rm=T),
-								sum(SlagDataUtv$TverrfagligVurdering %in% c(1,2,9), na.rm=T))#table(SlagDataUtv$TverrfagligVurdering)
+	'CT/MR innen 12t' = c(table(SlagDataUtv$CerebralCTInn)[c('1','9')], 
+					sum(SlagDataUtv$CerebralCTInn %in% c(1,2,9), na.rm=T)), 
+#	'Fokale utf m/pos. bildediag.' = c(sum(SlagDataUtv$AkutteFokaleutfallPosBilleddiag == 1, na.rm=T),
+#					sum(is.na(SlagData$AkutteFokaleutfallPosBilleddiag)), dim(SlagDataUtv)[1]),
+	'Hjerneblødning (I61)' = c(sum(SlagDataUtv$Slagdiagnose ==1, na.rm=T), NA,  sumDiag),
+	'Hjerneinfarkt (I63)' = c(sum(SlagDataUtv$Slagdiagnose ==2, na.rm=T), NA,  sumDiag),
+	'Uspes. slag (I64)' = c(sum(SlagDataUtv$Slagdiagnose ==3, na.rm=T), NA,  sumDiag),
+	'Svelgfunksjon vurdert' = c(table(SlagDataUtv$SvelgtestUtfort)[c('1','9')],
+								sum(SlagDataUtv$SvelgtestUtfort %in% c(1,2,9), na.rm=T)), 
+	'Mobilisert ila. 24t' = c(table(SlagDataUtv$MobiliseringInnen24Timer)[c('1','9')],
+								sum(SlagDataUtv$MobiliseringInnen24Timer %in% c(1,2,9), na.rm=T)), 
+	'Tverrfaglig vurdering' = c(table(SlagDataUtv$TverrfagligVurdering)[c('1','9')],
+								sum(SlagDataUtv$TverrfagligVurdering %in% c(1,2,9), na.rm=T))
 )
 
 KritSupplPst <- 100*KritSupplTab[ ,1:2]/KritSupplTab[,3]
@@ -1064,7 +1056,7 @@ N_BTsenkUt <- sum(SlagDataUtv$PostMedikBehHoytBT == 1)
 
 MedBehUtBTstatPst <- 100*rbind( 
 	'BT-senkende' = c(N_BTsenkUt, sum(SlagDataUtv$PostMedikBehHoytBT == 9))/Nutv,
-	'Statin-Lipidsenkende' = table(SlagDataUtv$UtStatinerLipid)[c(1,3)]/Nutv
+	'Statin-Lipidsenkende' = table(SlagDataUtv$UtStatinerLipid)[c('1','9')]/Nutv
 	)
 
 		
