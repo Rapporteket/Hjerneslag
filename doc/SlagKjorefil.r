@@ -52,9 +52,10 @@ library(Hjerneslag)
 library(knitr)
 setwd('C:/ResultattjenesteGIT/Hjerneslag/inst')
 knit('SlagSamleDok.Rnw')
+#knit('SlagSamleDokLand.Rnw')
 
-#knit('SlagSamleDok_AlleTabOgKomm.Rnw')
 tools::texi2pdf('SlagSamleDok.tex')
+#tools::texi2pdf('SlagSamleDokLand.tex')
 
 #--------------------------------------AntStabel-----------------------------------
 

@@ -1,4 +1,3 @@
-
 #' Henter data registrert for Hjerneslag
 #'
 #' Henter data for Hjerneslagregisteret fra "staging"
@@ -139,7 +138,137 @@ ON a.SkjemaGUID = o.HovedskjemaGUID
 
 WHERE cast(Innleggelsestidspunkt AS date) BETWEEN \'', datoFra, '\' AND \'', datoTil, '\'')
  
-  RegData <- rapbase::LoadRegData(registryName, query, dbType)
+#RegData <- rapbase::LoadRegData(registryName, query, dbType)
+  
+  qAkutt <- paste0('SELECT
+AkutteFokaleutfallPosBilleddiag,
+AndreFokaleSympt,
+                   AntDagerInnl,
+                   Armparese,
+                   Ataksi,
+                   Atrieflimmer,
+                   AvdForstInnlagt,
+                   AvdForstInnlagtHvilken,
+                   AvdUtskrFra,
+                   AvdUtskrFraHvilken,
+                   Beinparese,
+                   BevissthetsgradInnleggelse,
+                   BildediagnostikkEkstrakranKar,
+                   BildediagnostikkHjerne,
+                   BildediagnostikkHjerte,
+                   BildediagnostikkIntraraniell,
+                   BoligforholdPre,
+                   BosituasjonPre,
+                   CerebralCTInn,
+                   DeathDate,
+                   Dobbeltsyn,
+                   Dysartri,
+                   Facialisparese,
+                   ForflytningPre,
+                   ForloepID,
+                   Helseenhet AS Avdeling,
+                   Hemikraniektomi,
+                   HjerneblInnen36timer,
+                   HjerneblodningsstoppBeh,
+                   HvorOppstoHjerneslaget,
+                   Innleggelsestidspunkt,
+                   MindreEnn4tSymptInnlegg,
+                   MobiliseringInnen24Timer,
+                   MRSPre,
+                   Neglekt,
+                   NIHSSetterTrombektomi,
+                   NIHSSetterTrombolyse,
+                   NIHSSikkeUtfort,
+                   NIHSSinnkomst,
+                   NIHSSpreTrombektomi,
+                   NIHSSpreTrombolyse,
+                   PaakledningPre,
+                   PatientAge AS Alder,
+                   PatientGender,
+                   PostMedikBehHoytBT,
+                   PreA2Antagonist,
+                   PreACEhemmer,
+                   PreAndreEnnWarfarin,
+                   PreASA,
+                   PreBetablokker,
+                   PreDiabetes,
+                   PreDipyridamol,
+                   PreDiuretica,
+                   PreIngenMedikam,
+                   PreKalsiumantagonist,
+                   PreKlopidogrel,
+                   PreMedHoytBT,
+                   PreStatinerLipid,
+                   PreWarfarin,
+                   RegistreringHjerterytme,
+                   RoykerPre,
+                   Sensibilitetsutfall,
+                   SivilstatusPre,
+                   Slagdiagnose,
+                   Spraakproblem,
+                   SvelgtestUtfort,
+                   Symptomdebut,
+                   Synsfeltutfall,
+                   TidlHjerneslag,
+                   TidlHjerneslagType,
+                   TidlHjerteinfarkt,
+                   TidlTIA,
+                   ToalettbesokPre,
+                   Transportmetode,
+                   Trombektomi,
+                   TrombektomiStarttidspunkt,
+                   Trombolyse,
+                   TrombolyseStarttid,
+                   TverrfagligVurdering,
+                   UnitId AS ReshId,
+                   UtA2Antagonist,
+                   UtACEhemmer,
+                   UtAndreEnnWarfarin,
+                   UtASA,
+                   UtBetablokker,
+                   UtDipyridamol,
+                   UtDiuretica,
+                   UtKalsiumantagonist,
+                   UtKlopidogrel,
+                   UtskrTil,
+                   UtStatinerLipid,
+                   UtWarfarin,
+                   VaaknetMedSymptom,
+                   Vertigo,
+                   UPPER(SkjemaGUID),
+    FROM Akuttskjema
+  WHERE cast(Innleggelsestidspunkt AS date) BETWEEN \'', datoFra, '\' AND \'', datoTil, '\'')
+
+  qOppf <-  paste0('SELECT
+    AarsakManglendeOppf,
+  Boligforhold3mnd,
+  Bosituasjon3mnd,
+  DagerInnleggelseTilDod,
+  DagerSymptDebutTilOppf,
+  Forflytning3mnd,
+  KjorerBilNaa,
+  KjorteBilForHjerneslag,
+  MRS3mnd,
+  OperertHalspulsaare,
+  OppfolgUtf,
+  Paakledning3mnd,
+  ReinnlagtTypeSlag,
+  Royker3mnd,
+  Sivilstatus3mnd,
+  SpraakTaleproblEtterHjslag,
+  SynsproblEtterHjslag,
+  Tilfredshet,
+  Toalettbesok3mnd,
+  YrkesaktivNaa,
+  YrkesaktivUnderHjerneslag2
+  UPPER(HovedskjemaGUID)
+FROM AkuttskjemaOppfolging')
+     
+ 
+  HovedSkjema <- rapbase::LoadRegData(registryName, qAkutt, dbType) #qAkuttskjema(datoFra = datoFra, datoTil = datoTil)   
+  OppfSkjema <- rapbase::LoadRegData(registryName, qOppf, dbType) #qOppfskjema(datoFra = datoFra, datoTil = datoTil) 
+  RegData <- merge(HovedSkjema, OppfSkjema, by.x='SkjemaGUID',by.y="HovedskjemaGUID", all.x = TRUE, all.y = FALSE)
+
   
   return(RegData)
 }
