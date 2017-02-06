@@ -261,7 +261,7 @@ AndreFokaleSympt,
   Toalettbesok3mnd,
   YrkesaktivNaa,
   YrkesaktivUnderHjerneslag2,
-  UPPER(HovedskjemaGUID) AS HovedSkjemaGUID
+  UPPER(HovedskjemaGUID) AS HovedskjemaGUID
 FROM AkuttskjemaOppfolging')
      
  
