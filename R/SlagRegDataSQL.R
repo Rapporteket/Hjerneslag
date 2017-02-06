@@ -235,7 +235,7 @@ AndreFokaleSympt,
    UtWarfarin,
    VaaknetMedSymptom,
    Vertigo,
-   UPPER(SkjemaGUID)
+   UPPER(SkjemaGUID)  AS SkjemaGUID
     FROM Akuttskjema
   WHERE cast(Innleggelsestidspunkt AS date) BETWEEN \'', datoFra, '\' AND \'', datoTil, '\'')
 
@@ -261,7 +261,7 @@ AndreFokaleSympt,
   Toalettbesok3mnd,
   YrkesaktivNaa,
   YrkesaktivUnderHjerneslag2,
-  UPPER(HovedskjemaGUID)
+  UPPER(HovedskjemaGUID) AS HovedSkjemaGUID
 FROM AkuttskjemaOppfolging')
      
  
