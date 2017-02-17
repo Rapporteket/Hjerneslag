@@ -1,3 +1,6 @@
+HovedSkjema <- read.table('C:/Registre/HjerneslagD/Akuttskjema2017-01-24.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+OppfSkjema <- read.table('C:/Registre/HjerneslagD/AkuttskjemaOppfolging2017-01-24.csv', sep=';', 
+                         header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 HovedSkjema <- read.table('C:/Registre/Hjerneslag/data/Akuttskjema2017-02-06.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 OppfSkjema <- read.table('C:/Registre/Hjerneslag/data/AkuttskjemaOppfolging2017-02-06.csv', sep=';', 
                          header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 

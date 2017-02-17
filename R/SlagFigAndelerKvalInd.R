@@ -47,7 +47,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
     #700388: Ullevål
   #Gjerne med fotnote om dette.
   fotnote <- ''
-  RegDataTromb <- RegData[which(RegData$Slagdiagnose==2),] #Bare hjerneinfarkt aktuell for trombolyse
+  RegDataTromb <- RegData[which(RegData$Slagdiagnose==2),] #Bare hjerneinfarkt aktuell for trombolyse - SKAL DETTE FJERNES????
   if (reshID %in% c(106340,106579)) { #StOlavs eller Orkdal
       RegDataTromb$ReshId[RegDataTromb$ReshId == 106579] <- 106340
       fotnote <- 'For trombolysebehandlede er St.Olavs og Orkdal slått sammen'

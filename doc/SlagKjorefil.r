@@ -164,9 +164,11 @@ FigGjsnTid(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, valgtVar=valgtVar
 
 
 #---------------------------Andeler for ulike grupper (sykehus)-----------------------------
-FigAndelerGrVar(RegData=SlagData, valgtVar=valgtVar, datoFra=datoFra, 
+valgtVar <- 'TrombolyseI63'
+outfile <- paste0(valgtVar, '_sh.png')
+SlagFigAndelerGrVar(RegData=SlagData, valgtVar=valgtVar, datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, enhetsUtvalg=enhetsUtvalg, reshID=reshID, outfile=outfile)
+		innl4t=innl4t, NIHSSinn=NIHSSinn, enhetsUtvalg=enhetsUtvalg,outfile=outfile)
 
 for (valgtVar in c('InnlSlagenh', 'BehSlagenhet', 'InnlInnen4eSymptom', 'SvelgtestUtfort', 
 		'TrombolyseI63', 'UtAntitrombotiskI63', 'UtAntikoagI63atrie', 'LipidI63u80', 'UtBT')) {

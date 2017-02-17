@@ -21,8 +21,10 @@ SlagPreprosess <- function(RegData=RegData)
 
 	#-----Navneendringer gjøres i spørring... Vanskelig for lokal kjøring...
   names(RegData)[which(names(RegData)=='PatientAge')] <- 'Alder'
-  names(RegData)[which(names(RegData)=='UnitId')] <-  'ReshId'
-  names(RegData)[which(names(RegData)=='Helseenhet')] <- 'Avdeling'
+ # names(RegData)[which(names(RegData)=='UnitId')] <-  'ReshId'
+  RegData$ReshId <- as.character(RegData$UnitId)
+  #names(RegData)[which(names(RegData)=='Helseenhet')] <- 'Avdeling'
+  RegData$Avdeling <- as.character(RegData$Helseenhet)
 
   #-----Endre format 
   var <- c('Ataksi', 'Dysartri','Dobbeltsyn','Neglekt','NIHSSikkeUtfort',
