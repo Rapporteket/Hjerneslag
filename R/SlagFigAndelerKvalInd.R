@@ -22,7 +22,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
   
   # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
   if (preprosess==1){
-    RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
+    RegData <- SlagPreprosess(RegData=RegData)
   }
   
   '%i%' <- intersect
@@ -38,46 +38,53 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
   RegData <- SlagUtvalg$RegData
   utvalgTxt <- SlagUtvalg$utvalgTxt
   
-  #Når bare skal sammenlikne med sykehusgruppe eller region, eller ikke sammenlikne, 
-  #trengs ikke data for hele landet:
-  reshID <- as.numeric(reshID)
-  indEgen1 <- match(reshID, RegData$ReshId)
-  if (enhetsUtvalg %in% c(2,6,7)) {	
-    RegData <- switch(as.character(enhetsUtvalg),
-                      '2' = RegData[which(RegData$ReshId == reshID),],	#kun egen enhet
-                      '6' = RegData[which(RegData$Region == as.character(RegData$Region[indEgen1])),],	#sml region
-                      '7' = RegData[which(RegData$Region == as.character(RegData$Region[indEgen1])),])	#kun egen region
+  #Vi ønsker at N ved Orkdal skal være med inn i beregningen for St. Olav:
+    #106340: St. Olavs Hospital
+    #106579: Orkdal sjukehus
+  #N for Lovisenberg og Diakonhjemmet skal være med inn i beregningen for Ullevål. 
+    #108926: Diakonhjemmet sykehus
+    #108278: Lovisenberg Diakonale sykehus
+    #700388: Ullevål
+  #Gjerne med fotnote om dette.
+  fotnote <- ''
+  RegDataTromb <- RegData[which(RegData$Slagdiagnose==2),] #Bare hjerneinfarkt aktuell for trombolyse
+  if (reshID %in% c(106340,106579)) { #StOlavs eller Orkdal
+      RegDataTromb$ReshId[RegDataTromb$ReshId == 106579] <- 106340
+      fotnote <- 'For trombolysebehandlede er St.Olavs og Orkdal slått sammen'
+  }
+  if (reshID %in% c(108926,108278,700388)) { #Diakonhjemmet, Lovisenberg, St. Olavs
+    RegDataTromb$ReshId[RegDataTromb$ReshId %in% c(108926,108278)] <- 700388
+    fotnote <- 'For trombolysebehandlede er Lovisenberg, Diakonhjemmet og Ullevål slått sammen'
   }
   
-  indEgen1 <- match(reshID, RegData$ReshId)
-  if (enhetsUtvalg %in% c(1,2,6)) {	#Involverer egen enhet
-    shtxt <- as.character(RegData$Avdeling[indEgen1]) } else {
-      shtxt <- switch(as.character(enhetsUtvalg), 	
-                      '0' = 'Hele landet',
-                      '7' = as.character(RegData$Region[indEgen1]),
-                      '8' = as.character(RegData$Region[indEgen1]))
-    }
-  
-  if (enhetsUtvalg %in% c(0,2,7)) {		#Ikke sammenlikning
-    medSml <- 0
-    indHoved <- 1:dim(RegData)[1]	#Tidligere redusert datasettet for 2,7. (+ 6)
+ 
+  #Når bare skal sammenlikne med sykehusgruppe eller region, eller ikke sammenlikne, 
+  #trengs ikke data for hele landet:
+	reshID <- as.numeric(reshID)
     indRest <- NULL
-  } else {						#Skal gjøre sammenlikning
-    medSml <- 1
-    if (enhetsUtvalg %in% c(1,6)) {	#Involverer egen enhet
-      indHoved <-which(as.numeric(RegData$ReshId)==reshID) } else {
-        indHoved <- switch(as.character(enhetsUtvalg),
-                           '8' = which(RegData$Region == RegData$Region[indEgen1]))}	#region
-    smltxt <- switch(as.character(enhetsUtvalg),
-                     '1' = 'landet forøvrig',
-                     '6' = paste0(RegData$Region[indEgen1], ' forøvrig'),	#RegData inneh. kun egen region
-                     '8' = 'andre regioner')
-    indRest <- switch(as.character(enhetsUtvalg),
-                      '1' = which(as.numeric(RegData$ReshId) != reshID),
-                      '6' = which(as.numeric(RegData$ReshId)!=reshID),	#RegData inneh. kun egen region
-                      '8' = which(RegData$Region != RegData$Region[indEgen1]))
-  }								
-    
+	indRestTromb <- NULL
+	medSml <- 0
+	indHoved <- 1:dim(RegData)[1]
+	indHovedTromb <- indHoved
+
+    if (enhetsUtvalg == 1) {
+		medSml <- 1
+		smltxt <- 'landet forøvrig'
+		indHoved <-which(as.numeric(RegData$ReshId)==reshID)
+		indRest <- which(as.numeric(RegData$ReshId) != reshID)
+		indHovedTromb <-which(as.numeric(RegDataTromb$ReshId)==reshID)
+		indRestTromb <- which(as.numeric(RegDataTromb$ReshId) != reshID)
+		}	
+
+	if (enhetsUtvalg == 2) { 
+		indHoved <-  which(RegData$ReshId == reshID)
+		indHovedTromb <- which(RegDataTromb$ReshId == reshID)	}
+ 
+    shtxt <- switch(as.character(enhetsUtvalg),
+		'0' = 'Hele landet',
+		'1' = as.character(RegData$Avdeling[match(reshID, RegData$ReshId)]),
+		'2' = as.character(RegData$Avdeling[match(reshID, RegData$ReshId)]))
+		
       
       #---------------------------------------------------------
       
@@ -90,17 +97,15 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
       RegData$UtAntitrombotisk <- 0
       RegData$UtAntitrombotisk[indAntitrombotisk] <- 1		#4884
       
-      #NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist')
-      
-      
       utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
       Andeler <- list(Hoved = 0, Rest =0)
-      
       RegDataLand <- RegData
+	  RegDataLandTromb <- RegDataTromb
       
       for (teller in 1:(medSml+1)) {
         #Variablene kjøres for angitt indeks, dvs. to ganger hvis vi skal ha sammenligning med Resten.
         RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
+        RegDataTromb <- RegDataLandTromb[switch(utvalg[teller], Hoved = indHovedTromb, Rest=indRestTromb), ]
         
         #Tar ut eget datasett for I63 (hjerneinfarkt)
         RegDataI63 <- RegData[which(RegData$Slagdiagnose==2), ]		#Slagdiagnose I63
@@ -131,8 +136,8 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
                                                  which(RegData$AvdUtskrFra==1)))/N,
           'Vurdert svelgfunksjon' = sum(RegData$SvelgtestUtfort %in% c(1,3))/N,		#Av alle, dvs. andel er  de som helt sikkert fått utf. svelgtest
           'Hjerneinfarkt, <=80 år, trombolysebehandlet' = 
-            length(intersect(which(RegDataI63$Trombolyse %in% c(1,3)),which(RegDataI63$Alder <=80)))/
-            sum(RegDataI63$Alder <=80),	
+            length(intersect(which(RegDataTromb$Trombolyse %in% c(1,3)),which(RegDataTromb$Alder <=80)))/
+            sum(RegDataTromb$Alder <=80),	
           'Trombolyse innen 40 min.' = sum((RegData$TidInnleggTrombolyse <= 40), na.rm = TRUE)/Ntrombolyse,	#med i def: & (RegData$Trombolyse %in% c(1,3))
           'Hjerneinfarkt, utskrevet med \nantitrombotisk behandling' = sum(RegDataI63leve$UtAntitrombotisk)/NI63leve,
           'Hjerneinfarkt, atrieflimmer, \nutskrevet med antikoagulasjon' = 
@@ -143,7 +148,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
             sum(RegDataI63leve$Alder<=80),
           'Blodtrykksmedikament \nved utskriving' = length(which(RegData$PostMedikBehHoytBT==1 & RegData$UtskrTil != 10))
               /sum(RegData$UtskrTil != 10),
-          'Fått oppfølging eller død \netter 3 mnd.' = 
+          'Oppfølging etter 3 mnd. \n (inkludert døde)' = 
 					length(intersect(which(RegData$OppfolgUtf==1 | RegData$Dod98 == 1), ind90d))
 					/length(ind90d)
           )
@@ -153,7 +158,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
         #Hvis vi ikke har sammenlikning, vil resultatet lagres i Andeler$Hoved 
         if (teller == 1) {Andeler$Hoved <- AndelerFlereVar
         Nsh <- dim(RegData)[1]
- 		Ngr <- c(N, N, N, sum(RegDataI63$Alder <=80), Ntrombolyse, NI63leve, length(indAtrI63leve),
+ 		Ngr <- c(N, N, N, sum(RegDataTromb$Alder <=80), Ntrombolyse, NI63leve, length(indAtrI63leve),
                  sum(RegDataI63leve$Alder<=80), sum(RegData$UtskrTil != 10), length(ind90d))
         }
         if (teller == 2) {Andeler$Rest <- AndelerFlereVar
@@ -243,6 +248,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
       title(tittel, font.main=1, cex.main=1.2, line=0.5) 
       #Tekst som angir hvilket utvalg som er gjort
       mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
+      mtext(fotnote, side=1, cex=0.8, adj=0, line=4)
       
       
       par('fig'=c(0, 1, 0, 1)) 

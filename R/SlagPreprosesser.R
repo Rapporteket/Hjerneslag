@@ -4,11 +4,11 @@
 #'
 #' @inheritParams SlagFigAndeler
 #'
-#' @return Data Dataramme med det filtrerte datasettet og sykehusnavnet som tilsvarer reshID
+#' @return Data Dataramme med beregnede og "omnavnede" variable
 #'
 #' @export
 #'
-SlagPreprosess <- function(RegData=RegData, reshID=reshID)
+SlagPreprosess <- function(RegData=RegData)
 {
   #Definerer operator
   "%u%" <- union

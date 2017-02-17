@@ -17,7 +17,7 @@
 \pagestyle{fancy}
 \usepackage{amsmath}
 
-%add rotating/landcape for pdf
+%add rotating for plain tables  \usepackage{rotating}  add rotating/landcape for pdf
 \usepackage{pdflscape}
 
 %add long tables
@@ -80,7 +80,7 @@
 <<setup, include=FALSE, cache=FALSE>>=
 knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
 knitr::opts_knit$set(root.dir = './')
-knitr::opts_chunk$set(fig.path='', fig.align='center', fig.show='hold', out.width='.8\\textwidth',cache=FALSE)
+knitr::opts_chunk$set(fig.path='', fig.align='center', fig.show='hold', out.width='.7\\textwidth', cache=FALSE)
 @
 
 <<'LasteData', echo=FALSE, eval=T>>=
@@ -91,17 +91,18 @@ if (!exists('SlagData')){
 
 
 <<'DatautvalgOgPreProsess',echo=FALSE, eval=T>>=
-# Preprosessere data:  
+# Preprosessere data. 
 SlagData <- SlagPreprosess(RegData=SlagData, reshID=reshID)
+SlagData$ShNavn <- as.factor(SlagData$Avdeling)	#factor(SlagData$ReshId)
 
 #Felles parametre:
 hentData <- 0
 preprosess <- 0
-enhetsUtvalg <- 1	#0-Hele landet, 1-Egen avd mot resten av landet, 2-Egen avd.
+enhetsUtvalg <- 0
 minald <- 0
 maxald <- 130
 datoFra <- '2013-01-01'	
-datoTil <- max(SlagData$InnDato)	#'2013-12-31'	#	#Parameteren brukes også i figurene.
+datoTil <- max(SlagData$InnDato)	#'2013-12-31'	#Parameteren brukes også i figurene.
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 diagnose <- ''	#diagnose: 1,2,3  Infarkt(I61), Blødning(I63), Udefinert(I64), standard: '' (alt annet)
 innl4t <- '' 	#Innlagt innen 4t: 'Ja', 'Nei', standard:'' (alt annet)
@@ -109,37 +110,30 @@ NIHSSinn <- ''	#NIHSS grupper: 1-6, tilsv. verdi: 0-5,6-10,11-15,..., standard: 
 			#Velges denne, blir registreringer hvor NIHSS ikke er utført, tatt bort.
 outfile <- ''
 
-figKrymp1 <- 0.75	#Skaleringsparameter for enkeltfigurer
-#s1 <- 0.85	
+#figKrymp1 <- 0.75	#Skaleringsparameter for enkeltfigurer
+s1 <- 0.55	#Skaleringsparameter for fordelingsfigurer
+sSh <- 0.85	#Skaleringsparameter for figurer med alle sykehus
 #s2 <- 0.7	#Skaleringsparameter for "dobbeltfigurer"
 library(xtable)
 
 #UTVALG
 SlagData <- SlagData[SlagData$erMann %in% 0:1, ]	#Tar ut registreringer som ikke har kjønn
-SlagData <- SlagData[(as.Date(SlagData$InnDato)>=as.Date(datoFra)) & (SlagData$InnDato<=as.Date(datoTil)), ] 
+SlagData <- SlagData[(SlagData$InnDato>=as.Date(datoFra)) & (SlagData$InnDato<=as.Date(datoTil)), ] 
 
 SlagData$Aar <- 1900 + strptime(SlagData$Innleggelsestidspunkt, format="%Y")$year
-
 N <- dim(SlagData)[1]
-tabKjPst <- round(table(SlagData$erMann)[c('0','1')]/N*100, digits=1)
+tabKjPst <- round(table(SlagData$erMann)/N*100, digits=1)
+indFra2014 <- which(SlagData$InnDato>=as.Date('2014-01-01'))
 
-ind <- list(Eget = which(SlagData$ReshId == reshID),
-			Alle = 1:N,
-			Fra2014 = which(SlagData$InnDato >= as.Date('2014-01-01')))
-SlagDataEget <- SlagData[ind$Eget, ]
-Neget <- dim(SlagDataEget)[1]
-#shtxt <- as.character(SykehusTab[which(SykehusTab$AvdRESH == reshID),'Avdeling'])
-shtxt <- as.character(SlagData$Avdeling[match(reshID, SlagData$ReshId)])
-tabKjPstEget <- round(table(SlagDataEget$erMann)[c('0','1')]/Neget*100, digits=1)
+dum <- SlagFigAndelerKvalInd(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, 
+	NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, outfile='FigKvalInd.pdf')
 
-dum <- SlagFigAndelerKvalInd(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, NIHSSinn=NIHSSinn, 
-			reshID=reshID, enhetsUtvalg, preprosess=preprosess, outfile='FigKvalInd.pdf')
 @
 
 \section{Innledning}
 Her presenteres en rekke tabeller og figurer som viser resultater fra Norsk Hjerneslagregister.
-Rapporten er utarbeidet \Sexpr{N} av Lena Ringstad Olsen ved SKDE, på bestilling fra ledelsen i Norsk Hjerneslagregister.
-I denne rapporten vises aggregerte tall for \textbf{\Sexpr{shtxt}} og for hele landet. 
+Rapporten er utarbeidet av Lena Ringstad Olsen ved SKDE, på bestilling fra ledelsen i Norsk Hjerneslagregister.
+I denne rapporten vises aggregerte tall for for hele landet. 
 Tabellene og figurene er basert
 på alle registrerte innleggelser i perioden \Sexpr{datoFra} til \Sexpr{datoTil}. 
 Alle figurer, og noen av tabellene, finner man igjen som forhåndsdefinerte figurer/tabeller 
@@ -160,11 +154,11 @@ For alle figurer i Rapporteket kan man gjøre følgende utvalg:
 \clearpage
 \section{Kvalitetsindikatorer}
 
+
 \begin{figure}[ht]
-{\centering \includegraphics[width= \Sexpr{1}\textwidth]{FigKvalInd.pdf} }
+\centerline{ \scalebox{\Sexpr{0.85}}{\includegraphics{FigKvalInd.pdf}}  }
 \caption{\label{fig:KvalInd} Utvalgte kvalitetsindikatorer}
 \end{figure}
-
 
 
 \clearpage
@@ -182,57 +176,44 @@ Dette kapitlet inneholder resultater for:
 %Alle registreringer
 For hele landet er det gjort registrering av innleggelser i perioden 
 \Sexpr{min(SlagData$InnDato)} til \Sexpr{max(SlagData$InnDato)}.
-Kvinner og menn utgjorde hhv. \Sexpr{tabKjPst[1]}\% og \Sexpr{tabKjPst[2]}\% av innleggelsene.
+Kvinner og menn utgjorde hhv. \Sexpr{tabKjPst['0']}\% og \Sexpr{tabKjPst['1']}\% av innleggelsene.
+Tabellene \ref{tab:AntReg} og \ref{tab:AntPasAar} viser henholdsvis antall registrerte slagtilfeller  
+og antall registrerte pasienter.
 
 
-%Eget sykehus
-Ved \Sexpr{shtxt} er det gjort registrering av innleggelser i perioden 
-\Sexpr{min(SlagDataEget$InnDato)} til \Sexpr{max(SlagDataEget$InnDato)}.
-Kvinner og menn utgjorde hhv. \Sexpr{tabKjPstEget[1]}\% og \Sexpr{tabKjPstEget[2]}\% av innleggelsene.
+
+
+
 
 
 <<'TabAlleReg', results='asis', echo=FALSE, eval=T>>=
-#indSortSh <- order(levels(SlagData$ShNavn))
-#tabAvdN <- addmargins(as.table(ftable(SlagData[ ,c('ShNavn','Aar')]))[indSortSh,])
-#rownames(tabAvdN)[dim(tabAvdN)[1] ]<- 'TOTALT, alle sykehus:'
-#colnames(tabAvdN)[dim(tabAvdN)[2] ]<- 'Alle år'
+#Alle sykehus, flere år (mer enn ett...)
+if (dim(table(SlagData$Aar)) > 1) {
+	tabAvdN <- addmargins(as.table(ftable(SlagData[ ,c('ShNavn','Aar')])))
+	colnames(tabAvdN)[dim(tabAvdN)[2] ]<- 'Alle år'
+} else {
+	tabAvdN <- addmargins(table(SlagData$ShNavn))
+}
+rownames(tabAvdN)[dim(tabAvdN)[1] ]<- 'TOTALT, alle sykehus:'
 
-
-#For bare Eget sykehus
-tabAvdNEget <- rbind(
-	'Eget sykehus' = c(table(SlagDataEget$Aar), Neget),
-	'Alle sykehus' = c(table(SlagData$Aar), N))
-colnames(tabAvdNEget)[dim(tabAvdNEget)[2]]<- 'Totalt:'
-
-xtable(tabAvdNEget, digits=0, align=c('l', rep('r', ncol(tabAvdNEget))), 
+xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAvdN)), na.rm=T))), 
 		caption='Antall registrerte slagtilfeller per år.',
-		label='tab:AntRegEget')
+		label='tab:AntReg')
 
 
 #Tabell med antall individer per år og sykehus
+#For fil med ett år:
 #PerPas <- unique(SlagData[ ,c('ShNavn', 'PasientGUID')])	#aggregate(SlagData$PasientGUID, by=SlagData[ ,c('ShNavn', 'PasientGUID')], FUN=length)
-#PerPasAar <- aggregate(SlagData$PasientGUID, by=SlagData[ ,c('ShNavn', 'Aar','PasientGUID')], FUN=length)
-#AntSlagPrPas <- table(PerPas$x)
-#AntPas <- length(PerPas$x)
-#tabPasAarN <- addmargins((table(PerPasAar[c('ShNavn','Aar')])))
+#tabPasN <- c(table(PerPas$ShNavn), dim(PerPas)[1])
 
+#Fil med flere år:
+PerPasAar <- unique(SlagData[ ,c('ShNavn','Aar', 'PasientGUID')])#aggregate(SlagData$PasientGUID, by=SlagData[ ,c('ShNavn', 'Aar','PasientGUID')], FUN=length)
+tabPasAarN <- addmargins((table(PerPasAar[c('ShNavn','Aar')])))
 
-#Eget sykehus
-#PerPasEget <- table(as.character(SlagDataEget$PasientGUID))	#aggregate(SlagDataEget$PasientGUID, by=SlagDataEget[ ,c('ShNavn', 'PasientGUID')], FUN=length)
-PerPasAarEget <- unique(SlagDataEget[,c('Aar','PasientGUID')])	#aggregate(SlagDataEget$PasientGUID, by=SlagDataEget[ ,c('Aar','PasientGUID')], FUN=length)
-AntPasAarEget <- table(PerPasAarEget$Aar)
-#AntSlagPrPasEget <- table(PerPasEget)
-#PerPas <- table(as.character(SlagData$PasientGUID))	#aggregate(SlagDataEget$PasientGUID, by=SlagDataEget[ ,c('ShNavn', 'PasientGUID')], FUN=length)
-#PerPasAar <- aggregate(SlagData$PasientGUID, by=SlagData[ ,c('Aar','PasientGUID')], FUN=length)
-AntPasAar <- table(unique(SlagData[ ,c('PasientGUID','Aar')])$Aar)	#table(PerPasAar$Aar)
-tabPasAarNEget <- rbind(
-		'Eget sykehus' = c(AntPasAarEget, length(unique(SlagDataEget$PasientGUID))),	#length(PerPasEget)),
-		'Alle sykehus' = c(AntPasAar, length(unique(SlagData$PasientGUID)))
-			)
-colnames(tabPasAarNEget)[dim(tabPasAarNEget)[2]] <- 'Totalt'
-xtable(tabPasAarNEget, digits=0, align=c('l', rep('r', ncol(tabPasAarNEget))), 
+colnames(tabPasAarN)[dim(tabPasAarN)[2]] <- 'Totalt'
+xtable(tabPasAarN, digits=0, align=c('l', rep('r', ncol(tabPasAarN))), 
 		caption='Antall registrerte individer per år.',
-		label='tab:AntPasAarEget')
+		label='tab:AntPasAar')
 @
 
 
@@ -240,68 +221,48 @@ xtable(tabPasAarNEget, digits=0, align=c('l', rep('r', ncol(tabPasAarNEget))),
 <<'AndelOppf', results='asis', echo=FALSE, eval=T>>=
 		
 #Tabell med antall av hver skjematype og andel med oppfølging (inkl. døde)	
-#AntHoved <- table(SlagData$ShNavn)
-#AntOppf <- with(SlagData, table(ShNavn[union(which(OppfolgUtf==1), 						#Levende med oppfølging
-#GML:		union(which(OppfolgUtf==2 & AarsakManglendeOppf==3), which(UtskrTil==10)))]))	#Døde
-#		union(which(TidDeath<=98)]))))	#Døde innen 98 dager
-#AndelOppf <- round(AntOppf/AntHoved*100, 1)
-#tabHovedOppf <- cbind(
-#		'Akuttskjema' = AntHoved,
-#		'Oppfølging' = AntOppf)[indSortSh,]
-#tabHovedOppf <- rbind(tabHovedOppf,
-#		'TOTALT, alle sykehus:' = colSums(tabHovedOppf))	#addmargins(as.table(tabHovedOppf), margin=2)
-#rownames(tabHovedOppf)[dim(tabHovedOppf)[1] ]<- 'TOTALT, alle sykehus:'
+AntHoved <- table(SlagData$ShNavn)
+AntOppf <- with(SlagData, table(ShNavn[union(which(OppfolgUtf==1), 						#Levende med oppfølging
+		union(which(OppfolgUtf==2 & AarsakManglendeOppf==3), which(UtskrTil==10)))]))	#Døde
+AndelOppf <- round(AntOppf/AntHoved*100, 1)
+tabHovedOppf <- cbind(
+		'Akuttskjema' = AntHoved,
+		'Oppfølging' = AntOppf)	#[indSortSh,]
+tabHovedOppf <- rbind(tabHovedOppf,
+		'TOTALT, alle sykehus:' = colSums(tabHovedOppf))	#addmargins(as.table(tabHovedOppf), margin=2)
+rownames(tabHovedOppf)[dim(tabHovedOppf)[1] ]<- 'TOTALT, alle sykehus:'
 
-#tabAvdOppf <- cbind(tabHovedOppf,		
-#		'Andel oppfølging (%)' = round(tabHovedOppf[,2]/tabHovedOppf[,1]*100, 1) )
+tabAvdOppf <- cbind(tabHovedOppf,		
+		'Andel oppfølging (%)' = round(tabHovedOppf[,2]/tabHovedOppf[,1]*100, 1) )
 		
 
-#Eget sykehus
-AntOppfEget <- with(SlagDataEget, length(union(which(OppfolgUtf==1), which(TidDeath<=98))))	#Døde innen 98 dager
-#		union(which(OppfolgUtf==2 & AarsakManglendeOppf==3), which(UtskrTil==10)))))	#Døde
-AntOppfTot <- with(SlagData, length(union(which(OppfolgUtf==1), which(TidDeath<=98))))	#Døde innen 98 dager
-AndelOppfEget <- round(AntOppfEget/Neget*100, 1)
-AndelOppfTot <- round(AntOppfTot/N*100, 1)
-
-tabHovedOppfEget <- rbind(
-		'Eget sykehus' = c(Neget, AntOppfEget, AndelOppfEget),
-		'Alle sykehus' = c(N, AntOppfTot, AndelOppfTot))
 		
-#colnames(tabHovedOppfEget)[dim(tabHovedOppfEget)[2]]<- 'Totalt:'
-colnames(tabHovedOppfEget) <- c('Akuttskjema', 'Oppfølgingsskjema','Totalt:')
-xtable(tabHovedOppfEget, digits= c(0,0,0,1), align=c('l', rep('r', ncol(tabHovedOppfEget))), 
-		caption='Antall akuttskjema og andel av disse med oppfølgingsskjema, inkl. døde innen 3 mnd etter sykehusoppholdet.
+xtable(tabAvdOppf, digits= c(rep(0, ncol(tabAvdOppf)),1), align=c('l', rep('r', ncol(tabAvdOppf))), 
+		caption='Antall akuttskjema og andel av disse med oppfølgingsskjema, inkl. døde.
 		Andelen oppfølging kan være noe lavere enn den reelle, siden slag oppstått
 		de siste 3 mnd ikke har rukket å få oppfølging.',
-		label='tab:AndelOppfEget')
-
-		#		caption='Antall akuttskjema og andel av disse med oppfølgingsskjema. I andelen oppfølgingsskjema
-#		inkluderes også døde innen 3 mnd etter sykehusopholdet (uten mulighet for å få oppfølgingsskjema).
-#		Andelen oppfølging er lavere enn den reelle siden slag oppstått
-#		de siste 3 mnd ikke har rukket å få oppfølging.',
-	
-		
+		label='tab:AndelOppfEget')	
 @
 
-Tabellene \ref{tab:Pasientkarakteristika1} og \ref{tab:Pasientkarakteristika2} viser pasientkarakteristika  
-for hhv. eget sykehus og hele landet. I beregningene for NIHSS ved innleggelse, er pasienter hvor det 
+Tabellen \ref{tab:Pasientkarakteristika} viser pasientkarakteristika  
+for hele landet. I beregningene for NIHSS ved innleggelse, er pasienter hvor det 
 er krysset av for at NIHSS ikke er utført, tatt bort.
 
 \clearpage
 
+
 <<'Pasientkarakteristika',echo=FALSE, results='asis', eval=T>>= 
-utvalg <- c('Eget', 'Alle')
-k <- 1
-for (k in 1:2) {
-SlagDataUtv <- SlagData[switch(utvalg[k], Eget = ind$Eget, Alle = ind$Alle),]
+
+SlagDataUtv <- SlagData
 
 Alder <- na.omit(SlagDataUtv$Alder)
 AlderMann <- na.omit(SlagDataUtv$Alder[which(SlagDataUtv$erMann == 1)])
 AlderKv <- na.omit(SlagDataUtv$Alder[which(SlagDataUtv$erMann == 0)])
 
 DagerInnlagt <- na.omit(as.numeric(SlagDataUtv$AntDagerInnl))
-TidSymptInnl <- na.omit(as.numeric(SlagDataUtv$TidSymptInnlegg))  
-TidInnTromb <- na.omit(as.numeric(SlagDataUtv$TidInnleggTrombolyse[which(SlagDataUtv$TidInnleggTrombolyse>0)]))
+TidSymptInnl <- na.omit(as.numeric(SlagDataUtv$TidSymptInnlegg))
+#TidInnTromb <- na.omit(as.numeric(SlagDataUtv$TidInnleggTrombolyse)*60)
+TidInnTromb <- na.omit(as.numeric(SlagDataUtv$TidInnleggTrombolyse[which(SlagDataUtv$TidInnleggTrombolyse>=0)])*60)
 MRSinn <- na.omit(as.numeric(SlagDataUtv$MRSPre))
 NIHSSinnl <- na.omit(as.numeric(SlagDataUtv$NIHSSinnkomst[which(SlagData$NIHSSikkeUtfort == 0)])) 
 
@@ -318,7 +279,7 @@ Pasientkarakteristika6 <- rbind(
 	'Timer, symptomdebut - innleggelse' = c(mean(TidSymptInnl), sd(TidSymptInnl), 
 			median(TidSymptInnl), min(TidSymptInnl), max(TidSymptInnl), sum(TidSymptInnl>-1)),
 	'Minutter, innleggelse - trombolyse' = c(mean(TidInnTromb), sd(TidInnTromb), 
-			median(TidInnTromb), min(TidInnTromb, na.rm=T), max(TidInnTromb), sum(TidInnTromb>0)),
+			median(TidInnTromb), min(TidInnTromb), max(TidInnTromb), sum(TidInnTromb>=0)),
 #	'Mod. Rankin Scale, før slag' = c(mean(MRSinn), sd(MRSinn), 
 #			median(MRSinn), min(MRSinn), max(MRSinn), length(MRSinn)),
 	'NIHSS, innleggelse' = c(mean(NIHSSinnl), sd(NIHSSinnl), 
@@ -327,22 +288,21 @@ Pasientkarakteristika6 <- rbind(
 
 Pasientkarakteristika <- Pasientkarakteristika6[ ,-2]	
 
-txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 colnames(Pasientkarakteristika) <- c('Middelverdi', 'Median', 'Min.', 'Maks.', 'Ant. obs')
 Nokkelt <- xtable(Pasientkarakteristika, digits=c(0,1,0,0,0,0), align=c('l', rep('r', 5)), #c('l', 'r','r','r','c','r'),
-		caption=paste('Pasientkarakteristika, ', txt, '.', sep=''),
-		label=paste("tab:Pasientkarakteristika",k, sep=''))
+		caption='Pasientkarakteristika, hele landet.',
+		label="tab:Pasientkarakteristika")
 print(Nokkelt)
-}		
+
 
 dum <- SlagFigAndeler(RegData=SlagData, valgtVar='Alder', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigAlder.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigAlder.pdf')
 @
 
 
 \begin{figure}[ht]
-{\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlder.pdf} }
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigAlder.pdf}}  }
 \caption{\label{fig:Alder} Aldersfordeling for registrerte slagpasienter}
 \end{figure}
 
@@ -355,8 +315,7 @@ SlagData$BoligforholdPre <- factor(SlagData$BoligforholdPre, levels=1:4)
 SlagData$BosituasjonPre <- factor(SlagData$BosituasjonPre, levels=1:3)
 SlagData$MRSPre <- factor(SlagData$MRSPre, levels=0:5)
 
-for (k in 1:2) {
-SlagDataUtv <- SlagData[switch(utvalg[k], Eget = ind$Eget, Alle = ind$Alle),]
+SlagDataUtv <- SlagData
 
 BoligforhPre <- ftable(SlagDataUtv$BoligforholdPre[which(SlagDataUtv$BoligforholdPre %in% c(1,2,3,4))],  
 		SlagDataUtv$erMann[which(SlagDataUtv$BoligforholdPre %in% c(1,2,3,4))])
@@ -374,22 +333,22 @@ Boligforhold <- rbind(
 	'...Bor på sykehjem' = c(100*BoligforhPre[4,]/colSums(BoligforhPre), NA),
 	'Bor alene' = c(100*BositPre[1,]/colSums(BositPre), NA)
 	)
-txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 colnames(Boligforhold) <- c('Kvinner (%)', 'Menn (%)', 'Ant. reg.')
 BoligforhTab <- xtable(Boligforhold, digits=c(1,1,1,0), align=c('l', 'r', 'r', 'r'), 	#c(0,1,1,1)
-		caption=paste('Funksjonsnivå og boligforhold før hjerneslaget, ', txt, '.', sep=''), 	#, N =', Nhoved),
-		label=paste("tab:Boligforh",k,sep=''))
+		caption='Funksjonsnivå og boligforhold før hjerneslaget, hele landet.', 	#, N =', Nhoved),
+		label="tab:Boligforh")
 print(BoligforhTab)
-}
 
-dum <- SlagFigAndeler(RegData=SlagData, valgtVar='SivilstatusPre', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='SivilstatusPre', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigSivStatusPre.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
+		outfile='FigSivilstatusPre.pdf')
+
 @
 
 
 \begin{figure}[ht]
-{\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigSivStatusPre.pdf} }
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigSivilstatusPre.pdf}}  }
 \caption{\label{fig:SivilstatusPre} Sivilstatus da slaget inntraff.}
 \end{figure}
 
@@ -400,9 +359,9 @@ hvor ett av svaralternativene er ''Ukjent'', er dette tatt ut av totalantallet t
 Antall observasjoner er derfor registreringer uten ukjente. Det betyr at vi
 antar at fordelinga av variabelalternativene er tilsvarende hos de som har ukjent utfall som de som har
 kjent utfall. Det kan være grunn til å anta at de fleste ukjente for variabelen ''Røyking'' er ikke-røykere.
-Hvis dette er tilfelle, vil den reelle andelen røykere være noe lavere enn det tabell \ref{tab:Risiko1}
-og \ref{tab:Risiko2} viser. Dette gjelder ikke medikamentvariablene. Der beregnes andel som har fått
-de ulike medikamentene ut fra totalantallet, dvs. inklusive ukjente.
+Hvis dette er tilfelle, vil den reelle andelen røykere være noe lavere enn det tabell \ref{tab:Risiko}
+ viser. Dette gjelder ikke medikamentvariablene. Der beregnes andel som har fått
+de ulike medikamentene ut fra totalantallet.
 
 <<'StatusAkutt',echo=FALSE, results='asis', eval=T>>= 
 #Status i akuttfasen, eget og alle:
@@ -421,37 +380,32 @@ SlagData$FAST <- factor(SlagData$FAST, levels=c(1,2,9))
 
 SlagData$Vaaken <- factor(SlagData$BevissthetsgradInnleggelse, levels=c(0:3,9))	#0-våken
 
-for (k in 1:2) {
-SlagDataUtv <- SlagData[switch(utvalg[k], Eget = ind$Eget, Alle = ind$Alle),]
+SlagDataUtv <- SlagData
 
 StatusAkutt <- rbind(
-	'Våken v/innleggelsen' = c(table(SlagDataUtv$Vaaken)[c('0','9')], sum(SlagDataUtv$Vaaken %in% c(0:3,9))), #,
-	'Facialisparese' = c(table(SlagDataUtv$Facialisparese)[c('1','9')],
-	                          sum(SlagDataUtv$Facialisparese %in% c(1,2,9), na.rm=T)),
-			#table(SlagDataUtv$Facialisparese[which(SlagDataUtv$Facialisparese %in% c(1,2,9))]),
-	'Armparese' = c(table(SlagDataUtv$Armparese)[c('1','9')], sum(SlagDataUtv$Armparese %in% c(1,2,9), na.rm=T)), 
-	'Språkproblemer' = c(sum(SlagDataUtv$Spraakproblem==1, na.rm=T),
-								sum(SlagDataUtv$Spraakproblem==9, na.rm=T),
-								sum(SlagDataUtv$Spraakproblem %in% c(1,2,9), na.rm=T)),	#table(SlagDataUtv$Spraakproblem),
-	'Beinparese' = c(sum(SlagDataUtv$Beinparese==1, na.rm=T), sum(SlagDataUtv$Beinparese==9, na.rm=T),
-					sum(SlagDataUtv$Beinparese %in% c(1,2,9), na.rm=T)), #table(SlagDataUtv$Beinparese),
+	'Våken v/innleggelsen' = c(table(SlagDataUtv$Vaaken)[c('0','9')], sum(SlagDataUtv$Vaaken %in% c(0:3,9))),
+	'Facialisparese' = c(table(SlagDataUtv$Facialisparese)[c('1','9')], 
+	                     sum(SlagDataUtv$Facialisparese %in% c(1,2,9), na.rm=T)),
+	'Armparese' = c(table(SlagDataUtv$Armparese)[c('1','9')], sum(SlagDataUtv$Armparese %in% c(1,2,9), na.rm=T)),
+	'Språkproblemer' = c(table(SlagDataUtv$Spraakproblem)[c('1','9')],
+	                     sum(SlagDataUtv$Spraakproblem %in% c(1,2,9), na.rm=T)),
+	'Beinparese' = c(table(SlagDataUtv$Beinparese)[c('1','9')],
+	                 sum(SlagDataUtv$Beinparese %in% c(1,2,9), na.rm=T)), 
 	'Minst ett FAST-symptom' = c(table(SlagDataUtv$FAST)[c('1','9')], sum(SlagDataUtv$FAST %in% c(1,2,9))),
-	'Andre fokale slagsymptomer' = c(sum(SlagDataUtv$AndreFokaleSympt==1, na.rm=T), 
-								sum(SlagDataUtv$AndreFokaleSympt==9, na.rm=T),
-								sum(SlagDataUtv$AndreFokaleSympt %in% c(1,2,9), na.rm=T))	#table(SlagDataUtv$AndreFokaleSympt)
+	'Andre fokale slagsymptomer' = c(table(SlagDataUtv$AndreFokaleSympt)[c('1','9')],
+								sum(SlagDataUtv$AndreFokaleSympt %in% c(1,2,9), na.rm=T))
 )
 
 StatusAkuttPst <- 100*(StatusAkutt[,1:2]/StatusAkutt[,3])	
 
-txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 colnames(StatusAkuttPst) <- c('Ja (%)','Ukjent (%)')	#, 'Ant. reg.')
 StatusAkuttTab <- xtable(StatusAkuttPst, digits=c(0,1,1), align=c('l', 'r', 'r'), 	#c(0,1,1,1)
-		caption=paste('Status i akuttfasen. Andeler av alle registreringer, ', txt,  ' (N=', 
-		dim(SlagDataUtv)[1], ').', sep=''), label=paste("tab:StatusAkutt",k,sep=''))
+		caption=paste('Status i akuttfasen. Andeler av alle registreringer, hele landet, N=', 
+		dim(SlagDataUtv)[1], '.', sep=''), 
+		label="tab:StatusAkutt")
 print(StatusAkuttTab)
-}
-@		
 
+@		
 
 <<'Risikofakt',echo=FALSE, results='asis', eval=T>>= 
 
@@ -465,8 +419,7 @@ SlagData$PreMedHoytBT <- factor(SlagData$PreMedHoytBT, levels=c(1,2,9))
 SlagData$PreStatinerLipid <- factor(SlagData$PreStatinerLipid, levels=c(1,2,9))
 SlagData$Atrieflimmer <- factor(SlagData$Atrieflimmer, levels=c(1,2,9))
 
-for (k in 1:2) {
-SlagDataUtv <- SlagData[switch(utvalg[k], Eget = ind$Eget, Alle = ind$Alle),]
+SlagDataUtv <- SlagData
 
 TidlSlag <- ftable(SlagDataUtv$TidlHjerneslag, SlagDataUtv$erMann)[-3,]
 TidlTIA <- ftable(SlagDataUtv$TidlTIA, SlagDataUtv$erMann)[-3,]
@@ -489,22 +442,22 @@ Risikofakt <- rbind(
 	'Atrieflimmer' = c(100*Atrieflimmer[1,]/colSums(Atrieflimmer), sum(Atrieflimmer))
 	)
 
-txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
+	
+	
 colnames(Risikofakt) <- c('Kvinner (%)', 'Menn (%)', 'Ant. reg.')
 RisikofaktTab <- xtable(Risikofakt, digits=c(1,1,1,0), align=c('l', 'r', 'r', 'r'), 	#c(0,1,1,1)
-		caption=paste('Risikofaktorer før hjerneslaget, ', txt, '. Lipidsenkende behandling er registrert 
-		fra 1.januar 2014.', sep=''), 	#, N =', Nhoved),
-		label=paste("tab:Risiko",k,sep=''))
+		caption='Risikofaktorer før hjerneslaget, hele landet. Lipidsenkende behandling er registrert 
+		fra 1.januar 2014.',
+		label="tab:Risiko")
 print(RisikofaktTab)
 
-}		
 
 @
 
 
 Ved angivelse av hvilke medikamenter pasientene har fått  angir oppgitte enkeltmedikamenter 
 andel pasienter i medikamentgruppa 
-som har fått kun dette medikamentet. Eksempelvis i tabell \ref{tab:MedBehPre1} vil andelen ASA 
+som har fått kun dette medikamentet. Eksempelvis i tabell \ref{tab:MedBehPre} vil andelen ASA 
 angi andelen av de som har fått platehemmende behandling kun med ASA. Det betyr at andelen 
 ukjente i en eller flere av de tre variablene som utgjør platehemmende behandling, vil spille 
 en stor rolle for muligheten til å angi hvor stor andel som kun har fått for eksempel ASA.
@@ -533,17 +486,14 @@ SlagData$PreBeggeAntikoag <- c(1,2,2,9,9,9)[SlagData$PreAntikoagsum]
 
 #BT-senkende
 #Variabelen PreMedHoytBT er verdiløs, dvs. feil ift hva som er reg. i de enkelte BT-variable
-#NavnBTsenk <- c('PreDiuretica','PreACEhemmer', 'PreA2Antagonist', 'PreBetablokker', 'PreKalsiumantagonist', 'PreMedHoytBT')
-#SlagData$PreBTsenk <- 9
-#TF <- (SlagData[ ,NavnBTsenk])==1
-#SlagData$PreBTsenk[rowSums(TF, na.rm=T)>0] <- 1
-#Nei <- (SlagData[ ,NavnBTsenk])==2
-#SlagData$PreBTsenk[rowSums(Nei, na.rm=T) == length(NavnBTsenk)] <- 2
-#PreMedHoytBT DEFINERES NÅ I PREPROSESSERINGA
+NavnBTsenk <- c('PreDiuretica','PreACEhemmer', 'PreA2Antagonist', 'PreBetablokker', 'PreKalsiumantagonist')
+SlagData$PreBTsenk <- 9
+TF <- (SlagData[ ,NavnBTsenk])==1
+SlagData$PreBTsenk[rowSums(TF, na.rm=T)>0] <- 1
+Nei <- (SlagData[ ,NavnBTsenk])==2
+SlagData$PreBTsenk[rowSums(Nei, na.rm=T) == length(NavnBTsenk)] <- 2
 
-
-for (k in 1:2) {
-SlagDataUtv <- SlagData[switch(utvalg[k], Eget = intersect(ind$Eget, ind$Fra2014), Alle = ind$Fra2014), ]
+SlagDataUtv <- SlagData[indFra2014, ]
 Nutv <- dim(SlagDataUtv)[1]
 
 #Platehemmende
@@ -564,21 +514,7 @@ N_AndreWarf <- length(which(SlagDataUtv$PreWarfarin==2 & SlagDataUtv$PreAndreEnn
 N_A2 <- sum(SlagDataUtv$PreBeggeAntikoag == 1, na.rm=T)
 
 #BT-senkende
-#N_BTsenk <- sum(SlagDataUtv$PreBTsenk == 1)
 N_BTsenk <- sum(SlagDataUtv$PreMedHoytBT == 1)
-
-#SlagDataUtv$PreBTsenkSum <- rowSums(SlagDataUtv[ ,NavnBTsenk], na.rm=T)
-#Gir verdiene c(5:10,13:17,21:24,29:31,37,38,45), hvorav 8 betyr kun to, 9 kun én, 10 ingen
-#indIngen <- which(SlagDataUtv$PreBTsenkSum == 10)
-#ind1kun <- which(SlagDataUtv$PreBTsenkSum == 9)
-#ind2kun <- which(SlagDataUtv$PreBTsenkSum == 8)
-#ind3kun <- which(SlagDataUtv$PreBTsenkSum == 7)
-#ind4kun <- which(SlagDataUtv$PreBTsenkSum == 6)
-#indAlle <- which(SlagDataUtv$PreBTsenkSum == 5)
-
-#indSjekk <- setdiff(1:N_BTsenk, unique(c(ind1kun, ind2kun, ind3kun, ind4kun, indAlle)))
-#N_DiuA2 <- length(intersect(which(SlagDataUtv$PreDiuretica==1 | SlagDataUtv$PreA2Antagonist==1), ind2kun))
-#osv...
 
 MedBehPrePst <- 100*rbind( 
 	'Platehemmende beh.' = c(N_Plate , sum(SlagDataUtv$PrePlatehemmere == 9))/Nutv,
@@ -591,30 +527,19 @@ MedBehPrePst <- 100*rbind(
 	'...Antikoagulasjon m/Warfarin' = c(N_Warf, NA)/N_Anti,
 	'...Andre perorale antikoag.' = c(N_AndreWarf, NA)/N_Anti, 
 	
-	'BT-senkende' = c(N_BTsenk/Nutv, sum(SlagDataUtv$PreMedHoytBT == 9, na.rm=T)/Nutv),
-#	'...Diuretica' = c(length(intersect(which(SlagDataUtv$PreDiuretica==1), ind1kun))/N_BTsenk , NA),
-#	'...ACE-hemmer' = c(length(intersect(which(SlagDataUtv$PreACEhemmer==1), ind1kun))/N_BTsenk , NA),
-#	'...A2-antagonist' = c(length(intersect(which(SlagDataUtv$PreA2Antagonist==1), ind1kun))/N_BTsenk , NA),
-#	'...Betablokker' = c(length(intersect(which(SlagDataUtv$PreBetablokker==1), ind1kun))/N_BTsenk , NA),
-#	'...Kalsiumantagonist' = c(length(intersect(which(SlagDataUtv$PreKalsiumanatgonist==1), ind1kun))/N_BTsenk , NA),
-#	'...Blodtrykksmedikament' = c(length(intersect(which(SlagDataUtv$PreMedHoytBT==1), ind1kun))/N_BTsenk , NA),
-#	'...Komb. 2 BT-senkende' = c(length(ind2kun)/N_BTsenk, NA),
-#	'...Komb. 3 BT-senkende' = c(length(ind3kun)/N_BTsenk, NA),
-#	'...Komb. 4 BT-senkende' = c(length(ind4kun)/N_BTsenk, NA),
-#	'...Komb. alle BT-senkende' = c(length(indAlle)/N_BTsenk, NA),
-
+	'BT-senkende' = c(N_BTsenk/Nutv, sum(SlagDataUtv$PreBTsenk == 9, na.rm=T)/Nutv),
 	'Statin-Lipidsenkende' = table(SlagDataUtv$PreStatinerLipid)[c('1','9')]/Nutv
 	#'Medikamentell behandling?' = table(SlagDataUtv$PreIngenMedikam, useNA='a') 
 	)
 
 colnames(MedBehPrePst) <- c('Ja (%)', 'Ukjent (%)')	#, 'Ant. reg.')
-txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
-MedBehPrePstTab <- xtable(MedBehPrePst, digits=1, align=c('l', 'r', 'r'), 	
-		caption=paste('Medikamentell behandling før hjerneslaget. Innleggelser fra og med 1.januar 2014. 
-		Alle diagnoser, ', txt, ' (N=',	Nutv, ').', sep=''), 	
-		label=paste("tab:MedBehPre",k,sep=''))
-print(MedBehPrePstTab)
-}
+#MedBehPrePstTab <- 
+xtable(MedBehPrePst, digits=1, align=c('l', 'r', 'r'), 	
+		caption=paste('Medikamentell behandling før hjerneslaget. Innleggelser fra og med 1.januar 2014.
+		Alle diagnoser, hele landet. (N=',	Nutv, ').', sep=''), 	
+		label="tab:MedBehPre")
+#print(MedBehPrePstTab)
+
 @	
 		
 <<'PreMedBehandlingI61I63',echo=FALSE, results='asis', eval=T>>= 
@@ -622,14 +547,9 @@ print(MedBehPrePstTab)
 #HER PROGRAMMERES SOM OM variabelen ASA+Dipyridamol er tatt bort. Sånn vil det være fra 1.januar 2014.
 
 #PLATEHEMMERE OG ANTIKOAGULASJON FOR I61 og I63
-#---Tar lang tid. Bør lage indekser EN gang og kombinere.
-for (d in 1:2) {
-	SlagDataDiag <- SlagData[intersect(ind$Fra2014, which(SlagData$Slagdiagnose == d)), ]		
 
-	for (k in 1:2) {
-	SlagDataUtv <- SlagDataDiag[switch(utvalg[k], Eget = which(SlagDataDiag$ReshId == reshID), 
-													Alle = 1:dim(SlagDataDiag)[1]),]
-	
+for (d in 1:2) {
+	SlagDataUtv <- SlagData[intersect(indFra2014, which(SlagData$Slagdiagnose == d)), ]
 	Nutv <- dim(SlagDataUtv)[1]
 
 	#PLATEHEMMERE
@@ -661,18 +581,130 @@ for (d in 1:2) {
 		)
 
 	colnames(MedBehPrePstDiag) <- c('Ja (%)', 'Ukjent (%)')	#, 'Ant. reg.')
-	txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 	diagnose <- c('hjerneblødning (I61), ','hjerneinfarkt (I63), ')[d]
 	MedBehPrePstDiagTab <- xtable(MedBehPrePstDiag, digits=1, align=c('l', 'r', 'r'), 	
 			caption=paste('Medikamentell behandling før hjerneslaget for pasienter med ',
-				diagnose, txt, '. N=', Nutv, '. (Innleggelser fra og med 1.januar 2014.)',sep=''), 	#, N =', Nhoved),
-			label=paste("tab:MedBehPre", k, 'Diag', d, sep=''))
+				diagnose, ' N=', Nutv, '. (Innleggelser fra og med 1.januar 2014.)', sep=''), 	#, N =', Nhoved),
+			label=paste('tab:MedBehPreDiag', d, sep=''))
 	print(MedBehPrePstDiagTab)
 			
-	}
 }
 @
 
+\clearpage
+
+\section{Kvalitetsindikatorer, sykehusvis}
+
+<<'FigurerAndelSh', echo=FALSE, results='asis', eval=T>>=
+
+InnlSlag <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='InnlSlagenh', datoFra=datoFra, 
+		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigInnlSlag.pdf')
+
+BehSlagenhet <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='BehSlagenhet', datoFra=datoFra, 
+		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigBehSlagenhet.pdf')
+		
+TrombolyseI63 <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='TrombolyseI63', datoFra=datoFra, 
+		datoTil=datoTil, minald=18, maxald=80, erMann=erMann, diagnose=2, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigTrombolyseI63.pdf')
+
+InnlInnen4eSymptom <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='InnlInnen4eSymptom', datoFra=datoFra, 
+		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigInnlInnen4eSymptom.pdf')
+
+SvelgtestUtfort <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='SvelgtestUtfort', datoFra=datoFra, 
+		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigSvelgtestUtfort.pdf')
+		
+UtAntitrombotiskI63 <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='UtAntitrombotiskI63', datoFra=datoFra, 
+		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=2, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigUtAntitrombotiskI63.pdf')
+		
+UtAntikoagI63atrie <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='UtAntikoagI63atrie', datoFra=datoFra, 
+		datoTil=datoTil, minald=18, maxald=80, erMann=erMann, diagnose=2, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigUtAntikoagI63atrie.pdf')
+
+UtBT <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='UtBT', datoFra=datoFra, 
+		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigUtBT.pdf')
+		
+LipidI63u80 <- SlagFigAndelerGrVar(RegData=SlagData, valgtVar='LipidI63u80', datoFra=datoFra, 
+		datoTil=datoTil, minald=18, maxald=80, erMann=erMann, diagnose=2, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigLipidI63u80.pdf')
+		
+AntDagerInnlGjsn <- SlagFigGjsnGrVar(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='mean', datoFra=datoFra, 
+		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigAntDagerInnlGjsn.pdf')
+			
+AntDagerInnlMed <- SlagFigGjsnGrVar(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='Med', datoFra=datoFra, 
+		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, preprosess=preprosess, outfile='FigAntDagerInnlMed.pdf')
+		
+@
+
+\begin{figure}[ht]
+\centerline{ \scalebox{\Sexpr{0.715}}{\includegraphics{FigInnlSlag.pdf}}  }
+\caption{\label{fig:InnSlagenh} Andel pasienter innlagt direkte i slagenhet.}
+\end{figure}
+
+\begin{figure}[ht]
+\centerline{\scalebox{\Sexpr{sSh}}{\includegraphics{FigBehSlagenhet.pdf}} }
+\caption{\label{fig:BehSlagenh} Andel pasienter behandlet i slagenhet.}
+\end{figure}
+
+\begin{figure}[ht]
+\centerline{ \scalebox{\Sexpr{sSh}}{\includegraphics{FigTrombolyseI63.pdf}} }
+\caption{\label{fig:TrombI63} Andel pasienter med hjerneinfarkt (I63) $\leq$ 80 år 
+	behandlet med trombolyse. (Trombolysebehandling ved Lovisenberg og Diakonhjemmet 
+	utføres på  Ullevål, ved Orkdal sykehus på St Olav)}
+\end{figure}
+
+\begin{figure}[ht]
+\centerline{ \scalebox{\Sexpr{sSh}}{\includegraphics{FigInnlInnen4eSymptom.pdf}} }
+\caption{\label{fig:Innl4sympt} Andel pasienter innlagt innen 4 timer etter symptomdebut.}
+\end{figure}
+
+\begin{figure}[ht]
+\centerline{ \scalebox{\Sexpr{sSh}}{\includegraphics{FigSvelgtestUtfort.pdf}} }
+\caption{\label{fig:Svelgtest} Andel pasienter som har fått vurdert eller testet 
+			svelgfunksjon.}
+\end{figure}
+
+\begin{figure}[ht]
+\centerline{ \scalebox{\Sexpr{sSh}}{\includegraphics{FigUtAntitrombotiskI63.pdf}} }
+\caption{\label{fig:AntitromI63} Andel pasienter med hjerneinfarkt (I63) som er utskrevet
+			fra sykehus med antitrombotisk (platehemmende og/eller antikoagulerende) behandling.}
+\end{figure}
+
+\begin{figure}[ht]
+\centerline{ \scalebox{\Sexpr{sSh}}{\includegraphics{FigUtAntikoagI63atrie.pdf}} }
+\caption{\label{fig:AntikoagI63atrie} Andel pasienter $\leq$ 80 år med hjerneinfarkt (I63) og atrieflimmer
+			utskrevet med antikoagulasjon.}
+\end{figure}
+
+
+\begin{figure}[ht]
+\centerline{ \scalebox{\Sexpr{sSh}}{\includegraphics{FigUtBT.pdf}} }
+\caption{\label{fig:UtBT} Andel pasienter utskrevet fra sykehus med medikasjon mot høyt blodtrykk.}
+\end{figure}
+
+\begin{figure}[ht]
+\centerline{ \scalebox{\Sexpr{sSh}}{\includegraphics{FigLipidI63u80.pdf}} }
+\caption{\label{fig:LipidI63} Andel pasienter $\leq$80 år med hjerneinfarkt (I63) 
+			utskrevet fra sykehus med statiner/lipidsenkende behandling.}
+\end{figure}
+
+
+\begin{figure}[ht]
+\centerline{ \scalebox{\Sexpr{sSh}}{\includegraphics{FigAntDagerInnlGjsn.pdf}} }
+\caption{\label{fig:LiggetidGjsn} Gjennomsnittlig antall liggedøgn i sykehus.}
+\end{figure}
+
+\begin{figure}[ht]
+\centerline{ \scalebox{\Sexpr{sSh}}{\includegraphics{FigAntDagerInnlMed.pdf}} }
+\caption{\label{fig:LiggetidMed} Median antall liggedøgn i sykehus.}
+\end{figure}
 
 
 
@@ -689,56 +721,60 @@ Dette avsnittet inneholder resultater fra behandling i akuttfasen. Dette omfatte
 \end{itemize}
 
 
-<<FigurerAkuttfase, echo=FALSE, message=FALSE, eval=T>>=
-dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='TidSymptInnlegg', datoFra=datoFra, 
-		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigTidSymptInnlegg.pdf')
+<<FigurerAkutt, echo=FALSE, message=FALSE, eval=T>>=
 
-dum <-SlagFigAndeler(RegData=SlagData, valgtVar='TidInnleggTrombolyse', datoFra=datoFra, 
+dum <- SlagFigAndeler(RegData=SlagData, valgtVar='TidSymptInnlegg', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigTidInnTromb.pdf')
-	
-dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='BevissthetsgradInnleggelse', datoFra=datoFra, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
+		outfile='FigTidSymptInnlegg.pdf')
+
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='TidInnleggTrombolyse', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBevGrInn.pdf')
-		
-dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='NIHSSinnkomst', datoFra=datoFra, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
+		outfile='FigTidInnTromb.pdf')
+
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='BevissthetsgradInnleggelse', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigNIHSSinn.pdf')
-		
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
+		outfile='FigBevissthetsgradInn.pdf')
+
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='NIHSSinnkomst', datoFra=datoFra, 
+		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
+		outfile='FigNIHSSinnkomst.pdf')
+
 dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='AvdForstInnlagtHvilken', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigAvdForst.pdf')
-		
-		
-		
-		
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
+		outfile='FigAvdForstInnlagt.pdf')
 @
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigTidSymptInnlegg.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigTidSymptInnlegg.pdf}} }
 \caption{\label{fig:TidSymptInnlegg} Tid fra de første symptomene på slag til innleggelse.}
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigTidInnTromb.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigTidInnTromb.pdf}} }
 \caption{\label{fig:TidInnTromb}Tid fra innleggelse til trombolyse}
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigBevGrInn.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigBevissthetsgradInn.pdf}} }
 \caption{\label{fig:BevissthetsgradInn} Bevissthetsgrad ved innleggelse.}
 \end{figure}
 
+
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigNIHSSinn.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigNIHSSinnkomst.pdf}} }
 \caption{\label{fig:NIHSSinnkomst} NIHSS score ved innleggelse (alle diagnoser).}
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigAvdForst.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigAvdForstInnlagt.pdf}} }
 \caption{\label{fig:AvdForstInnlagt} Ved hvilken type avdeling ble pasientene først innlagt.}
 \end{figure}
+
 
 
 Tabell \ref{tab:AkuttbehI63} viser oversikt over akuttbehandling av hjerneinfarkt (diagnose I63).
@@ -749,51 +785,37 @@ Andelen ukjente er lav så om disse var tatt med, ville det ikke påvirke result
 <<'Reperfusjonsbehandling',echo=FALSE, results='asis', eval=T>>= 
 #Tar ut eget datasett for I63 (hjerneinfarkt)
 SlagDataI63 <- SlagData[which(SlagData$Slagdiagnose==2), ]		#Slagdiagnose I63
-indTromb <- which(SlagDataI63$Trombolyse %in% c(1,3))	#Fått trombolyse
-SlagDataI63tromb <- SlagDataI63[indTromb, ]		#Slagdiagnose I63
 
+
+indTromb <- which(SlagDataI63$Trombolyse %in% c(1,3))	#Fått trombolyse
 ind80 <- which(SlagDataI63$Alder <=80)	#Slagdiagnose I63 og <=80år
 indO80 <- which(SlagDataI63$Alder >80)	#Slagdiagnose I63 og <=80år
-indEget <- which(SlagDataI63$ReshId == reshID)
 NI63 <- dim(SlagDataI63)[1]
-Neget <- length(indEget)
 
 Trom <- length(indTromb)
-TromEget <- length(intersect(indTromb, indEget))
 Trom80 <- length(intersect(indTromb, ind80))
-Trom80Eget <- length(intersect(intersect(indTromb, ind80), indEget))
 TromO80 <- length(intersect(indTromb, indO80))
-TromO80Eget <- length(intersect(intersect(indTromb, indO80), indEget))
 AntInnTromI63 <- length(na.omit(SlagDataI63$TidInnleggTrombolyse))
-AntInnTromEget <- length(na.omit(SlagDataI63$TidInnleggTrombolyse[indEget]))
 
 SlagDataI63$HjerneblInnen36timer <- factor(SlagDataI63$HjerneblInnen36timer, levels=1:2)
 Hjernebl36timer <- table(SlagDataI63$HjerneblInnen36timer[indTromb])	#length(which(SlagDataI63$HjerneblInnen36timer[indI63]==1))
-Hjernebl36timerEget <- table(SlagDataI63$HjerneblInnen36timer[intersect(indEget, indTromb)])	#length(which(SlagDataI63$HjerneblInnen36timer[intersect(indI63, indEget)]==1))
 
 indTrombekt <- which(SlagDataI63$Trombektomi %in% c(1,3))	#Fått trombektomi
 Trombekt <- length(indTrombekt)
-TrombektEget <- length(intersect(indEget, indTrombekt))
 Trombekt80 <- length(intersect(indTrombekt, ind80))
-Trombekt80Eget <- length(intersect(intersect(indTrombekt, ind80), indEget))
 
 AkuttbehI63 <- rbind(
-	'Trombolyse' 			= c(TromEget, 100*TromEget/Neget, Trom, 100*Trom/NI63),	
-	'Trombolyse <=80år' = c(Trom80Eget, 100*Trom80Eget/length(intersect(indEget, ind80)), 
-			Trom80, 100*Trom80/length(ind80)),
-	'Trombolyse, >80år' = c(TromO80Eget, 100*TromO80Eget/length(intersect(indEget, indO80)), 
-			TromO80, 100*TromO80/length(indO80)),
-	'Hjernebl m/forverring innen 36t' =c(Hjernebl36timerEget['1'], 
-	                                     100*Hjernebl36timerEget['1']/sum(Hjernebl36timerEget),
-			Hjernebl36timer['1'], 100*Hjernebl36timer['1']/sum(Hjernebl36timer)),
-	'Trombektomi' 			= c(TrombektEget, 100*TrombektEget/Neget, Trombekt, 100*Trombekt/NI63),
-	'Trombektomi, <=80år' = c(Trombekt80Eget, 100*Trombekt80Eget/length(intersect(indEget,ind80)),
-			Trombekt80, 100*Trombekt80/length(ind80))
+	'Trombolyse' 			= c(Trom, 100*Trom/NI63),	
+	'Trombolyse <=80år' = c(Trom80, 100*Trom80/length(ind80)),
+	'Trombolyse, >80år' = c(TromO80, 100*TromO80/length(indO80)),
+	'Hjernebl m/forverring innen 36t' =c(Hjernebl36timer[1], 100*Hjernebl36timer[1]/sum(Hjernebl36timer)),
+	'Trombektomi' 			= c(Trombekt, 100*Trombekt/NI63),
+	'Trombektomi, <=80år' = c(Trombekt80, 100*Trombekt80/length(ind80))
 	)
 	
-colnames(AkuttbehI63) <- c('Ant.Eget', 'Andel(%)', 'Ant.Landet', 'Andel(%)')
-xtable(AkuttbehI63, digits=c(0,0,1,0,1), align=c('l', 'r', 'r', 'r', 'r'), 
-		caption=paste('Reperfusjonsbehandling av hjerneinfarkt (I63), ', shtxt, ' og hele landet.', sep=''),
+colnames(AkuttbehI63) <- c('Antall', 'Andel(%)')
+xtable(AkuttbehI63, digits=c(0,0,1), align=c('l', 'r', 'r'), 
+		caption='Reperfusjonsbehandling av hjerneinfarkt (I63), hele landet.',
 		label="tab:AkuttbehI63")
 
 @
@@ -804,7 +826,7 @@ xtable(AkuttbehI63, digits=c(0,0,1,0,1), align=c('l', 'r', 'r', 'r', 'r'),
 %<<FigNIHSSpreTrombolyse, echo=FALSE, message=FALSE, eval=T>>=
 %	SlagFigAndeler(RegData=SlagData, valgtVar='NIHSSpreTrombolyse', datoFra=datoFra, 
 %		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-%		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile=outfile)
+%		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile=outfile)
 %@
 %\caption{\label{fig:NIHSSpreTrombolyse} NIHSS score før trombolyse.}
 %\end{figure}
@@ -813,7 +835,7 @@ xtable(AkuttbehI63, digits=c(0,0,1,0,1), align=c('l', 'r', 'r', 'r', 'r'),
 %<<FigNIHSSetterTrombolyse, echo=FALSE, message=FALSE, eval=T>>=
 %	SlagFigAndeler(RegData=SlagData, valgtVar='NIHSSetterTrombolyse', datoFra=datoFra, 
 %		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-%		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile=outfile)
+%		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile=outfile)
 %@
 %\caption{\label{fig:NIHSSetterTrombolyse} NIHSS score etter trombolyse.}
 %\end{figure}
@@ -824,111 +846,99 @@ xtable(AkuttbehI63, digits=c(0,0,1,0,1), align=c('l', 'r', 'r', 'r', 'r'),
 
 <<'KritOgSupplUnders',echo=FALSE, results='asis', eval=T>>= 
 
-for (k in 1:2) {
-SlagDataUtv <- SlagData[switch(utvalg[k], Eget = ind$Eget, Alle = ind$Alle),]
-#SlagDiag <- table(SlagData$Slagdiagnose)
-#HjerneblodningsstoppBeh <- SlagData$HjerneblodningsstoppBeh[SlagData$HjerneblodningsstoppBeh %in% c(1,2,9)]
-#Variabelen ´´Hjerneblødningsstoppende behandling''
-#inneholder 88\% nuller som er en ukjent kode. Disse er tatt ut... Muligens skal de være med som manglende, 
-#og følgelig ukjent...???. 
-sumDiag <- sum(SlagDataUtv$Slagdiagnose %in% 1:3, na.rm=T) #c(1,2,9)
+SlagDataUtv <- SlagData
+sumDiag <- sum(SlagDataUtv$Slagdiagnose %in% 1:3, na.rm=T)
 
 KritSupplTab <- rbind(
 	'CT/MR innen 12t' = c(table(SlagDataUtv$CerebralCTInn)[c('1','9')], 
 					sum(SlagDataUtv$CerebralCTInn %in% c(1,2,9), na.rm=T)), 
 #	'Fokale utf m/pos. bildediag.' = c(sum(SlagDataUtv$AkutteFokaleutfallPosBilleddiag == 1, na.rm=T),
 #					sum(is.na(SlagData$AkutteFokaleutfallPosBilleddiag)), dim(SlagDataUtv)[1]),
-					#table(SlagDataUtv$AkutteFokaleutfallPosBilleddiag, useNA='a'),
-	'Hjerneblødning (I61)' = c(sum(SlagDataUtv$Slagdiagnose ==1, na.rm=T), NA,  sumDiag),#c(SlagDiag[1], sum(SlagDiag[-1], na.rm=T), NA),
-	'Hjerneinfarkt (I63)' = c(sum(SlagDataUtv$Slagdiagnose ==2, na.rm=T), NA,  sumDiag),#c(SlagDiag[2], sum(SlagDiag[-2], na.rm=T), NA), 
-	'Uspes. slag (I64)' = c(sum(SlagDataUtv$Slagdiagnose ==3, na.rm=T), NA,  sumDiag),#c(SlagDiag[3], sum(SlagDiag[-3], na.rm=T), NA), 
-#	'Tidligere hjerneslag' = table(SlagDataUtv$TidlHjerneslag),
-#	'Hjernebl.stoppende beh.' = table(HjerneblodningsstoppBeh),
+	'Hjerneblødning (I61)' = c(sum(SlagDataUtv$Slagdiagnose ==1, na.rm=T), NA,  sumDiag),
+	'Hjerneinfarkt (I63)' = c(sum(SlagDataUtv$Slagdiagnose ==2, na.rm=T), NA,  sumDiag),
+	'Uspes. slag (I64)' = c(sum(SlagDataUtv$Slagdiagnose ==3, na.rm=T), NA,  sumDiag),
 	'Svelgfunksjon vurdert' = c(table(SlagDataUtv$SvelgtestUtfort)[c('1','9')],
-								sum(SlagDataUtv$SvelgtestUtfort %in% c(1,2,9), na.rm=T)), #table(SlagDataUtv$SvelgtestUtfort[which(SlagDataUtv$SvelgtestUtfort %in% c(1,2,9))]),
-	'Mobilisert ila. 24t' = c(table(SlagDataUtv$MobiliseringInnen24Timer)[c('1','9')], 
-								sum(SlagDataUtv$MobiliseringInnen24Timer %in% c(1,2,9), na.rm=T)),#table(SlagDataUtv$MobiliseringInnen24Timer),
+								sum(SlagDataUtv$SvelgtestUtfort %in% c(1,2,9), na.rm=T)), 
+	'Mobilisert ila. 24t' = c(table(SlagDataUtv$MobiliseringInnen24Timer)[c('1','9')],
+								sum(SlagDataUtv$MobiliseringInnen24Timer %in% c(1,2,9), na.rm=T)), 
 	'Tverrfaglig vurdering' = c(table(SlagDataUtv$TverrfagligVurdering)[c('1','9')],
-								sum(SlagDataUtv$TverrfagligVurdering %in% c(1,2,9), na.rm=T))#table(SlagDataUtv$TverrfagligVurdering)
+								sum(SlagDataUtv$TverrfagligVurdering %in% c(1,2,9), na.rm=T))
 )
 
 KritSupplPst <- 100*KritSupplTab[ ,1:2]/KritSupplTab[,3]
-#KritSupplPst <- 100*KritSupplTab[ ,c(1,3)]/rowSums(KritSupplTab, na.rm=T)
 colnames(KritSupplPst) <- c('Ja (%)', 'Ukjent (%)')	#, 'Ant. reg.')
-txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 KritSupplPstTab <- xtable(KritSupplPst, digits=1, align=c('l', 'r', 'r'), 	#c(0,1,1,1)
-		caption=paste0('Utførte undersøkelser og tiltak, ', txt, '.),
-		label=paste("tab:KritSupp",k,sep=''))
+		caption='Utførte undersøkelser og tiltak, hele landet.
+		For Fokale utfall er det kun krysset av på Ja og Nei, og ikke krysset av på ukjente. 
+		I tabellen er derfor manglende registreringer angitt som ukjent.',
+		label="tab:KritSupp")
 print(KritSupplPstTab)
+		
 
-}		
-
-
-
+		
 dum <- SlagFigPrePost(RegData=SlagData, valgtVar='NIHSSTrombolyse', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, 
-		outfile='FigNIHSSppTrombolyseEget.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, outfile='FigNIHSSTrombolysePP.pdf')
 
-dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='NIHSSendrTrombolyse', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='NIHSSendrTrombolyse', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigNIHSSendrTrombolyse.pdf')
-
-dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkHjerne', datoFra=datoFra, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigNIHSSendrTrombolyse.pdf')
+		
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkHjerne', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagnostikkHjerne.pdf')
-
-dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkEkstrakranKar', datoFra=datoFra, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagnostikkHjerne.pdf')
+		
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkEkstrakranKar', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagEksKar.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagEksKar.pdf')
 
-dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkIntraraniell', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkIntraraniell', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagIntraKar.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagIntraKar.pdf')
 
-dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='RegistreringHjerterytme', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='RegistreringHjerterytme', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigHjerterytme.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigHjerterytme.pdf')
 
-dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkHjerte', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkHjerte', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagnostikkHjerte.pdf')
-
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigBildediagnostikkHjerte.pdf')
+		
 @
 
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigNIHSSppTrombolyseEget.pdf}
-\caption{\label{fig:NIHSSendrTrombolyse} NIHSS score før og etter trombolyse, \Sexpr{shtxt}.}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigNIHSSTrombolysePP.pdf}} }
+\caption{\label{fig:NIHSSTrombolysePP} NIHSS score før og etter trombolyse.}
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigNIHSSendrTrombolyse.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigNIHSSendrTrombolyse.pdf}} }
 \caption{\label{fig:NIHSSendrTrombolyse} Endring i NIHSS fra før til etter trombolyse.}
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigBildediagnostikkHjerne.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigBildediagnostikkHjerne.pdf}} }
 \caption{\label{fig:BildediagnostikkHjerne} Bildediagnostikk av hjerneslaget.}
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigBildediagEksKar.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigBildediagEksKar.pdf}} }
 \caption{\label{fig:BildediagEksKar} Bildediagnostikk av ekstrakranielle kar.}
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigBildediagIntraKar.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigBildediagIntraKar.pdf}} }
 \caption{\label{fig:BildediagIntraKar} Bildediagnostikk av intrakranielle kar.}
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigHjerterytme.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigHjerterytme.pdf}} }
 \caption{\label{fig:Hjerterytme} Registrering av hjerterytme.}
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigBildediagnostikkHjerte.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigBildediagnostikkHjerte.pdf}} }
 \caption{\label{fig:BildediagnostikkHjerte} Bildediagnostikk av hjertet.}
 \end{figure}
 
@@ -944,7 +954,6 @@ dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='BildediagnostikkHjerte', datoF
 #Medikamentell behandling ved utreise, dvs. tot tre.
 #Variabelen ASA+Dipyridamol er tatt bort fra 1.januar 2014.
 
-
 #ANTIKOAGULASJON
 SlagData$UtAntikoagsum <- factor(with(SlagData, UtWarfarin+UtAndreEnnWarfarin), levels=c(2,3,4,10,11,18))	#Gir 2,3,4,10,11,18
 SlagData$UtBeggeAntikoag <- c(1,2,2,9,9,9)[SlagData$UtAntikoagsum]
@@ -954,12 +963,11 @@ SlagData$AntitrombotiskSum <- as.factor(with(SlagData, UtPlatehem+UtAntikoagul) 
 SlagData$Antitrombotisk <- c(1,1,2,1,9,9)[SlagData$AntitrombotiskSum]
 
 #PLATEHEMMERE OG ANTIKOAGULASJON FOR I63 og levende utskrevet
-SlagDataI63 <- SlagData[intersect(ind$Fra2014, 
+#SlagDataI63 <- SlagData[((SlagData$Slagdiagnose == 2) & (SlagData$UtskrTil != 10)), ]
+SlagDataI63 <- SlagData[intersect(indFra2014, 
 		intersect(which(SlagData$Slagdiagnose == 2), which(SlagData$UtskrTil != 10))), ]
 		
-for (k in 1:2) {
-SlagDataI63Utv <- SlagDataI63[switch(utvalg[k], Eget = which(SlagDataI63$ReshId==reshID), 
-												Alle = 1:dim(SlagDataI63)[1]), ]
+SlagDataI63Utv <- SlagDataI63
 Nutv <- dim(SlagDataI63Utv)[1]
 
 #PLATEHEMMERE
@@ -990,25 +998,19 @@ MedBehUtPlateAntiPstI63 <- 100*rbind(
 
 
 colnames(MedBehUtPlateAntiPstI63) <- c('Ja (%)','Ukjent (%)')	#, 'Ant. reg.')
-txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 MedBehUtPlateAntiPstI63Tab <- xtable(MedBehUtPlateAntiPstI63, digits=1, align=c('l', 'r', 'r'), 	#c(0,1,1,1)
 		caption=paste('Platehemmende og antikoagulerende behandling ved utskriving (kun levende). 
-		Diagnose hjerneinfarkt (I63), ', txt, ', N=', Nutv, '. (Innleggelser fra og med 1. januar 2014.)', sep=''),	
-		label=paste("tab:MedBehPAUt",k,sep=''))
+		Diagnose hjerneinfarkt (I63), N=', Nutv, '. (Innleggelser fra 1.januar 2014.)', sep=''),	
+		label="tab:MedBehPAUt")
 print(MedBehUtPlateAntiPstI63Tab)
 
-}
 
 
-#ANTIKOAGULASJON FOR I63 med atrieflimmer og levende utskrevet
-#SlagDataI63Atri <- SlagData[((SlagData$Slagdiagnose == 2) & (SlagData$UtskrTil != 10) & 
-#		(SlagData$Atrieflimmer == 1)), ]
-indI63Atri <- which((SlagData$Slagdiagnose == 2) & (SlagData$UtskrTil != 10) & 
-		(SlagData$Atrieflimmer == 1))
+#PLATEHEMMERE OG ANTIKOAGULASJON FOR I63 med atrieflimmer og levende utskrevet
+SlagDataI63Atri <- SlagData[((SlagData$Slagdiagnose == 2) & (SlagData$UtskrTil != 10) & 
+		(SlagData$Atrieflimmer == 1)), ]
 
-for (k in 1:2) {
-#SlagDataI63Utv <- SlagDataI63Atri[switch(utvalg[k], Eget = ind$Eget, Alle = ind$Alle), ]
-SlagDataI63Utv <- SlagData[switch(utvalg[k], Eget = intersect(indI63Atri,ind$Eget), Alle = indI63Atri), ]
+SlagDataI63Utv <- SlagDataI63Atri
 
 ind_u80 <- which(SlagDataI63Utv$Alder <= 80) 
 N_u80 <- length(ind_u80)
@@ -1027,23 +1029,16 @@ N_o80Warf <- length(intersect(ind_o80, which(SlagDataI63Utv$UtWarfarin == 1))) -
 N_o80Andre <- length(intersect(ind_o80, which(SlagDataI63Utv$UtAndreEnnWarfarin == 1))) - N_o80Begge
 
 
-MedBehUtDivPst <- switch(k, 100*rbind(
+MedBehUtDivPst <- 100*rbind(
 	'Antikoagulerende, <=80år' = N_u80Antikoag/N_u80,
 	'... Warfarin' = N_u80Warf/N_u80Antikoag,
 	'... andre perorale antikoag.' = N_u80Andre/N_u80Antikoag,
 	'Antikoagkoagulerende,  81+år' = N_o80Antikoag/N_o80,
 	'... Warfarin ' = N_o80Warf/N_o80Antikoag,
-	'... andre ' = N_o80Andre/N_o80Antikoag),
-	cbind(MedBehUtDivPst, 
-	100*c(N_u80Antikoag/N_u80, N_u80Warf/N_u80Antikoag,
-	  N_u80Andre/N_u80Antikoag, N_o80Antikoag/N_o80,
-	  N_o80Warf/N_o80Antikoag, N_o80Andre/N_o80Antikoag))
-	  )
+	'... andre ' = N_o80Andre/N_o80Antikoag)
 
-}
-	
-colnames(MedBehUtDivPst) <- c('Andel(%):  Eget', 'Hele landet')	#, 'Ant. reg.')
-xtable(MedBehUtDivPst, digits=1, align=c('l', 'r', 'r'), 	#c(0,1,1,1)
+colnames(MedBehUtDivPst) <- c('Andel(%)')	#, 'Ant. reg.')
+xtable(MedBehUtDivPst, digits=1, align=c('l', 'r'),
 		caption='Antikoagulasjonsbehandling ved utskriving av pasienter med atrieflimmer som har  
 			overlevd hjerneinfarkt (I63).', 	#, N =', Nhoved),
 		label="tab:MedBehDivUt")
@@ -1053,27 +1048,24 @@ xtable(MedBehUtDivPst, digits=1, align=c('l', 'r', 'r'), 	#c(0,1,1,1)
 
 #-----------------------------------------------------------------------------------
 #BT-senkende
-NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist')
+#NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist') Torunn: kommentert ut linje 1092-1113
  
-for (k in 1:2) {
-SlagDataUtv <- SlagData[switch(utvalg[k], Eget = ind$Eget, Alle = ind$Alle),]
-Nutv <- dim(SlagDataUtv)[1]
+
+
+N_BTsenkUt <- sum(SlagDataUtv$PostMedikBehHoytBT == 1)
 
 MedBehUtBTstatPst <- 100*rbind( 
-	'BT-senkende' = table(SlagDataUtv$PostMedikBehHoytBT)[c('1','9')]/Nutv,
+	'BT-senkende' = c(N_BTsenkUt, sum(SlagDataUtv$PostMedikBehHoytBT == 9))/Nutv,
 	'Statin-Lipidsenkende' = table(SlagDataUtv$UtStatinerLipid)[c('1','9')]/Nutv
 	)
 
 		
 colnames(MedBehUtBTstatPst) <- c('Ja (%)', 'Ukjent (%)')	#, 'Ant. reg.')
-txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 MedBehUtBTstatPstTab <- xtable(MedBehUtBTstatPst, digits=1, align=c('l', 'r', 'r'), 	
 		caption=paste('Blodtrykkssenkende behandling og statiner ved utskriving (kun levende). 
-		Alle diagnoser, ', txt, ', N=', Nutv, '.', sep=''), 	
-		label=paste("tab:MedBehBTSUt",k,sep=''))
+		Alle diagnoser, N=', Nutv, '.', sep=''), 	
+		label="tab:MedBehBTSUt")
 print(MedBehUtBTstatPstTab)
-
-}
 @
 
 \clearpage
@@ -1086,36 +1078,34 @@ Dette kapitlet inneholder informasjon om:
 	\item Utskrevet til
 \end{itemize}
 
-
 <<FigurerUtskriving, echo=FALSE, message=FALSE, eval=T>>=
-
-dum <-SlagFigAndeler(RegData=SlagData, valgtVar='AntDagerInnl', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='AntDagerInnl', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigDagerInnl.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigAntDagerInnl.pdf')
 
-dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='AvdUtskrFraHvilken', datoFra=datoFra, 
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='AvdUtskrFraHvilken', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigAvdUtskrFraHvilken.pdf')
-
-dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='UtskrTil', datoFra=datoFra, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigAvdUtskrFraHvilken.pdf')
+		
+dum <- 	SlagFigAndeler(RegData=SlagData, valgtVar='UtskrTil', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigUtskrTil.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigUtskrTil.pdf')
+		
 		
 @
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigDagerInnl.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigAntDagerInnl.pdf}} }
 \caption{\label{fig:AntDagerInnl} Liggetid i forbindelse med slaget.}
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigAvdUtskrFraHvilken.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigAvdUtskrFraHvilken.pdf}} }
 \caption{\label{fig:AvdUtskrFraHvilken} Fra hvilken avdeling ble pasienten utskrevet?}
 \end{figure}
 
-
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigUtskrTil.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigUtskrTil.pdf}} }
 \caption{\label{fig:UtskrTil} Hva ble pasientene skrevet ut til?}
 \end{figure}
 
@@ -1127,93 +1117,86 @@ Dette kapitlet inneholder resultater knyttet til:
 \begin{itemize}
 	\item Boligforhold/bosituasjon
 %	\item Røykestatus
+%	\item Funksjonsnivå (''modified Rankin scale'')
 	\item Selvhjulpenhet (toalett, forflytning, påkledning)
+	\item Bilkjøring
 	\item Tilfredshet
 \end{itemize}
 
 
-<<FigurerOppf, echo=FALSE, message=FALSE, eval=T>>=
 
-dum <-SlagFigPrePost(RegData=SlagData, valgtVar='Boligforh', datoFra=datoFra, datoTil=datoTil, 
-	minald=minald, maxald=maxald, reshID=reshID, enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, 
+<<FigurerBoligforh, echo=FALSE, message=FALSE, eval=T>>=
+dum <-	SlagFigPrePost(RegData=SlagData, valgtVar='Boligforh', datoFra=datoFra, datoTil=datoTil, 
+	minald=minald, maxald=maxald, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 	outfile='FigBoligforh.pdf')
 
-dum <-	SlagFigPrePost(RegData=SlagData, valgtVar='Bosituasjon', datoFra=datoFra, 
+dum <- 	SlagFigPrePost(RegData=SlagData, valgtVar='Bosituasjon', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigBositPrePost.pdf')
 
-dum <-	SlagFigPrePost(RegData=SlagData, valgtVar='Toalett', datoFra=datoFra, 
-		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, 
+dum <- 	SlagFigPrePost(RegData=SlagData, valgtVar='Toalett', datoFra=datoFra, datoTil=datoTil, 
+		minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigToalettPrePost.pdf')
-
-dum <-	SlagFigPrePost(RegData=SlagData, valgtVar='Forflytning', datoFra=datoFra, 
+		
+dum <- 	SlagFigPrePost(RegData=SlagData, valgtVar='Forflytning', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigForflytningPrePost.pdf')
-
-dum <-	SlagFigPrePost(RegData=SlagData, valgtVar='Paakledning', datoFra=datoFra, 
+		
+dum <- 	SlagFigPrePost(RegData=SlagData, valgtVar='Paakledning', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
 		outfile='FigPaakledningPrePost.pdf')
-
-#dum <-	SlagFigPrePost(RegData=SlagData, valgtVar='Bilkjoring', datoFra=datoFra, 
-#		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-#		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, 
-#		outfile='FigBilkjoringPrePost.pdf')
+		
+dum <- 	SlagFigPrePost(RegData=SlagData, valgtVar='Bilkjoring', datoFra=datoFra, 
+		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
+		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,preprosess=preprosess, 
+		outfile='FigBilkjoringPrePost.pdf')
 
 dum <-	SlagFigAndeler(RegData=SlagData, valgtVar='Tilfredshet', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg, hentData=0, preprosess=preprosess, outfile='FigTilfredshet.pdf')
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, preprosess=preprosess, 
+		outfile='FigTilfredshet.pdf')
+		
 @
 
-
-
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigBoligforh.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigBoligforh.pdf}} }
 \caption{\label{fig:Boligforh} Boligforhold før og 3 måneder etter slaget.}
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigBositPrePost.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigBositPrePost.pdf}} }
 \caption{\label{fig:BositPrePost} Bosituasjon ved innleggelse og 3 måneder etter slaget.}
 \end{figure}
 
 
-%\begin{figure}[ht]
-%<<FigRoykestatusPrePost, echo=FALSE, message=FALSE, eval=T>>=
-%	SlagFigPrePost(RegData=SlagData, valgtVar='Roykestatus', datoFra=datoFra, 
-%		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-%		innl4t=innl4t, NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, outfile=outfile)
-%@
-%\caption{\label{fig:RoykPrePost} Røykestatus før og 3 måneder etter slaget.}
-%\end{figure}
-
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigToalettPrePost.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigToalettPrePost.pdf}} }
 \caption{\label{fig:ToalettPrePost} Selvhjulpenhet ved toalettbesøk før og 3 måneder etter slaget.}
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigForflytningPrePost.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigForflytningPrePost.pdf}} }
 \caption{\label{fig:ForflytningPrePost} Forflytningsevne før og 3 måneder etter slaget.}
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigPaakledningPrePost.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigPaakledningPrePost.pdf}} }
 \caption{\label{fig:PaakledningPrePost} Evne til av-/påkledning før og 3 måneder etter slaget.}
 \end{figure}
 
 
-%\begin{figure}[ht]
-%\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigBilkjoringPrePost.pdf}
-%\caption{\label{fig:BilkjoringPrePost} Evne til bilkjøring før og 3 måneder etter slaget.}
-%\end{figure}
+\begin{figure}[ht]
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigBilkjoringPrePost.pdf}} }
+\caption{\label{fig:BilkjoringPrePost} Evne til bilkjøring før og 3 måneder etter slaget.}
+\end{figure}
 
 
 \begin{figure}[ht]
-\centering \includegraphics[width=\Sexpr{figKrymp1}\textwidth]{FigTilfredshet.pdf}
+\centerline{ \scalebox{\Sexpr{s1}}{\includegraphics{FigTilfredshet.pdf}} }
 \caption{\label{fig:Tilfredshet} Er pasienten like fornøyd med tilværelsen etter 
 		hjerneslaget som før?}
 \end{figure}

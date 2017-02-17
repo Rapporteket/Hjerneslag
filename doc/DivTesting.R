@@ -1,5 +1,5 @@
-HovedSkjema <- read.table('C:/Registre/HjerneslagD/Akuttskjema2017-01-24.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-OppfSkjema <- read.table('C:/Registre/HjerneslagD/AkuttskjemaOppfolging2017-01-24.csv', sep=';', 
+HovedSkjema <- read.table('C:/Registre/Hjerneslag/data/Akuttskjema2017-02-06.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+OppfSkjema <- read.table('C:/Registre/Hjerneslag/data/AkuttskjemaOppfolging2017-02-06.csv', sep=';', 
                          header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 OppfSkjema$HovedskjemaGUID <- toupper(OppfSkjema$HovedskjemaGUID)
@@ -7,18 +7,28 @@ OppfSkjema$HovedskjemaGUID <- toupper(OppfSkjema$HovedskjemaGUID)
 SlagData <- merge(HovedSkjema, OppfSkjema, by.x='SkjemaGUID',by.y="HovedskjemaGUID", all.x = TRUE, all.y = FALSE)
 
 
+aggregate(HovedSkjema$SkjemaGUID, by = list(HovedSkjema$UnitId, HovedSkjema$Helseenhet), FUN = length)
+
+c(HovedSkjema$UnitId, HovedSkjema$Helseenhet)
+
+
 #-------Sjekk for dobbeltregistreringer
 #Bruk RegData$ForloepID
-Navn2 <- names(table(HovedSkjema$HovedskjemaGUID)[table(HovedSkjema$HovedskjemaGUID)>1])
-TestTab <- HovedSkjema[(HovedSkjema$HSkjemaGUID %in% Navn2),
-                    c("SkjemaGUID", 'UnitId')]
-write.table(TestTab, file='Test2Hovedskjema.csv', sep = ';', row.names = F)
+Navn2 <- names(table(HovedSkjema$ForloepID)[table(HovedSkjema$ForloepID)>1])
+TestTab1 <- HovedSkjema[(HovedSkjema$ForloepID %in% Navn2),
+                  c("Innleggelsestidspunkt", "ForloepID", 'UnitId', "SkjemaGUID")]
+TestTab <- TestTab1[order(TestTab1$Innleggelsestidspunkt), ]
+write.table(TestTab, file='TestDobbeltRegForlop.csv', sep = ';', row.names = F)
 
 
 Navn2 <- names(table(OppfSkjema$HovedskjemaGUID)[table(OppfSkjema$HovedskjemaGUID)>1])
 TestTab <- OppfSkjema[(OppfSkjema$HovedskjemaGUID %in% Navn2),
                        c("HovedskjemaGUID","SkjemaGUID", 'UnitId')]
 write.table(TestTab, file='Test2OppfSkjema.csv', sep = ';', row.names = F)
+
+TestTab <- HovedSkjema[HovedSkjema$PatientAge <18, c("SkjemaGUID", 'UnitId', "PatientAge")]
+write.table(TestTab, file='TestPasUnder18.csv', sep = ';', row.names = F)
+
 
 
 #------Teste variable

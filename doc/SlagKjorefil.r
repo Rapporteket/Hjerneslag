@@ -12,6 +12,7 @@ HovedSkjema <- read.table('C:/Registre/Hjerneslag/data/Akuttskjema2017-01-24.csv
 OppfSkjema <- read.table('C:/Registre/Hjerneslag/data/AkuttskjemaOppfolging2017-01-24.csv', sep=';', 
                          header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
+
 #Bør lage automatisk sjekk for hvilke variabelnavn som finnes i begge datasett
 #varBegge <- c('PatientAge', 'PatientGender', 'DeathDate')
 #OppfSkjema <- OppfSkjema[ ,-which(names(OppfSkjema) %in% varBegge)]
@@ -19,6 +20,7 @@ OppfSkjema <- read.table('C:/Registre/Hjerneslag/data/AkuttskjemaOppfolging2017-
 #names(OppfSkjema)[which(names(OppfSkjema)== 'SkjemaGUID')] <- 'OSkjemaGUID'
 
 OppfSkjema$HovedskjemaGUID <- toupper(OppfSkjema$HovedskjemaGUID)
+
 
 varBegge <- intersect(names(OppfSkjema),names(HovedSkjema))
 OppfSkjema <- OppfSkjema[ ,c("HovedskjemaGUID", "SkjemaGUID", names(OppfSkjema)[!(names(OppfSkjema) %in% varBegge)])]
@@ -35,7 +37,7 @@ reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand) 
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2015-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-10-01'
+datoTil <- '2015-12-31'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 diagnose <- ''	#diagnose: 1,2,3  Infarkt(I61), Blødning(I63), Udefinert(I64), standard: '' (alt annet)
 innl4t <- '' 	#Innlagt innen 4t: 'Ja', 'Nei', standard:'' (alt annet)
