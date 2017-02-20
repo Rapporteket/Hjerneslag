@@ -47,8 +47,8 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
     #700388: Ullevål
   #Gjerne med fotnote om dette.
   fotnote <- ''
-  RegDataTromb <- RegData[which(RegData$Slagdiagnose==2),] #Bare hjerneinfarkt aktuell for trombolyse - SKAL DETTE FJERNES????
-  if (reshID %in% c(106340,106579)) { #StOlavs eller Orkdal
+  RegDataTromb <- RegData[which(RegData$Slagdiagnose==2),] #Bare hjerneinfarkt aktuell for trombolyse
+  if (reshID %in% c(106340,106579) & (enhetsUtvalg != 0)) { #StOlavs eller Orkdal
       RegDataTromb$ReshId[RegDataTromb$ReshId == 106579] <- 106340
       fotnote <- 'For trombolysebehandlede er St.Olavs og Orkdal slått sammen'
   }
@@ -65,7 +65,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
 	indRestTromb <- NULL
 	medSml <- 0
 	indHoved <- 1:dim(RegData)[1]
-	indHovedTromb <- indHoved
+	indHovedTromb <- 1:dim(RegDataTromb)[1]
 
     if (enhetsUtvalg == 1) {
 		medSml <- 1
@@ -137,7 +137,7 @@ SlagFigAndelerKvalInd  <- function(RegData, datoFra='2012-04-01', datoTil='2050-
           'Vurdert svelgfunksjon' = sum(RegData$SvelgtestUtfort %in% c(1,3))/N,		#Av alle, dvs. andel er  de som helt sikkert fått utf. svelgtest
           'Hjerneinfarkt, <=80 år, trombolysebehandlet' = 
             length(intersect(which(RegDataTromb$Trombolyse %in% c(1,3)),which(RegDataTromb$Alder <=80)))/
-            sum(RegDataTromb$Alder <=80),	
+            sum(RegDataTromb$Alder <=80, na.rm = T),	
           'Trombolyse innen 40 min.' = sum((RegData$TidInnleggTrombolyse <= 40), na.rm = TRUE)/Ntrombolyse,	#med i def: & (RegData$Trombolyse %in% c(1,3))
           'Hjerneinfarkt, utskrevet med \nantitrombotisk behandling' = sum(RegDataI63leve$UtAntitrombotisk)/NI63leve,
           'Hjerneinfarkt, atrieflimmer, \nutskrevet med antikoagulasjon' = 

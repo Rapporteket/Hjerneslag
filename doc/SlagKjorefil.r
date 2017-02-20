@@ -43,7 +43,7 @@ diagnose <- ''	#diagnose: 1,2,3  Infarkt(I61), Blødning(I63), Udefinert(I64), s
 innl4t <- '' 	#Innlagt innen 4t: 'Ja', 'Nei', standard:'' (alt annet)
 NIHSSinn <- ''	#NIHSS grupper: 1-6, tilsv. verdi: 0-5,6-10,11-15,..., standard: '' (alt annet)
 valgtMaal=''	#'Med' - median, alt annet gir gjennomsnitt
-enhetsUtvalg <- 1 	#0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+enhetsUtvalg <- 0 	#0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 
 
@@ -54,10 +54,10 @@ library(Hjerneslag)
 library(knitr)
 setwd('C:/ResultattjenesteGIT/Hjerneslag/inst')
 knit('SlagSamleDok.Rnw')
-#knit('SlagSamleDokLand.Rnw')
+knit('SlagSamleDokLand.Rnw')
 
 tools::texi2pdf('SlagSamleDok.tex')
-#tools::texi2pdf('SlagSamleDokLand.tex')
+tools::texi2pdf('SlagSamleDokLand.tex')
 
 #--------------------------------------AntStabel-----------------------------------
 
@@ -67,7 +67,7 @@ tools::texi2pdf('SlagSamleDok.tex')
 reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
 datoTil <- '2016-03-03'
 enhetsUtvalg <-0 #0-hele landet, 2-egen enhet, 7–egen region, 
-outfile <- paste('Registreringer',enhetsUtvalg, 'NY.pdf', sep='')	#Navn angis av Jasper
+outfile <- paste0('Registreringer',enhetsUtvalg, 'NY.pdf')	#Navn angis av Jasper
 
 SlagFigAntReg(RegData=RegData,
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
@@ -113,7 +113,7 @@ for (valgtVar in c('Alder', 'AntDagerInnl', 'AvdForstInnlagtHvilken', 'AvdUtskrF
 }
 
 #---------------------------------------- KVALITETSINDIKATORER
-outfile <- 'KvalInd.png'	#'KvalInd.pdf'	#Navn angis av Jasper
+outfile <- 'KvalInd.png' #KvalInd.pdf'	#Navn angis av Jasper
 
 SlagFigAndelerKvalInd(RegData=RegData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, NIHSSinn=NIHSSinn, 
 			reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
