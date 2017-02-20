@@ -42,7 +42,7 @@ SlagFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012-
   
   # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
   if (preprosess == 1){
-    RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
+    RegData <- SlagPreprosess(RegData=RegData)
   }
   
 #Når bare skal sammenlikne med region trengs ikke data for hele landet:

@@ -33,7 +33,7 @@ SlagFigGjsnTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='300
   
 # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
   if (preprosess==1){
-    RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
+    RegData <- SlagPreprosess(RegData=RegData)
   }
   
 RegData$Aar <- 1900 + strptime(RegData$Innleggelsestidspunkt, format="%Y")$year

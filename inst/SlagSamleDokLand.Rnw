@@ -92,7 +92,7 @@ if (!exists('SlagData')){
 
 <<'DatautvalgOgPreProsess',echo=FALSE, eval=T>>=
 # Preprosessere data. 
-SlagData <- SlagPreprosess(RegData=SlagData, reshID=reshID)
+SlagData <- SlagPreprosess(RegData=SlagData)
 SlagData$ShNavn <- as.factor(SlagData$Avdeling)	#factor(SlagData$ReshId)
 
 #Felles parametre:

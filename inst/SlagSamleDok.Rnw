@@ -92,7 +92,7 @@ if (!exists('SlagData')){
 
 <<'DatautvalgOgPreProsess',echo=FALSE, eval=T>>=
 # Preprosessere data:  
-SlagData <- SlagPreprosess(RegData=SlagData, reshID=reshID)
+SlagData <- SlagPreprosess(RegData=SlagData)
 
 #Felles parametre:
 hentData <- 0
