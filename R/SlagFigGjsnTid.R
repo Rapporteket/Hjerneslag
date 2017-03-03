@@ -189,8 +189,8 @@ if (valgtMaal=='Med') {
 #and are said to be rather insensitive to the underlying distributions of the samples. The idea appears to be to give 
 #roughly a 95% confidence interval for the difference in two medians. 	
 } else {	#Gjennomsnitt blir standard.
-	Midt <- tapply(RegData[indHoved ,'Variabel'], RegData[indHoved, 'Aar'], mean)
-	SD <- tapply(RegData[indHoved ,'Variabel'], RegData[indHoved, 'Aar'], sd)
+	Midt <- tapply(RegData[indHoved ,'Variabel'], RegData[indHoved, 'Aar'], mean, na.rm=T)
+	SD <- tapply(RegData[indHoved ,'Variabel'], RegData[indHoved, 'Aar'], sd, na.rm=T)
 	Konf <- rbind(Midt - 2*SD/sqrt(N), Midt + 2*SD/sqrt(N))
 }
 	#### Noe som ma med i ValgtVardef? Konf <- replace(Konf, which(Konf < KIekstrem[1]), KIekstrem[1])

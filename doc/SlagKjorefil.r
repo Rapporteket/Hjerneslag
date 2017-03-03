@@ -185,7 +185,7 @@ valgtVar <- 'TidSymptInnlegg'	#Må velge... Alder,
 		#NIHSSpreTrombolyse','NIHSSetterTrombolyse','NIHSSpreTrombektomi', 'NIHSSetterTrombektomi'
 outfile <- ''	#paste(valgtVar, '.png', sep='')	#Navn angis av Jasper
 
-FigMeanMed(RegData=SlagData, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, datoTil=datoTil, 
+SlagFigGjsnGrVar(RegData=SlagData, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, datoTil=datoTil, 
 		minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn, 
 		enhetsUtvalg=enhetsUtvalg, reshID=reshID,outfile=outfile)
 		
@@ -194,7 +194,7 @@ for (valgtVar in c('Alder','AntDagerInnl', 'TidSymptInnlegg', 'TidSymptTrombolys
 		'NIHSSinnkomst','NIHSSpreTrombolyse','NIHSSetterTrombolyse',
 		'NIHSSpreTrombektomi', 'NIHSSetterTrombektomi')) {
 	outfile <- paste(valgtVar, 'MM.png', sep='')
-	FigMeanMed(RegData=SlagData, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, 
+	SlagFigGjsnGrVar(RegData=SlagData, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, outfile=outfile)
 }
@@ -235,7 +235,7 @@ FigAndeler(RegData=SlagData, datoFra=datoFra, valgtVar='AntDagerInnl',
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,libkat=libkat, 
 		outfile=paste0('AntDagerInnl', test, type))
 
-FigMeanMed(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='', datoFra=datoFra, 
+SlagFigGjsnGrVar(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, 
 		outfile=paste0('AntDagerInnlMM', test, type))
