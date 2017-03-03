@@ -446,8 +446,7 @@ Risikofakt <- rbind(
 	
 colnames(Risikofakt) <- c('Kvinner (%)', 'Menn (%)', 'Ant. reg.')
 RisikofaktTab <- xtable(Risikofakt, digits=c(1,1,1,0), align=c('l', 'r', 'r', 'r'), 	#c(0,1,1,1)
-		caption='Risikofaktorer før hjerneslaget, hele landet. Lipidsenkende behandling er registrert 
-		fra 1.januar 2014.',
+		caption='Risikofaktorer før hjerneslaget, hele landet.',
 		label="tab:Risiko")
 print(RisikofaktTab)
 
