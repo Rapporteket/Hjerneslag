@@ -47,13 +47,17 @@ flerevar <- 0
 antDes <- 1
 
 
-#Når skal sammenlikne region - eller ikke sammenlikne, 
+#Når bare skal sammenlikne med sykehusgruppe eller region, eller ikke sammenlikne, 
 #trengs ikke data for hele landet:
 reshID <- as.numeric(reshID)
 indEgen1 <- match(reshID, RegData$ReshId)
-if (enhetsUtvalg == 7) {	
-		RegData <- RegData[which(RegData$RHF == as.character(RegData$RHF[indEgen1])),]	#kun egen region
-	}
+if (enhetsUtvalg %in% c(2,6,7)) {	
+  RegData <- switch(as.character(enhetsUtvalg),
+                    '2' = RegData[which(RegData$ReshId == reshID),],	#kun egen enhet
+                    '6' = RegData[which(RegData$Region == as.character(RegData$Region[indEgen1])),],	#sml region
+                    '7' = RegData[which(RegData$Region == as.character(RegData$Region[indEgen1])),])	#kun egen region
+}
+
 
 #if (valgtVar == 'TidSymptInnlegg') {
   #Uten oppvåkningsslag
