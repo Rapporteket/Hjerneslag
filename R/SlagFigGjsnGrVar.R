@@ -109,10 +109,10 @@ utvalgTxt <- SlagUtvalg$utvalgTxt
 N <- dim(RegData)[1]
 if(N > 0) {Ngr <- table(RegData[ ,grVar])}	else {Ngr <- 0}
 
-Ngrtxt <- paste(', N=', as.character(Ngr), sep='') #paste('N=', as.character(Ngr), sep='')
+Ngrtxt <- paste0(', N=', as.character(Ngr)) #paste('N=', as.character(Ngr), sep='')
 indGrUt <- as.numeric(which(Ngr < Ngrense))
 if (length(indGrUt)==0) { indGrUt <- 0}
-Ngrtxt[indGrUt] <- paste(' (<', Ngrense,')',sep='')	#paste('N<', Ngrense,sep='')
+Ngrtxt[indGrUt] <- paste0(' (<', Ngrense,')')	#paste('N<', Ngrense,sep='')
 
 vt <- switch(valgtVar, Alder='alder', 
 			AntDagerInnl = 'liggetid',
@@ -191,8 +191,8 @@ if (valgtMaal=='Med') {
 	Midt <- as.numeric(Gjsn[sortInd])
 	KIned <- Gjsn[sortInd] - 2*SE[sortInd]
 	KIopp <- Gjsn[sortInd] + 2*SE[sortInd]
-	MidtHele <- round(mean(RegData$Variabel),1)
-	KIHele <- MidtHele + sd(RegData$Variabel)/sqrt(N)*c(-2,2)
+	MidtHele <- round(mean(RegData$Variabel, na.rm = T),1)
+	KIHele <- MidtHele + sd(RegData$Variabel, na.rm = T)/sqrt(N)*c(-2,2)
 } 
 
 
@@ -224,7 +224,7 @@ par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 	lines(x=rep(MidtHele, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2) 
 	legend(x=xmax/2, y=ytopp*1.01, xpd=TRUE, xjust=0,  yjust=0, pch=c(NA, 15), pt.cex=2, cex=0.9, #y=ytopp+0.5, 
 		lwd=c(2,NA), col=c(farger[2], farger[4]), 
-		legend = c(paste(smltxt, ': ', MidtHele, sep=''), paste('95% konf.int., N=', N,sep='' )), 
+		legend = c(paste0(smltxt, ': ', MidtHele), paste0('95% konf.int., N=', N)), 
 		bty='o', bg='white', box.col='white')
 #legend('topright', xjust=1, , cex=1, lwd=2, col=farger[2], 
 #	legend=paste(smltxt, ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N,sep='' ), 
