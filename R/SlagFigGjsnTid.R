@@ -51,11 +51,8 @@ antDes <- 1
 #trengs ikke data for hele landet:
 reshID <- as.numeric(reshID)
 indEgen1 <- match(reshID, RegData$ReshId)
-if (enhetsUtvalg %in% c(2,6,7)) {	
-		RegData <- switch(as.character(enhetsUtvalg),
-						'2' = RegData[which(RegData$ReshId == reshID),],	#kun egen enhet
-						'6' = RegData[which(RegData$RHF == as.character(RegData$RHF[indEgen1])),],	#sml region
-						'7' = RegData[which(RegData$RHF == as.character(RegData$RHF[indEgen1])),])	#kun egen region
+if (enhetsUtvalg == 7) {	
+		RegData <- RegData[which(RegData$RHF == as.character(RegData$RHF[indEgen1])),]	#kun egen region
 	}
 
 #if (valgtVar == 'TidSymptInnlegg') {
@@ -123,7 +120,7 @@ ytxt1 <- switch(valgtVar, Alder='alder (år)',
 if (valgtMaal=='Med') {
   t1 <- 'Median ' } else {t1 <- 'Gjennomsnittlig '}
 
-tittel <- paste(t1, vt, sep='') 
+tittel <- paste0(t1, vt) 
 	
 indEgen1 <- match(reshID, RegData$ReshId)
 if (enhetsUtvalg %in% c(1,2,6)) {	#Involverer egen enhet #Tatt ut 3 (skal ikke ha sykehustype)
@@ -206,8 +203,8 @@ NRest <- tapply(RegData[indRest ,'Variabel'], RegData[indRest, 'Aar'], length)
 		MidtRest <- as.numeric(MedIQRrest$stats[3, ])
 		KonfRest <- MedIQRrest$conf
 	} else {
-	MidtRest <- tapply(RegData[indRest,'Variabel'], RegData[indRest, 'Aar'], mean)	#indRest
-	SDRest <- tapply(RegData[indRest,'Variabel'], RegData[indRest, 'Aar'], sd)
+	MidtRest <- tapply(RegData[indRest,'Variabel'], RegData[indRest, 'Aar'], mean, na.rm=T)	#indRest
+	SDRest <- tapply(RegData[indRest,'Variabel'], RegData[indRest, 'Aar'], sd, na.rm=T)
 	NRest <- tapply(RegData[indRest,'Variabel'], RegData[indRest, 'Aar'], length)
 	KonfRest <- rbind(MidtRest - 2*SDRest/sqrt(NRest), MidtRest + 2*SDRest/sqrt(NRest))
 	}
