@@ -79,9 +79,7 @@ RegData$Variabel <- 0
 
 
 if (valgtVar == 'BehSlagenhet') {
-	indBehSlagenh  <- union(which(RegData$AvdForstInnlagt==1), 
-                      intersect(which(RegData$AvdForstInnlagtHvilken %in% 3:4),
-                      which(RegData$AvdUtskrFra ==1)))
+	indBehSlagenh  <- union(which(RegData$AvdForstInnlagt==1), which(RegData$AvdUtskrFra ==1))
 	RegData$Variabel[indBehSlagenh] <- 1 
 }
 if (valgtVar == 'InnlSlagenh') {
