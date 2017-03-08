@@ -1,91 +1,84 @@
+#---------------Hente Data--------------------------------------
 
-save(SlagDataTest, file='SlagDataTest.Rdata')
-load('C:/Registre/Hjerneslag/data/SlagDataTest.Rdata')
-
-
-rm(list=ls())
-load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2013-12-11.csv', 
-		sep=';', header=T) #, encoding='UTF-8')
-save(SlagData, file='C:/Registre/Hjerneslag/data/HjerneSlag2013-12-11.Rdata')
-write.table(SlagData, file='SlagDataTest.csv', row.names=FALSE, sep=';')
-
-
-
-table(table(SlagData$PatientInRegistryKey))
-#Flere pasienter som har mer enn tre registreringer
-
-table(table(SlagData$PatientInRegistryKey[which(SlagData$SkjemaID==1)]))
-
-
-#--------------------------------------SAMLERAPPORT-----------------------------------
-
-rm(list=ls())
-
-#SlagDataALLE <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-#names(SlagData[which(names(SlagData) == 'PreMedHoytBT')]) <- 'PreMedikBehHoytBT'
-#SlagData <- SlagDataALLE[sample(1:dim(SlagDataALLE)[1], 5000), ]
-#SlagData <- read.table('C:/Registre/Hjerneslag/data/SlagEksempel.csv', sep=';', header=T) #, 
-#SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-#load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
-RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag04PROD2016-06-28.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-
-reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
-
-library(Hjerneslag)
-library(knitr)
-setwd('C:/ResultattjenesteGIT/Hjerneslag/inst')
-knit('SlagSamleDokLand.Rnw')
-
-knit('SlagSamleDok.Rnw')
-#knit('SlagSamleDok_AlleTabOgKomm.Rnw')
-tools::texi2pdf('SlagSamleDokLand.tex')
-#--------------------------------------------------------
-
-
-#--------------------------------------AntStabel-----------------------------------
-
-rm(list=ls())
-#load(file='C:/Registre/Hjerneslag/data/HjerneSlag2013-12-11.Rdata')
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-02-15.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-RegData <- SlagData
-# Inndata til funksjon:
-
-#...NB: SkjemaID
-reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
-datoTil <- '2016-03-03'
-enhetsUtvalg <-7 #0-hele landet, 2-egen enhet, 7–egen region, 
-outfile <- ''	#paste('Registreringer',enhetsUtvalg, '.pdf', sep='')	#Navn angis av Jasper
-
-FigAntReg(RegData=SlagData,
-		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
-
-
-
-
-
-#------------------------------ Andeler flere var --------------------------
-#------------------------------ (erstatter Fordelinger) --------------------------
 rm(list=ls())
 #load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
-#SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21ansi.csv', sep=';', header=T) #, 
-RegData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-06-20.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+#SlagData <- SlagDataALLE[sample(1:dim(SlagDataALLE)[1], 5000), ]
+#save(SlagData, file='C:/Registre/Hjerneslag/data/HjerneSlagTest.Rdata')
+#SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-09-19.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+
+
+HovedSkjema <- read.table('C:/Registre/Hjerneslag/data/Akuttskjema2017-01-24.csv', sep=';', 
+                          header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+OppfSkjema <- read.table('C:/Registre/Hjerneslag/data/AkuttskjemaOppfolging2017-01-24.csv', sep=';', 
+                         header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
+
+
+#Bør lage automatisk sjekk for hvilke variabelnavn som finnes i begge datasett
+#varBegge <- c('PatientAge', 'PatientGender', 'DeathDate')
+#OppfSkjema <- OppfSkjema[ ,-which(names(OppfSkjema) %in% varBegge)]
+#OppfSkjema$HovedskjemaGUID <- toupper(OppfSkjema$HovedskjemaGUID)
+#names(OppfSkjema)[which(names(OppfSkjema)== 'SkjemaGUID')] <- 'OSkjemaGUID'
+
+OppfSkjema$HovedskjemaGUID <- toupper(OppfSkjema$HovedskjemaGUID)
+
+
+varBegge <- intersect(names(OppfSkjema),names(HovedSkjema))
+OppfSkjema <- OppfSkjema[ ,c("HovedskjemaGUID", "SkjemaGUID", names(OppfSkjema)[!(names(OppfSkjema) %in% varBegge)])]
+SlagData <- merge(HovedSkjema, OppfSkjema, by.x='SkjemaGUID',by.y="HovedskjemaGUID", all.x = TRUE, all.y = FALSE)
+RegData <- SlagData
+
+
+
+
+#.---------------------- Sette parametre-----------------------------------
 
 # Inndata til funksjon:
 reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-08-01'
+datoTil <- '2017-12-31'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 diagnose <- ''	#diagnose: 1,2,3  Infarkt(I61), Blødning(I63), Udefinert(I64), standard: '' (alt annet)
 innl4t <- '' 	#Innlagt innen 4t: 'Ja', 'Nei', standard:'' (alt annet)
-enhetsUtvalg <-1 #0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
-				#6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 NIHSSinn <- ''	#NIHSS grupper: 1-6, tilsv. verdi: 0-5,6-10,11-15,..., standard: '' (alt annet)
-				#Velges denne, blir registreringer hvor NIHSS ikke er utført, tatt bort.
-valgtVar <- 'TidInnleggTrombolyse'	#Må velge... Alder, Transportmetode,
+valgtMaal=''	#'Med' - median, alt annet gir gjennomsnitt
+enhetsUtvalg <- 1 	#0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+#					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
+
+
+#--------------------------------------SAMLERAPPORT-----------------------------------
+#Last data
+library(tools)
+library(Hjerneslag)
+library(knitr)
+setwd('C:/ResultattjenesteGIT/Hjerneslag/inst')
+knit('SlagSamleDok.Rnw')
+knit('SlagSamleDokLand.Rnw')
+
+tools::texi2pdf('SlagSamleDok.tex')
+tools::texi2pdf('SlagSamleDokLand.tex')
+
+#--------------------------------------AntStabel-----------------------------------
+
+# Inndata til funksjon:
+
+#...NB: SkjemaID
+reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
+datoTil <- '2016-03-03'
+enhetsUtvalg <-0 #0-hele landet, 2-egen enhet, 7–egen region, 
+outfile <- paste0('Registreringer',enhetsUtvalg, 'NY.pdf')	#Navn angis av Jasper
+
+SlagFigAntReg(RegData=RegData,
+		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
+		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
+
+
+
+#------------------------------ Andeler flere var --------------------------
+#------------------------------ (erstatter Fordelinger) --------------------------
+
+valgtVar <- 'FokaleUtfAndre'	#Må velge... Alder, Transportmetode,
 		#AntDagerInnl, TidSymptInnlegg, TidSymptTrombolyse, TidInnleggTrombolyse
 		#NIHSSinnkomst, NIHSSendrTrombolyse, NIHSSendrTrombektomi
 		#NIHSSpreTrombolyse','NIHSSetterTrombolyse','NIHSSpreTrombektomi', 'NIHSSetterTrombektomi'
@@ -96,7 +89,7 @@ valgtVar <- 'TidInnleggTrombolyse'	#Må velge... Alder, Transportmetode,
 		#AvdForstInnlagtHvilken, AvdUtskrFraHvilken, UtskrTil
 		#FokaleUtf, FokaleUtfAndre,
 		#Tatt ut til egen: 'KvalInd', 
-outfile <- paste(valgtVar, '_ford.pdf', sep='')	#Navn angis av Jasper
+outfile <- paste0(valgtVar, '_ford.pdf')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/Hjerneslag")
 
 SlagFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
@@ -120,21 +113,16 @@ for (valgtVar in c('Alder', 'AntDagerInnl', 'AvdForstInnlagtHvilken', 'AvdUtskrF
 }
 
 #---------------------------------------- KVALITETSINDIKATORER
-outfile <- 'KvalInd.png'	#'KvalInd.pdf'	#Navn angis av Jasper
+outfile <- 'KvalInd.png' #KvalInd.pdf'	#Navn angis av Jasper
 
-SlagFigAndelerKvalIndTest(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, NIHSSinn=NIHSSinn, 
+SlagFigAndelerKvalInd(RegData=RegData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, NIHSSinn=NIHSSinn, 
 			reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 
 #------------------------------ Sammenligning av resultat før og etter [Pre-Post] --------------------------
-rm(list=ls())
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2015-05-20.csv', sep=';', header=T) #, 
-RegData <- SlagData
 # Inndata til funksjon:
-
 valgtVar <- 'Boligforh'	#Må velge... 'Boligforh', 'Bosituasjon', 'Toalett', 'Forflytning', 
 			#'Paakledning',  'Bilkjoring','MRS', 'Yrkesaktiv', 'NIHSSTrombolyse', 'NIHSSTrombektomi'
 			#	På vent: 'Roykestatus',
-
 outfile <- ''	#paste(valgtVar, '.png', sep='')	#Navn angis av Jasper
 
 FigPrePost(RegData=SlagData, valgtVar=valgtVar, datoFra=datoFra, 
@@ -151,10 +139,7 @@ for (valgtVar in c('Boligforh', 'Bosituasjon', 'Toalett', 'Forflytning', 'Paakle
 }
 
 #------------------------------ AndelTid --------------------------
-rm(list=ls())
 
-# Inndata til funksjon:
-reshID <- 106340 #De tre med flest reg: 601159 (Tromsø)  700264 (Kristiansand)  106340 (St. Olavs)	#Må sendes med til funksjon
 valgtVar <- 'InnlInnen4eSymptom'	#Må velge... 
     # BehSlagenhet, InnlSlagenh, InnlInnen4eSymptom, LipidI63, OppfolgUtf (ta ut siste 3 mnd)
     # SvelgtestUtfort, TidInnTrombolyse40min, TrombolyseI63, UtAntitrombotiskI63, UtAntikoagI63atrie
@@ -162,50 +147,28 @@ valgtVar <- 'InnlInnen4eSymptom'	#Må velge...
 	
 outfile <- ''	#paste(valgtVar, '.pdf', sep='')	#Navn angis av Jasper
 
-#load("C:/Registre/Hjerneslag/data/RegData2016-06-20.Rdata")#SlagData
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag04PROD2016-06-28.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-RegData <- SlagData
 SlagFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 
 
 #------------------------------ GjsnTid --------------------------
-rm(list=ls())
-#SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21ansi.csv', sep=';', header=T) #, 
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2015-05-20.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-RegData <- SlagData
-# Inndata til funksjon:
-valgtMaal=''	#'Med' - median, alt annet gir gjennomsnitt
-enhetsUtvalg <- 0 	#0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
-#					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 
-valgtVar <- 'AntDagerInnl'	#Alder, AntDagerInnl, TidSymptInnlegg, TidSymptTrombolyse,
+valgtVar <- 'TidSymptInnlegg'	#Alder, AntDagerInnl, TidSymptInnlegg, TidSymptTrombolyse,
                #TidInnleggTrombolyse, NIHSSinnkomst, NIHSSpreTrombolyse, NIHSSetterTrombolyse
-outfile <- ''	#paste(valgtVar, '.pdf', sep='')	#Navn angis av Jasper
-
-FigGjsnTid(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, valgtVar=valgtVar,
+outfile <- paste(valgtVar, '.pdf', sep='')	#Navn angis av Jasper
+enhetsUtvalg <- 0
+SlagFigGjsnTid(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, valgtVar=valgtVar,
 		valgtMaal=valgtMaal, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 
 
 #---------------------------Andeler for ulike grupper (sykehus)-----------------------------
-rm(list=ls())
-#load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
-#SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21ansi.csv', sep=';', header=T) #, 
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2015-05-20.csv', sep=';', header=T) #, 
-RegData <- SlagData
-
-# Inndata til funksjon:
-enhetsUtvalg <- 0	#0:Alle, 7:Egen region
-valgtVar <- 'InnlSlagenh'	#Må velge... BehSlagenhet, InnlSlagenh, InnlInnen4eSymptom, 
-			#LipidI63u80, SvelgtestUtfort, TidInnTrombolyse30min, TrombolyseI63, UtAntitrombotiskI63, 
-			#UtAntikoagI63atrie, UtBT
-outfile <- paste(valgtVar, '.pdf', sep='')	#Navn angis av Jasper
-
-FigAndelerGrVar(RegData=SlagData, valgtVar=valgtVar, datoFra=datoFra, 
+valgtVar <- 'TrombolyseI63'
+outfile <- paste0(valgtVar, '_sh.png')
+SlagFigAndelerGrVar(RegData=SlagData, valgtVar=valgtVar, datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
-		innl4t=innl4t, NIHSSinn=NIHSSinn, enhetsUtvalg=enhetsUtvalg, reshID=reshID, outfile=outfile)
+		innl4t=innl4t, NIHSSinn=NIHSSinn, enhetsUtvalg=enhetsUtvalg,outfile=outfile)
 
 for (valgtVar in c('InnlSlagenh', 'BehSlagenhet', 'InnlInnen4eSymptom', 'SvelgtestUtfort', 
 		'TrombolyseI63', 'UtAntitrombotiskI63', 'UtAntikoagI63atrie', 'LipidI63u80', 'UtBT')) {
@@ -216,20 +179,13 @@ FigAndelerGrVar(RegData=SlagData, valgtVar=valgtVar, datoFra=datoFra,
 }
 
 #------------------------------ MeanMed --------------------------
-rm(list=ls())
-#load(file='C:/Registre/Hjerneslag/data/HjerneSlag2okt2013.Rdata')
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21.csv', sep=';', header=T) #, 
-RegData <- SlagData
-# Inndata til funksjon:
-enhetsUtvalg <- 0	#0:Alle, 7:Egen region
-valgtMaal <- 'Med'	# valgtMaal - 'Med' = median. Alt annet gir gjennomsnitt
 valgtVar <- 'TidSymptInnlegg'	#Må velge... Alder, 
 		#AntDagerInnl, TidSymptInnlegg, TidSymptTrombolyse, TidInnleggTrombolyse
 		#NIHSSinnkomst, 
 		#NIHSSpreTrombolyse','NIHSSetterTrombolyse','NIHSSpreTrombektomi', 'NIHSSetterTrombektomi'
 outfile <- ''	#paste(valgtVar, '.png', sep='')	#Navn angis av Jasper
 
-FigMeanMed(RegData=SlagData, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, datoTil=datoTil, 
+SlagFigGjsnGrVar(RegData=SlagData, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, datoTil=datoTil, 
 		minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn, 
 		enhetsUtvalg=enhetsUtvalg, reshID=reshID,outfile=outfile)
 		
@@ -238,7 +194,7 @@ for (valgtVar in c('Alder','AntDagerInnl', 'TidSymptInnlegg', 'TidSymptTrombolys
 		'NIHSSinnkomst','NIHSSpreTrombolyse','NIHSSetterTrombolyse',
 		'NIHSSpreTrombektomi', 'NIHSSetterTrombektomi')) {
 	outfile <- paste(valgtVar, 'MM.png', sep='')
-	FigMeanMed(RegData=SlagData, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, 
+	SlagFigGjsnGrVar(RegData=SlagData, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, outfile=outfile)
 }
@@ -255,18 +211,6 @@ valgtVar <- 'AntDagerInnl'	#Må velge... Alder, Transportmetode,
 		#BoligforholdPre, RoykerPre, Royker3mnd, 'MRSPre', 'MRS3mnd', Tilfredshet,
 		#SivilstatusPre, BevissthetsgradInnleggelse, 
 outfile <- paste(valgtVar, '.png', sep='')	#Navn angis av Jasper
-
-
-#-------------------------- Plassering av utvalgstekst -----------------------------------
-#Plassering av utvalgstekst, størrelse av teksten og avstand mellom linjene.
-outfile <- '' #'test6.pdf'
-source("C:/Registre/Hjerneslag/trunk/RAndeler/SlagFigAndeler.R", encoding="UTF-8")
-for (type in c('.pdf','.png')) {
-FigAndeler(RegData=SlagData, datoFra=datoFra, valgtVar='BoligforholdPre',
-		datoTil=datoTil, minald=minald, maxald=, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
-		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, libkat=libkat, 
-		outfile=paste0('utvBolig', type))
-		}
 
 
 #------------------------------ Oppløsning ---------------------------------------------------
@@ -291,7 +235,7 @@ FigAndeler(RegData=SlagData, datoFra=datoFra, valgtVar='AntDagerInnl',
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg,libkat=libkat, 
 		outfile=paste0('AntDagerInnl', test, type))
 
-FigMeanMed(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='', datoFra=datoFra, 
+SlagFigGjsnGrVar(RegData=SlagData, valgtVar='AntDagerInnl', valgtMaal='', datoFra=datoFra, 
 		datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, 
 		innl4t=innl4t, NIHSSinn=NIHSSinn, libkat=libkat, 
 		outfile=paste0('AntDagerInnlMM', test, type))

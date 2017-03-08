@@ -33,7 +33,7 @@ SlagFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-04-01', datoTil
   
 # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
   if (preprosess==1){
-    RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
+    RegData <- SlagPreprosess(RegData=RegData)
   }
   
 
@@ -44,38 +44,54 @@ cexShNavn <- 0.85
 reshID <- as.numeric(reshID)
 indEgen1 <- match(reshID, RegData$ReshId)
 smltxt <- 'Hele landet'
-if (enhetsUtvalg == 7) {	
-		smltxt <- as.character(RegData$Region[indEgen1])
-		RegData <- RegData[which(RegData$Region == smltxt), ]	#kun egen region
-		cexShNavn <- 1
-	}
+
+
+if (valgtVar == 'TrombolyseI63') {
+  #Vi ønsker at N ved Orkdal skal være med inn i beregningen for St. Olav:
+  #106340: St. Olavs Hospital
+  #106579: Orkdal sjukehus
+  RegData$ReshId[RegData$ReshId == 106579] <- 106340
+  RegData$Avdeling[RegData$ReshId == 106340] <- 'St.Olavs og Orkdal'
+  #N for Lovisenberg og Diakonhjemmet skal være med inn i beregningen for Ullevål. 
+  #108926: Diakonhjemmet sykehus
+  #108278: Lovisenberg Diakonale sykehus
+  #700388: Ullevål
+  RegData$ReshId[RegData$ReshId %in% c(108926,108278)] <- 700388
+  RegData$Avdeling[RegData$ReshId == 700388] <- 'Ullevål, Lovisenberg og Diakonhj.'
+  #Nordfjord og Lærdal har vi slått sammen med Førde
+  #701563             Nordfjord sjukehus
+  #701565                Lærdal sjukehus
+  #105274          Førde sentralsjukehus
+  RegData$ReshId[RegData$ReshId %in% c(701563,701565)] <- 105274
+  RegData$Avdeling[RegData$ReshId == 105274] <- 'Førde, Nordfjord og Lærdal'
+}
 
 grVar <- 'Avdeling'
 RegData[ ,grVar] <- factor(RegData[ ,grVar])
 Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
-
-
 RegData$Variabel <- 0		
 
 #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
-SlagUtvalg <- SlagUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
-		erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn)
-RegData <- SlagUtvalg$RegData
-utvalgTxt <- SlagUtvalg$utvalgTxt
+#SlagUtvalg <- SlagUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
+#		erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn)
+#RegData <- SlagUtvalg$RegData
+#utvalgTxt <- SlagUtvalg$utvalgTxt
 
 
 if (valgtVar == 'BehSlagenhet') {
-	RegData$Variabel[union(which(RegData$AvdForstInnlagt==1), which(RegData$AvdUtskrFra==1))] <- 1 
+	indBehSlagenh  <- union(which(RegData$AvdForstInnlagt==1), which(RegData$AvdUtskrFra ==1))
+	RegData$Variabel[indBehSlagenh] <- 1 
 }
 if (valgtVar == 'InnlSlagenh') {
 	indDirInnlSlag <- union(which(RegData$AvdForstInnlagt==1), 
-						which(RegData$AvdForstInnlagtHvilken %in% 3:4))
+						intersect(which(RegData$AvdForstInnlagtHvilken %in% 3:4), which(RegData$AvdUtskrFra==1)))
 	RegData$Variabel[indDirInnlSlag] <- 1 
 }
 if (valgtVar == 'InnlInnen4eSymptom') {
 #	Tar ut oppvåkningsslag
-	RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
-	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut,  units='hours'))
+#	RegData <- RegData[which(RegData$VaaknetMedSymptom==2), ]
+#	RegData$TidSymptInnlegg <- as.numeric(difftime(RegData$Innleggelsestidspunkt, RegData$Symptomdebut,  units='hours'))
+	RegData <- RegData[which(is.na(RegData$TidSymptInnlegg)==FALSE),]
 	RegData$Variabel[RegData$TidSymptInnlegg <= 4] <- 1 
 }
 if (valgtVar == 'LipidI63u80') {
@@ -91,11 +107,12 @@ if (valgtVar == 'SvelgtestUtfort') {
 	RegData$Variabel[which(RegData$SvelgtestUtfort %in% c(1,3))] <- 1
 }
 if (valgtVar == 'TidInnTrombolyse40min') {	
-	diagnose <- 2	#'I63'
-	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
-	RegData$TidInnleggTromb <- as.numeric(difftime(RegData$TrombolyseStarttid,
-			RegData$Innleggelsestidspunkt, units='mins'))
-	RegData$Variabel[RegData$TidInnleggTromb <= 40] <- 1 
+	#diagnose <- 2	#'I63' Ikke lenger bare I63 (sept. 2016)
+#	RegData <- RegData[which(RegData$Trombolyse %in% c(1,3)), ]
+#	RegData$TidInnleggTromb <- as.numeric(difftime(RegData$TrombolyseStarttid,
+#			RegData$Innleggelsestidspunkt, units='mins'))
+	RegData <- RegData[which(is.na(RegData$TidInnleggTrombolyse)==FALSE),]
+    	RegData$Variabel[RegData$TidInnleggTrombolyse <= 40] <- 1 
 }
 if (valgtVar == 'TrombolyseI63') {
 	#RegData <- RegData[which(RegData$Slagdiagnose==2), ]		#Slagdiagnose I63
@@ -124,10 +141,10 @@ if (valgtVar == 'UtBT') {
 #Bare levende pasienter
 #PostMedBehHoytBT ny fra 1.1.2016
 	RegData <- RegData[which(RegData$UtskrTil != 10), ]
-	NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist', 'PostMedHoytBT')
-	indBTsenkUt <- which(RegData[ ,NavnBTsenkUt]==1, arr.ind=T)[,1]
-	RegData$Variabel[indBTsenkUt] <- 1
-	#RegData$Variabel[which(RegData$PostMedHoytBT ] <- 1	#Denne kan benyttes hvis variabelen oppdateres bakover i tid
+	#NavnBTsenkUt <- c('UtDiuretica','UtACEhemmer', 'UtA2Antagonist', 'UtBetablokker', 'UtKalsiumantagonist', 'PostMedikBehHoytBT')
+	#indBTsenkUt <- which(RegData[ ,NavnBTsenkUt]==1, arr.ind=T)[,1]
+	#RegData$Variabel[indBTsenkUt] <- 1
+	RegData$Variabel[which(RegData$PostMedikBehHoytBT ==1) ] <- 1	#Denne kan benyttes hvis variabelen oppdateres bakover i tid
 }
 
 #Tar ut de med manglende registrering av valgt variabel og gjør utvalg

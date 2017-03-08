@@ -26,7 +26,7 @@ SlagFigAntReg  <- function(RegData, datoTil='2050-12-31',
   
 # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
 if (preprosess ==1 ){
-    RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
+    RegData <- SlagPreprosess(RegData=RegData)
   }
   
 
@@ -74,7 +74,7 @@ AntHoved <- table(RegData$Mnd)[mndRekkef]
 indOppf <- which(RegData$OppfolgUtf==1) 						#Levende med oppfølging
 AntOppf <- table(RegData$Mnd[indOppf])[mndRekkef]	
 #indDod <- with(RegData, union(which(OppfolgUtf==2 & AarsakManglendeOppf==3), which(UtskrTil==10)))
-indDod <- with(RegData, which(UtskrTil==10))	#Død under sykehusoppholdet
+indDod <- with(RegData, which(UtskrTil==10 | Dod98==1))	#Død under sykehusoppholdet eller innen 98 dager
 
 AntDod <- table(RegData$Mnd[indDod])[mndRekkef]
 

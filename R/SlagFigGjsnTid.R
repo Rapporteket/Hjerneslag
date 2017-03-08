@@ -33,7 +33,7 @@ SlagFigGjsnTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='300
   
 # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
   if (preprosess==1){
-    RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
+    RegData <- SlagPreprosess(RegData=RegData)
   }
   
 RegData$Aar <- 1900 + strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
@@ -47,16 +47,17 @@ flerevar <- 0
 antDes <- 1
 
 
-#Når skal sammenlikne region - eller ikke sammenlikne, 
+#Når bare skal sammenlikne med sykehusgruppe eller region, eller ikke sammenlikne, 
 #trengs ikke data for hele landet:
 reshID <- as.numeric(reshID)
 indEgen1 <- match(reshID, RegData$ReshId)
 if (enhetsUtvalg %in% c(2,6,7)) {	
-		RegData <- switch(as.character(enhetsUtvalg),
-						'2' = RegData[which(RegData$ReshId == reshID),],	#kun egen enhet
-						'6' = RegData[which(RegData$RHF == as.character(RegData$RHF[indEgen1])),],	#sml region
-						'7' = RegData[which(RegData$RHF == as.character(RegData$RHF[indEgen1])),])	#kun egen region
-	}
+  RegData <- switch(as.character(enhetsUtvalg),
+                    '2' = RegData[which(RegData$ReshId == reshID),],	#kun egen enhet
+                    '6' = RegData[which(RegData$Region == as.character(RegData$Region[indEgen1])),],	#sml region
+                    '7' = RegData[which(RegData$Region == as.character(RegData$Region[indEgen1])),])	#kun egen region
+}
+
 
 #if (valgtVar == 'TidSymptInnlegg') {
   #Uten oppvåkningsslag
@@ -123,7 +124,7 @@ ytxt1 <- switch(valgtVar, Alder='alder (år)',
 if (valgtMaal=='Med') {
   t1 <- 'Median ' } else {t1 <- 'Gjennomsnittlig '}
 
-tittel <- paste(t1, vt, sep='') 
+tittel <- paste0(t1, vt) 
 	
 indEgen1 <- match(reshID, RegData$ReshId)
 if (enhetsUtvalg %in% c(1,2,6)) {	#Involverer egen enhet #Tatt ut 3 (skal ikke ha sykehustype)
@@ -189,8 +190,8 @@ if (valgtMaal=='Med') {
 #and are said to be rather insensitive to the underlying distributions of the samples. The idea appears to be to give 
 #roughly a 95% confidence interval for the difference in two medians. 	
 } else {	#Gjennomsnitt blir standard.
-	Midt <- tapply(RegData[indHoved ,'Variabel'], RegData[indHoved, 'Aar'], mean)
-	SD <- tapply(RegData[indHoved ,'Variabel'], RegData[indHoved, 'Aar'], sd)
+	Midt <- tapply(RegData[indHoved ,'Variabel'], RegData[indHoved, 'Aar'], mean, na.rm=T)
+	SD <- tapply(RegData[indHoved ,'Variabel'], RegData[indHoved, 'Aar'], sd, na.rm=T)
 	Konf <- rbind(Midt - 2*SD/sqrt(N), Midt + 2*SD/sqrt(N))
 }
 	#### Noe som ma med i ValgtVardef? Konf <- replace(Konf, which(Konf < KIekstrem[1]), KIekstrem[1])
@@ -206,8 +207,8 @@ NRest <- tapply(RegData[indRest ,'Variabel'], RegData[indRest, 'Aar'], length)
 		MidtRest <- as.numeric(MedIQRrest$stats[3, ])
 		KonfRest <- MedIQRrest$conf
 	} else {
-	MidtRest <- tapply(RegData[indRest,'Variabel'], RegData[indRest, 'Aar'], mean)	#indRest
-	SDRest <- tapply(RegData[indRest,'Variabel'], RegData[indRest, 'Aar'], sd)
+	MidtRest <- tapply(RegData[indRest,'Variabel'], RegData[indRest, 'Aar'], mean, na.rm=T)	#indRest
+	SDRest <- tapply(RegData[indRest,'Variabel'], RegData[indRest, 'Aar'], sd, na.rm=T)
 	NRest <- tapply(RegData[indRest,'Variabel'], RegData[indRest, 'Aar'], length)
 	KonfRest <- rbind(MidtRest - 2*SDRest/sqrt(NRest), MidtRest + 2*SDRest/sqrt(NRest))
 	}

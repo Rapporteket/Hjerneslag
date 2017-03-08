@@ -16,12 +16,12 @@
 #'     \item BildediagnostikkIntraraniell: Bildediagnostikk av intrakranielle kar
 #'     \item Boligforhold3mnd: Boligforhold ved oppfølging 
 #'     \item BoligforholdPre: Boligforhold ved innleggelse 
-#'		\item FokaleUtf: Fokale utfall
-#'		\item FokaleUtfAndre: Andre fokale utfall
+#'		 \item FokaleUtf: Fokale utfall
+#'		 \item FokaleUtfAndre: Andre fokale utfall
 #'     \item MRS3mnd: Rankinscale ved oppfølging
 #'     \item MRSPre: Rankinscale ved innleggelse 
-#'		\item NIHSSendrTrombektomi: Endring i NIHSS fra før trombektomi til 24t etter
-#'		\item NIHSSendrTrombolyse: Endring i NIHSS fra før trombolyse til 24t etter
+#'		 \item NIHSSendrTrombektomi: Endring i NIHSS fra før trombektomi til 24t etter
+#'	 	 \item NIHSSendrTrombolyse: Endring i NIHSS fra før trombolyse til 24t etter
 #'     \item NIHSSetterTrombektomi: NIHSS 24t etter trombektomi
 #'     \item NIHSSetterTrombolyse: NIHSS 24t etter trombolyse
 #'     \item NIHSSinnkomst: NIHSS ved innkomst
@@ -94,7 +94,7 @@ if (hentData == 1) {
 
 # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøre dette i samledokumentet)
 if (preprosess==1){
-       RegData <- SlagPreprosess(RegData=RegData, reshID=reshID)
+       RegData <- SlagPreprosess(RegData=RegData)
      }
 
 RegData$Variabel <- 0
@@ -193,7 +193,7 @@ flerevar <- 0
 		RegData$Variabel <- as.numeric(RegData$Variabel)
 		tittel <- 'Antall timer fra innleggelse til trombolyse'
 		#gr <- c(0,0.5,1,1.5,2,2.5,10000)	#*60
-		gr <- c(0,30,60,90,120,150,10000)	#*60
+		gr <- c(0,30,60,90,120,150,10000000)	#*60
 		RegData$VariabelGr <- cut(RegData$Variabel, breaks=gr, include.lowest=TRUE, right=FALSE)
 		grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '2.5+')	
 		grtxt <- c('[0-0.5)','[0.5-1)', '[1-1.5)', '[1.5-2)', '[2-2.5)' , '2.5+')	
@@ -305,8 +305,8 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		if (valgtVar == 'Slagdiagnose') {
 		tittel <- 'Slagdiagnose'
 		grtxt <- c('Hjerneblødning', 'Hjerneinfarkt', 'Uspesifisert')
-		RegData <- RegData[which(RegData$Variabel %in% c(1,2,9)), ]
-		RegData$VariabelGr <- factor(RegData$Variabel, levels=c(1,2,9), labels = grtxt)
+		RegData <- RegData[which(RegData$Variabel %in% 1:3), ]
+		RegData$VariabelGr <- factor(RegData$Variabel, levels=1:3, labels = grtxt)
 	}
 	if (valgtVar == 'BildediagnostikkHjerne') {
 		tittel <- 'Bildediagnostikk av hjerneslaget'
@@ -394,12 +394,12 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		
 #FIGURER SATT SAMMEN AV FLERE VARIABLE FRA SAMME TOTALUTVALG	
 	if (valgtVar == 'FokaleUtf') {
-		flerevar <- 1
+	  flerevar <- 1
 		retn <- 'H'
 		tittel <- 'Fokale utfall'
 		subtxt <- 'Andel med svar "ja" av alle totalt'
 	#Verdier 1,2,9. 0 kan forekomme.
-		variableOrig <- c('Facialisparese', 'Beinparese', 'Armparese', 'SpraakTaleproblem', 
+		variableOrig <- c('Facialisparese', 'Beinparese', 'Armparese', 'Spraakproblem', 
 				'AndreFokaleSympt')
 		variable <- c('Facialisparese01', 'Beinparese01', 'Armparese01', 'Spraakproblem01', 
 				'AndreFokaleSympt01')
@@ -410,22 +410,12 @@ if (valgtVar %in% c('NIHSSendrTrombolyse','NIHSSendrTrombektomi')) {
 		grtxt <- c('Facialisparese', 'Beinparese', 'Armparese', 'Språkproblem', 'Andre')
 		}
 	
-	if (valgtVar == 'FokaleUtfAndre'){
-		RegData <- RegData[which(RegData$AndreFokaleSympt==1), ]
-		flerevar <- 1
-		retn <- 'H'
-		tittel <- 'Andre fokale utfall'
-		subtxt <- 'Andel med svar "ja" av "andre fokale utfall"'
-		variable <- c('Dysartri', 'Ataksi', 'Sensibilitetsutfall', 'Neglekt', 'Dobbeltsyn', 'Synsfeltutfall', 'Vertigo')
-		grtxt <- c('Dysartri', 'Ataksi', 'Sens.utfall', 'Neglekt', 'Dobbeltsyn', 'Synsfeltutfall', 'Vertigo')
-	}
-
 
 	
 if (valgtVar %in% c('Boligforhold3mnd','MRS3mnd', 'Royker3mnd', 'Sivilstatus3mnd')) {
 	datoTil <- min(datoTil, as.character(Sys.Date()-90))}
 	
-#Tar ut de med manglende registrering av valgt variabel og gjør utvalg
+#Gjør utvalg
 SlagUtvalg <- SlagUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, 
 		erMann=erMann, diagnose=diagnose, innl4t=innl4t, NIHSSinn=NIHSSinn)
 RegData <- SlagUtvalg$RegData
@@ -487,6 +477,49 @@ if (medSml==1) {
 }
 
 
+ #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
+  if (valgtVar %in% c('FokaleUtfAndre')){
+    retn <- 'H'
+    utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
+    RegDataLand <- RegData
+    NHoved <-length(indHoved)
+    NRest <- length(indRest)
+
+    for (teller in 1:(medSml+1)) {
+      #  Variablene kjøres for angitt indeks, dvs. to ganger hvis vi skal ha sammenligning med Resten.
+      RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
+
+	if (valgtVar == 'FokaleUtfAndre'){
+		RegData <- RegData[which(RegData$AndreFokaleSympt==1), ]
+		tittel <- 'Andre fokale utfall'
+		subtxt <- 'Andel med svar "ja" av "andre fokale utfall"'
+		variable <- c('Dysartri', 'Ataksi', 'Sensibilitetsutfall', 'Neglekt', 'Dobbeltsyn', 'Synsfeltutfall', 'Vertigo')
+		grtxt <- c('Dysartri (fra 2016)', 'Ataksi', 'Sens.utfall', 'Neglekt', 'Dobbeltsyn', 'Synsfeltutfall', 'Vertigo')
+	    AntVar <- colSums(RegData[ ,variable], na.rm=T)
+        N <- dim(RegData)[1]
+		Ndys <- length(which(RegData$InnDato >= as.Date('2016-01-01'))) #Ei reg. før den tid
+        NVar <- c(Ndys, rep(N, length(variable)-1))
+}
+ 
+     #Generell beregning for alle figurer med sammensatte variable:
+      if (teller == 1) {
+        AntHoved <- AntVar
+        NHoved <- N #sum(NVar, na.rm=T)	#feil: max(NVar, na.rm=T)
+        Andeler$Hoved <- 100*AntVar/NVar
+      }
+      if (teller == 2) {
+        AntRest <- AntVar
+        NRest <- N #sum(NVar,na.rm=T)	#length(indRest)- Kan inneholde NA
+        Andeler$Rest <- 100*AntVar/NVar
+      }
+    } #end medSml (med sammenligning)
+  }	#end begrensning til valgtVar som inneholder flere variable
+
+
+
+
+
+
 
 
 
@@ -539,7 +572,7 @@ if (retn == 'H') {
 			border=c(fargeSh,NA), col=c(fargeSh,fargeRest), bty='n', pch=c(15,18), pt.cex=2, 
 			lwd=lwdRest,	lty=NA, ncol=1, cex=cexleg)
 		} else {	
-		legend('top', paste(shtxt, ' (N=', NHoved,')', sep=''), 
+		legend('top', paste0(shtxt, ' (N=', NHoved,')'), 
 			border=NA, fill=fargeSh, bty='n', ncol=1, cex=cexleg)
 		}
 }
@@ -554,11 +587,11 @@ if (retn == 'V' ) {
 # 	mtext(at=pos, grtxt3, side=1, las=1, cex=cexgr, adj=0.5, line=2.5)
 if (medSml == 1) {
 	points(pos, as.numeric(Andeler$Rest), col=fargeRest,  cex=2, pch=18) #c("p","b","o"), 
-	legend('top', c(paste(shtxt, ' (N=', NHoved,')', sep=''), paste(smltxt, ' (N=', NRest,')', sep='')), 
+	legend('top', c(paste0(shtxt, ' (N=', NHoved,')'), paste0(smltxt, ' (N=', NRest,')')), 
 		border=c(fargeSh,NA), col=c(fargeSh,fargeRest), bty='n', pch=c(15,18), pt.cex=2, lty=c(NA,NA), 
 		lwd=lwdRest, ncol=2, cex=cexleg)
 	} else {	
-	legend('top', paste(shtxt, ' (N=', NHoved,')', sep=''), 
+	legend('top', paste0(shtxt, ' (N=', NHoved,')'), 
 		border=NA, fill=fargeSh, bty='n', ncol=1, cex=cexleg)
 	}
 } 
