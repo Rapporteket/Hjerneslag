@@ -42,7 +42,7 @@ erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), 
 diagnose <- ''	#diagnose: 1,2,3  Infarkt(I61), Blødning(I63), Udefinert(I64), standard: '' (alt annet)
 innl4t <- '' 	#Innlagt innen 4t: 'Ja', 'Nei', standard:'' (alt annet)
 NIHSSinn <- ''	#NIHSS grupper: 1-6, tilsv. verdi: 0-5,6-10,11-15,..., standard: '' (alt annet)
-valgtMaal='Med'	#'Med' - median, alt annet gir gjennomsnitt
+valgtMaal=''	#'Med' - median, alt annet gir gjennomsnitt
 enhetsUtvalg <- 1 	#0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 
@@ -157,7 +157,7 @@ SlagFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
 valgtVar <- 'TidSymptInnlegg'	#Alder, AntDagerInnl, TidSymptInnlegg, TidSymptTrombolyse,
                #TidInnleggTrombolyse, NIHSSinnkomst, NIHSSpreTrombolyse, NIHSSetterTrombolyse
 outfile <- paste(valgtVar, '.pdf', sep='')	#Navn angis av Jasper
-
+enhetsUtvalg <- 0
 SlagFigGjsnTid(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, valgtVar=valgtVar,
 		valgtMaal=valgtMaal, minald=minald, maxald=maxald, erMann=erMann, diagnose=diagnose, innl4t=innl4t, 
 		NIHSSinn=NIHSSinn, reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
