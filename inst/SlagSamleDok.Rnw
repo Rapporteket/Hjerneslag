@@ -122,8 +122,6 @@ SlagDataHeleEget <- SlagDataHele[which(SlagDataHele$ReshId == reshID), ]
 datoFra <- '2017-01-01'
 sisteAar <- max(SlagDataHele$Aar) 
 
-tabKjPst <- round(table(SlagDataHele$erMann)[c('0','1')]/Nhele*100, digits=1)
-
 
 SlagData <- SlagDataHele[which(SlagDataHele$InnDato >= as.Date(datoFra)), ]
 SlagDataEget <- SlagData[which(SlagDataHeleEget$InnDato >= as.Date(datoFra)), ]
@@ -137,6 +135,8 @@ ind <- list(
 #shtxt <- as.character(SykehusTab[which(SykehusTab$AvdRESH == reshID),'Avdeling'])
 shtxt <- as.character(SlagData$Avdeling[match(reshID, SlagData$ReshId)])
 tabKjPstEget <- round(table(SlagDataHeleEget$erMann)[c('0','1')]/dim(SlagDataHeleEget)[1]*100, digits=1)
+tabKjPst <- round(table(SlagDataHele$erMann)[c('0','1')]/Nhele*100, digits=1)
+
 
 dum <- SlagFigAndelerKvalInd(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, NIHSSinn=NIHSSinn, 
 			reshID=reshID, enhetsUtvalg, preprosess=preprosess, outfile='FigKvalInd.pdf')
