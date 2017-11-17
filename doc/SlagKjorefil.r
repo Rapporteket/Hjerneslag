@@ -7,9 +7,9 @@ rm(list=ls())
 #SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlagPROD2016-09-19.csv', sep=';', header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 
-HovedSkjema <- read.table('C:/Registre/Hjerneslag/data/Akuttskjema2017-01-24.csv', sep=';', 
+HovedSkjema <- read.table('A:/Hjerneslag/Akuttskjema2017-11-16.csv', sep=';',  #2017-01-24
                           header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
-OppfSkjema <- read.table('C:/Registre/Hjerneslag/data/AkuttskjemaOppfolging2017-01-24.csv', sep=';', 
+OppfSkjema <- read.table('A:/Hjerneslag/AkuttskjemaOppfolging2017-11-16.csv', sep=';', 
                          header=T, encoding="UTF-8") #, fileEncoding='UTF-8', 
 
 
@@ -25,9 +25,9 @@ OppfSkjema$HovedskjemaGUID <- toupper(OppfSkjema$HovedskjemaGUID)
 varBegge <- intersect(names(OppfSkjema),names(HovedSkjema))
 OppfSkjema <- OppfSkjema[ ,c("HovedskjemaGUID", "SkjemaGUID", names(OppfSkjema)[!(names(OppfSkjema) %in% varBegge)])]
 SlagData <- merge(HovedSkjema, OppfSkjema, by.x='SkjemaGUID',by.y="HovedskjemaGUID", all.x = TRUE, all.y = FALSE)
-RegData <- SlagData
-
-
+save(RegData, file='A:/Hjerneslag/RegData2017-11-16.Rdata')
+load('A:/Hjerneslag/RegData2017-11-16.Rdata')     
+SlagData <- RegData
 
 
 #.---------------------- Sette parametre-----------------------------------
@@ -53,6 +53,9 @@ library(tools)
 library(Hjerneslag)
 library(knitr)
 setwd('C:/ResultattjenesteGIT/Hjerneslag/inst')
+reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
+load('A:/Hjerneslag/RegData2017-11-16.Rdata')     
+SlagData <- RegData
 knit('SlagSamleDok.Rnw')
 knit('SlagSamleDokLand.Rnw')
 

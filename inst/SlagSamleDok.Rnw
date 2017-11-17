@@ -85,7 +85,7 @@ knitr::opts_chunk$set(fig.path='', fig.align='center', fig.show='hold', out.widt
 
 <<'LasteData', echo=FALSE, eval=T>>=
 if (!exists('SlagData')){
-  SlagData <- SlagRegDataSQL()
+  SlagData <- SlagRegDataSQL(datoFra='2013-01-01')
   }
 @
 
@@ -100,7 +100,7 @@ preprosess <- 0
 enhetsUtvalg <- 1	#0-Hele landet, 1-Egen avd mot resten av landet, 2-Egen avd.
 minald <- 0
 maxald <- 130
-datoFra <- '2013-01-01'	
+datoFraHele <- '2013-01-01'	
 datoTil <- max(SlagData$InnDato)	#'2013-12-31'	#	#Parameteren brukes også i figurene.
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 diagnose <- ''	#diagnose: 1,2,3  Infarkt(I61), Blødning(I63), Udefinert(I64), standard: '' (alt annet)
@@ -115,22 +115,28 @@ figKrymp1 <- 0.75	#Skaleringsparameter for enkeltfigurer
 library(xtable)
 
 #UTVALG
-SlagData <- SlagData[SlagData$erMann %in% 0:1, ]	#Tar ut registreringer som ikke har kjønn
-SlagData <- SlagData[(as.Date(SlagData$InnDato)>=as.Date(datoFra)) & (SlagData$InnDato<=as.Date(datoTil)), ] 
+SlagDataHele <- SlagData[SlagData$erMann %in% 0:1, ]	#Tar ut registreringer som ikke har kjønn
+SlagDataHele <- SlagDataHele[(as.Date(SlagDataHele$InnDato)>=as.Date(datoFraHele)) & (SlagDataHele$InnDato<=as.Date(datoTil)), ] 
+SlagDataHele$Aar <- 1900 + strptime(SlagDataHele$Innleggelsestidspunkt, format="%Y")$year
+SlagDataHeleEget <- SlagDataHele[which(SlagDataHele$ReshId == reshID), ]
+datoFra <- '2017-01-01'
+sisteAar <- max(SlagDataHele$Aar) 
 
-SlagData$Aar <- 1900 + strptime(SlagData$Innleggelsestidspunkt, format="%Y")$year
+tabKjPst <- round(table(SlagDataHele$erMann)[c('0','1')]/Nhele*100, digits=1)
 
-N <- dim(SlagData)[1]
-tabKjPst <- round(table(SlagData$erMann)[c('0','1')]/N*100, digits=1)
 
-ind <- list(Eget = which(SlagData$ReshId == reshID),
-			Alle = 1:N,
-			Fra2014 = which(SlagData$InnDato >= as.Date('2014-01-01')))
-SlagDataEget <- SlagData[ind$Eget, ]
+SlagData <- SlagDataHele[which(SlagDataHele$InnDato >= as.Date(datoFra)), ]
+SlagDataEget <- SlagData[which(SlagDataHeleEget$InnDato >= as.Date(datoFra)), ]
 Neget <- dim(SlagDataEget)[1]
+Nhele <- dim(SlagDataHele)[1]
+Nlandet <- dim(SlagData)[1] 
+ind <- list(
+      Eget = which(SlagData$ReshId == reshID),
+			Alle = 1:Nlandet
+						)
 #shtxt <- as.character(SykehusTab[which(SykehusTab$AvdRESH == reshID),'Avdeling'])
 shtxt <- as.character(SlagData$Avdeling[match(reshID, SlagData$ReshId)])
-tabKjPstEget <- round(table(SlagDataEget$erMann)[c('0','1')]/Neget*100, digits=1)
+tabKjPstEget <- round(table(SlagDataHeleEget$erMann)[c('0','1')]/dim(SlagDataHeleEget)[1]*100, digits=1)
 
 dum <- SlagFigAndelerKvalInd(RegData=SlagData, datoFra=datoFra, datoTil=datoTil, erMann=erMann, NIHSSinn=NIHSSinn, 
 			reshID=reshID, enhetsUtvalg, preprosess=preprosess, outfile='FigKvalInd.pdf')
@@ -138,10 +144,10 @@ dum <- SlagFigAndelerKvalInd(RegData=SlagData, datoFra=datoFra, datoTil=datoTil,
 
 \section{Innledning}
 Her presenteres en rekke tabeller og figurer som viser resultater fra Norsk Hjerneslagregister.
-Rapporten er utarbeidet \Sexpr{N} av Lena Ringstad Olsen ved SKDE, på bestilling fra ledelsen i Norsk Hjerneslagregister.
+Rapporten er utarbeidet av Lena Ringstad Olsen ved SKDE, på bestilling fra ledelsen i Norsk Hjerneslagregister.
 I denne rapporten vises aggregerte tall for \textbf{\Sexpr{shtxt}} og for hele landet. 
-Tabellene og figurene er basert
-på alle registrerte innleggelser i perioden \Sexpr{datoFra} til \Sexpr{datoTil}. 
+Det totale datagrunnlaget er alle registrerte innleggelser i perioden \Sexpr{datoFraHele} til \Sexpr{datoTil}, 
+men de fleste tabeller og figurer viser resultatet av registrerte innleggelser i \Sexpr{sisteAar}. 
 Alle figurer, og noen av tabellene, finner man igjen som forhåndsdefinerte figurer/tabeller 
 i Rapporteket. Når man er logget inn på Rapporteket, kan man se på figurene med egendefinerte 
 utvalg av dataene. F.eks. hvis man
@@ -181,13 +187,13 @@ Dette kapitlet inneholder resultater for:
 
 %Alle registreringer
 For hele landet er det gjort registrering av innleggelser i perioden 
-\Sexpr{min(SlagData$InnDato)} til \Sexpr{max(SlagData$InnDato)}.
+\Sexpr{min(SlagDataHele$InnDato)} til \Sexpr{max(SlagDataHele$InnDato)}.
 Kvinner og menn utgjorde hhv. \Sexpr{tabKjPst[1]}\% og \Sexpr{tabKjPst[2]}\% av innleggelsene.
 
 
 %Eget sykehus
 Ved \Sexpr{shtxt} er det gjort registrering av innleggelser i perioden 
-\Sexpr{min(SlagDataEget$InnDato)} til \Sexpr{max(SlagDataEget$InnDato)}.
+\Sexpr{min(SlagDataHeleEget$InnDato)} til \Sexpr{max(SlagDataHeleEget$InnDato)}.
 Kvinner og menn utgjorde hhv. \Sexpr{tabKjPstEget[1]}\% og \Sexpr{tabKjPstEget[2]}\% av innleggelsene.
 
 
@@ -200,8 +206,8 @@ Kvinner og menn utgjorde hhv. \Sexpr{tabKjPstEget[1]}\% og \Sexpr{tabKjPstEget[2
 
 #For bare Eget sykehus
 tabAvdNEget <- rbind(
-	'Eget sykehus' = c(table(SlagDataEget$Aar), Neget),
-	'Alle sykehus' = c(table(SlagData$Aar), N))
+	'Eget sykehus' = c(table(SlagDataHeleEget$Aar), dim(SlagDataHeleEget)[1]),
+	'Alle sykehus' = c(table(SlagDataHele$Aar), Nhele))
 colnames(tabAvdNEget)[dim(tabAvdNEget)[2]]<- 'Totalt:'
 
 xtable(tabAvdNEget, digits=0, align=c('l', rep('r', ncol(tabAvdNEget))), 
@@ -219,15 +225,15 @@ xtable(tabAvdNEget, digits=0, align=c('l', rep('r', ncol(tabAvdNEget))),
 
 #Eget sykehus
 #PerPasEget <- table(as.character(SlagDataEget$PasientGUID))	#aggregate(SlagDataEget$PasientGUID, by=SlagDataEget[ ,c('ShNavn', 'PasientGUID')], FUN=length)
-PerPasAarEget <- unique(SlagDataEget[,c('Aar','PasientGUID')])	#aggregate(SlagDataEget$PasientGUID, by=SlagDataEget[ ,c('Aar','PasientGUID')], FUN=length)
+PerPasAarEget <- unique(SlagDataHeleEget[,c('Aar','PasientGUID')])	#aggregate(SlagDataEget$PasientGUID, by=SlagDataEget[ ,c('Aar','PasientGUID')], FUN=length)
 AntPasAarEget <- table(PerPasAarEget$Aar)
 #AntSlagPrPasEget <- table(PerPasEget)
 #PerPas <- table(as.character(SlagData$PasientGUID))	#aggregate(SlagDataEget$PasientGUID, by=SlagDataEget[ ,c('ShNavn', 'PasientGUID')], FUN=length)
 #PerPasAar <- aggregate(SlagData$PasientGUID, by=SlagData[ ,c('Aar','PasientGUID')], FUN=length)
-AntPasAar <- table(unique(SlagData[ ,c('PasientGUID','Aar')])$Aar)	#table(PerPasAar$Aar)
+AntPasAar <- table(unique(SlagDataHele[ ,c('PasientGUID','Aar')])$Aar)	#table(PerPasAar$Aar)
 tabPasAarNEget <- rbind(
-		'Eget sykehus' = c(AntPasAarEget, length(unique(SlagDataEget$PasientGUID))),	#length(PerPasEget)),
-		'Alle sykehus' = c(AntPasAar, length(unique(SlagData$PasientGUID)))
+		'Eget sykehus' = c(AntPasAarEget, length(unique(SlagDataHeleEget$PasientGUID))),	#length(PerPasEget)),
+		'Alle sykehus' = c(AntPasAar, length(unique(SlagDataHele$PasientGUID)))
 			)
 colnames(tabPasAarNEget)[dim(tabPasAarNEget)[2]] <- 'Totalt'
 xtable(tabPasAarNEget, digits=0, align=c('l', rep('r', ncol(tabPasAarNEget))), 
@@ -261,18 +267,18 @@ AntOppfEget <- with(SlagDataEget, length(union(which(OppfolgUtf==1), which(TidDe
 #		union(which(OppfolgUtf==2 & AarsakManglendeOppf==3), which(UtskrTil==10)))))	#Døde
 AntOppfTot <- with(SlagData, length(union(which(OppfolgUtf==1), which(TidDeath<=98))))	#Døde innen 98 dager
 AndelOppfEget <- round(AntOppfEget/Neget*100, 1)
-AndelOppfTot <- round(AntOppfTot/N*100, 1)
+AndelOppfTot <- round(AntOppfTot/dim(SlagData)[1]*100, 1)
 
 tabHovedOppfEget <- rbind(
 		'Eget sykehus' = c(Neget, AntOppfEget, AndelOppfEget),
-		'Alle sykehus' = c(N, AntOppfTot, AndelOppfTot))
+		'Alle sykehus' = c(dim(SlagData)[1], AntOppfTot, AndelOppfTot))
 		
 #colnames(tabHovedOppfEget)[dim(tabHovedOppfEget)[2]]<- 'Totalt:'
-colnames(tabHovedOppfEget) <- c('Akuttskjema', 'Oppfølgingsskjema','Totalt:')
+colnames(tabHovedOppfEget) <- c('Akuttskjema', 'Oppfølgingsskjema','Andel oppf.:')
 xtable(tabHovedOppfEget, digits= c(0,0,0,1), align=c('l', rep('r', ncol(tabHovedOppfEget))), 
-		caption='Antall akuttskjema og andel av disse med oppfølgingsskjema, inkl. døde innen 3 mnd etter sykehusoppholdet.
-		Andelen oppfølging kan være noe lavere enn den reelle, siden slag oppstått
-		de siste 3 mnd ikke har rukket å få oppfølging.',
+		caption=paste0('Antall akuttskjema ', sisteAar, ', og andel av disse med oppfølgingsskjema, inkl. døde innen 3 mnd etter sykehusoppholdet.
+		Andelen oppfølging vil være lavere enn den reelle, siden slag oppstått
+		de siste 3 måneder ikke har rukket å få oppfølging.'),
 		label='tab:AndelOppfEget')
 
 		#		caption='Antall akuttskjema og andel av disse med oppfølgingsskjema. I andelen oppfølgingsskjema
@@ -330,8 +336,8 @@ Pasientkarakteristika <- Pasientkarakteristika6[ ,-2]
 txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 colnames(Pasientkarakteristika) <- c('Middelverdi', 'Median', 'Min.', 'Maks.', 'Ant. obs')
 Nokkelt <- xtable(Pasientkarakteristika, digits=c(0,1,0,0,0,0), align=c('l', rep('r', 5)), #c('l', 'r','r','r','c','r'),
-		caption=paste('Pasientkarakteristika, ', txt, '.', sep=''),
-		label=paste("tab:Pasientkarakteristika",k, sep=''))
+		caption=paste0('Pasientkarakteristika, ', txt, ', ', sisteAar, '.'),
+		label=paste0("tab:Pasientkarakteristika",k))
 print(Nokkelt)
 }		
 
@@ -349,7 +355,6 @@ dum <- SlagFigAndeler(RegData=SlagData, valgtVar='Alder', datoFra=datoFra,
 
 <<'Boligforh',echo=FALSE, results='asis', eval=T>>= 
 #De fleste variablene er kodet (1,2,9) = (Ja,Nei,Ukjent)
-Nhoved <- N
 
 SlagData$BoligforholdPre <- factor(SlagData$BoligforholdPre, levels=1:4)
 SlagData$BosituasjonPre <- factor(SlagData$BosituasjonPre, levels=1:3)
@@ -377,8 +382,8 @@ Boligforhold <- rbind(
 txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 colnames(Boligforhold) <- c('Kvinner (%)', 'Menn (%)', 'Ant. reg.')
 BoligforhTab <- xtable(Boligforhold, digits=c(1,1,1,0), align=c('l', 'r', 'r', 'r'), 	#c(0,1,1,1)
-		caption=paste('Funksjonsnivå og boligforhold før hjerneslaget, ', txt, '.', sep=''), 	#, N =', Nhoved),
-		label=paste("tab:Boligforh",k,sep=''))
+		caption=paste0('Funksjonsnivå og boligforhold før hjerneslaget, ', txt, ', ', sisteAar, '.'), 	
+		label=paste0("tab:Boligforh",k))
 print(BoligforhTab)
 }
 
@@ -446,8 +451,8 @@ StatusAkuttPst <- 100*(StatusAkutt[,1:2]/StatusAkutt[,3])
 txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 colnames(StatusAkuttPst) <- c('Ja (%)','Ukjent (%)')	#, 'Ant. reg.')
 StatusAkuttTab <- xtable(StatusAkuttPst, digits=c(0,1,1), align=c('l', 'r', 'r'), 	#c(0,1,1,1)
-		caption=paste('Status i akuttfasen. Andeler av alle registreringer, ', txt,  ' (N=', 
-		dim(SlagDataUtv)[1], ').', sep=''), label=paste("tab:StatusAkutt",k,sep=''))
+		caption=paste0('Status i akuttfasen. Andeler av alle registreringer ', sisteAar, ', ', txt,  ' (N=', 
+		dim(SlagDataUtv)[1], ').'), label=paste0("tab:StatusAkutt",k))
 print(StatusAkuttTab)
 }
 @		
@@ -492,9 +497,9 @@ Risikofakt <- rbind(
 txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 colnames(Risikofakt) <- c('Kvinner (%)', 'Menn (%)', 'Ant. reg.')
 RisikofaktTab <- xtable(Risikofakt, digits=c(1,1,1,0), align=c('l', 'r', 'r', 'r'), 	#c(0,1,1,1)
-		caption=paste('Risikofaktorer før hjerneslaget, ', txt, '. Lipidsenkende behandling er registrert 
-		fra 1.januar 2014.', sep=''), 	#, N =', Nhoved),
-		label=paste("tab:Risiko",k,sep=''))
+		caption=paste0('Risikofaktorer før hjerneslaget, ', txt, ', ', sisteAar, '.'), 
+		#Lipidsenkende behandling er registrert fra 1.januar 2014.'), 	#, N =', Nhoved),
+		label=paste0("tab:Risiko",k))
 print(RisikofaktTab)
 
 }		
@@ -502,7 +507,7 @@ print(RisikofaktTab)
 @
 
 
-Ved angivelse av hvilke medikamenter pasientene har fått  angir oppgitte enkeltmedikamenter 
+Ved angivelse av hvilke medikamenter pasientene har fått, angir oppgitte enkeltmedikamenter 
 andel pasienter i medikamentgruppa 
 som har fått kun dette medikamentet. Eksempelvis i tabell \ref{tab:MedBehPre1} vil andelen ASA 
 angi andelen av de som har fått platehemmende behandling kun med ASA. Det betyr at andelen 
@@ -543,7 +548,8 @@ SlagData$PreBeggeAntikoag <- c(1,2,2,9,9,9)[SlagData$PreAntikoagsum]
 
 
 for (k in 1:2) {
-SlagDataUtv <- SlagData[switch(utvalg[k], Eget = intersect(ind$Eget, ind$Fra2014), Alle = ind$Fra2014), ]
+#SlagDataUtv <- SlagData[switch(utvalg[k], Eget = intersect(ind$Eget, ind$Fra2014), Alle = ind$Fra2014), ]
+SlagDataUtv <- SlagData[switch(utvalg[k], Eget = ind$Eget, Alle = 1:dim(SlagData)[1]), ]
 Nutv <- dim(SlagDataUtv)[1]
 
 #Platehemmende
@@ -610,9 +616,9 @@ MedBehPrePst <- 100*rbind(
 colnames(MedBehPrePst) <- c('Ja (%)', 'Ukjent (%)')	#, 'Ant. reg.')
 txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 MedBehPrePstTab <- xtable(MedBehPrePst, digits=1, align=c('l', 'r', 'r'), 	
-		caption=paste('Medikamentell behandling før hjerneslaget. Innleggelser fra og med 1.januar 2014. 
-		Alle diagnoser, ', txt, ' (N=',	Nutv, ').', sep=''), 	
-		label=paste("tab:MedBehPre",k,sep=''))
+		caption=paste0('Medikamentell behandling før hjerneslaget. Innleggelser fra og med 1.januar ' , sisteAar,
+'. Alle diagnoser, ', txt, ' (N=',	Nutv, ').'), 	
+		label=paste0("tab:MedBehPre",k))
 print(MedBehPrePstTab)
 }
 @	
@@ -624,7 +630,7 @@ print(MedBehPrePstTab)
 #PLATEHEMMERE OG ANTIKOAGULASJON FOR I61 og I63
 #---Tar lang tid. Bør lage indekser EN gang og kombinere.
 for (d in 1:2) {
-	SlagDataDiag <- SlagData[intersect(ind$Fra2014, which(SlagData$Slagdiagnose == d)), ]		
+	SlagDataDiag <- SlagData[which(SlagData$Slagdiagnose == d), ]		
 
 	for (k in 1:2) {
 	SlagDataUtv <- SlagDataDiag[switch(utvalg[k], Eget = which(SlagDataDiag$ReshId == reshID), 
@@ -664,9 +670,9 @@ for (d in 1:2) {
 	txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 	diagnose <- c('hjerneblødning (I61), ','hjerneinfarkt (I63), ')[d]
 	MedBehPrePstDiagTab <- xtable(MedBehPrePstDiag, digits=1, align=c('l', 'r', 'r'), 	
-			caption=paste('Medikamentell behandling før hjerneslaget for pasienter med ',
-				diagnose, txt, '. N=', Nutv, '. (Innleggelser fra og med 1.januar 2014.)',sep=''), 	#, N =', Nhoved),
-			label=paste("tab:MedBehPre", k, 'Diag', d, sep=''))
+			caption=paste0('Medikamentell behandling før hjerneslaget for pasienter med ',
+				diagnose, txt, '. N=', Nutv, '. (Innleggelser fra og med 1.januar ', sisteAar,'.)'), 	#, N =', Nhoved), 2014
+			label=paste0("tab:MedBehPre", k, 'Diag', d))
 	print(MedBehPrePstDiagTab)
 			
 	}
@@ -779,7 +785,7 @@ Trombekt80Eget <- length(intersect(intersect(indTrombekt, ind80), indEget))
 
 AkuttbehI63 <- rbind(
 	'Trombolyse' 			= c(TromEget, 100*TromEget/Neget, Trom, 100*Trom/NI63),	
-	'Trombolyse <=80år' = c(Trom80Eget, 100*Trom80Eget/length(intersect(indEget, ind80)), 
+	'Trombolyse <= 80år' = c(Trom80Eget, 100*Trom80Eget/length(intersect(indEget, ind80)), 
 			Trom80, 100*Trom80/length(ind80)),
 	'Trombolyse, >80år' = c(TromO80Eget, 100*TromO80Eget/length(intersect(indEget, indO80)), 
 			TromO80, 100*TromO80/length(indO80)),
@@ -787,13 +793,13 @@ AkuttbehI63 <- rbind(
 	                                     100*Hjernebl36timerEget['1']/sum(Hjernebl36timerEget),
 			Hjernebl36timer['1'], 100*Hjernebl36timer['1']/sum(Hjernebl36timer)),
 	'Trombektomi' 			= c(TrombektEget, 100*TrombektEget/Neget, Trombekt, 100*Trombekt/NI63),
-	'Trombektomi, <=80år' = c(Trombekt80Eget, 100*Trombekt80Eget/length(intersect(indEget,ind80)),
+	'Trombektomi, <= 80år' = c(Trombekt80Eget, 100*Trombekt80Eget/length(intersect(indEget,ind80)),
 			Trombekt80, 100*Trombekt80/length(ind80))
 	)
 	
 colnames(AkuttbehI63) <- c('Ant.Eget', 'Andel(%)', 'Ant.Landet', 'Andel(%)')
 xtable(AkuttbehI63, digits=c(0,0,1,0,1), align=c('l', 'r', 'r', 'r', 'r'), 
-		caption=paste('Reperfusjonsbehandling av hjerneinfarkt (I63), ', shtxt, ' og hele landet.', sep=''),
+		caption=paste0('Reperfusjonsbehandling av hjerneinfarkt (I63), ', sisteAar,', ', shtxt, ' og hele landet.'),
 		label="tab:AkuttbehI63")
 
 @
@@ -857,7 +863,7 @@ KritSupplPst <- 100*KritSupplTab[ ,1:2]/KritSupplTab[,3]
 colnames(KritSupplPst) <- c('Ja (%)', 'Ukjent (%)')	#, 'Ant. reg.')
 txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 KritSupplPstTab <- xtable(KritSupplPst, digits=1, align=c('l', 'r', 'r'), 	#c(0,1,1,1)
-		caption=paste0('Utførte undersøkelser og tiltak, ', txt, '.'),
+		caption=paste0('Utførte undersøkelser og tiltak, ', sisteAar,', ', txt, '.'),
 		label=paste0("tab:KritSupp",k))
 print(KritSupplPstTab)
 
@@ -954,8 +960,7 @@ SlagData$AntitrombotiskSum <- as.factor(with(SlagData, UtPlatehem+UtAntikoagul) 
 SlagData$Antitrombotisk <- c(1,1,2,1,9,9)[SlagData$AntitrombotiskSum]
 
 #PLATEHEMMERE OG ANTIKOAGULASJON FOR I63 og levende utskrevet
-SlagDataI63 <- SlagData[intersect(ind$Fra2014, 
-		intersect(which(SlagData$Slagdiagnose == 2), which(SlagData$UtskrTil != 10))), ]
+SlagDataI63 <- SlagData[intersect(which(SlagData$Slagdiagnose == 2), which(SlagData$UtskrTil != 10)), ]
 		
 for (k in 1:2) {
 SlagDataI63Utv <- SlagDataI63[switch(utvalg[k], Eget = which(SlagDataI63$ReshId==reshID), 
@@ -992,9 +997,9 @@ MedBehUtPlateAntiPstI63 <- 100*rbind(
 colnames(MedBehUtPlateAntiPstI63) <- c('Ja (%)','Ukjent (%)')	#, 'Ant. reg.')
 txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 MedBehUtPlateAntiPstI63Tab <- xtable(MedBehUtPlateAntiPstI63, digits=1, align=c('l', 'r', 'r'), 	#c(0,1,1,1)
-		caption=paste('Platehemmende og antikoagulerende behandling ved utskriving (kun levende). 
-		Diagnose hjerneinfarkt (I63), ', txt, ', N=', Nutv, '. (Innleggelser fra og med 1. januar 2014.)', sep=''),	
-		label=paste("tab:MedBehPAUt",k,sep=''))
+		caption=paste0('Platehemmende og antikoagulerende behandling ved utskriving (kun levende). 
+		Diagnose hjerneinfarkt (I63), ', txt, ', N=', Nutv, '. (Innleggelser fra og med 1. januar ', sisteAar, '.)'),	 #2014
+		label=paste0("tab:MedBehPAUt",k))
 print(MedBehUtPlateAntiPstI63Tab)
 
 }
@@ -1044,8 +1049,8 @@ MedBehUtDivPst <- switch(k, 100*rbind(
 	
 colnames(MedBehUtDivPst) <- c('Andel(%):  Eget', 'Hele landet')	#, 'Ant. reg.')
 xtable(MedBehUtDivPst, digits=1, align=c('l', 'r', 'r'), 	#c(0,1,1,1)
-		caption='Antikoagulasjonsbehandling ved utskriving av pasienter med atrieflimmer som har  
-			overlevd hjerneinfarkt (I63).', 	#, N =', Nhoved),
+		caption=paste0('Antikoagulasjonsbehandling ved utskriving av pasienter med atrieflimmer som har  
+			overlevd hjerneinfarkt (I63), ', sisteAar, '.'), 	#, N =', Nhoved),
 		label="tab:MedBehDivUt")
 
 
@@ -1068,9 +1073,9 @@ MedBehUtBTstatPst <- 100*rbind(
 colnames(MedBehUtBTstatPst) <- c('Ja (%)', 'Ukjent (%)')	#, 'Ant. reg.')
 txt <- switch(utvalg[k], Eget=shtxt, Alle = 'hele landet')
 MedBehUtBTstatPstTab <- xtable(MedBehUtBTstatPst, digits=1, align=c('l', 'r', 'r'), 	
-		caption=paste('Blodtrykkssenkende behandling og statiner ved utskriving (kun levende). 
-		Alle diagnoser, ', txt, ', N=', Nutv, '.', sep=''), 	
-		label=paste("tab:MedBehBTSUt",k,sep=''))
+		caption=paste0('Blodtrykkssenkende behandling og statiner ved utskriving (kun levende). 
+		Alle diagnoser, ', sisteAar,', ',txt, ', N=', Nutv, '.'), 	
+		label=paste0("tab:MedBehBTSUt",k))
 print(MedBehUtBTstatPstTab)
 
 }
