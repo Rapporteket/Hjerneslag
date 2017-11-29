@@ -59,7 +59,7 @@ SlagData <- RegData
 knit('SlagSamleDok.Rnw')
 knit('SlagSamleDokLand.Rnw')
 
-tools::texi2pdf('SlagSamleDok.tex')
+tools::texi2pdf('SlagSamleDokTest.tex')
 tools::texi2pdf('SlagSamleDokLand.tex')
 
 #--------------------------------------AntStabel-----------------------------------
