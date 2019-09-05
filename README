@@ -16,15 +16,7 @@ This will add local configuration after the package has been installed
 
 
 NOTE: Communicating through a proxy might cause the above install command to
-fail. If so, try the following prior to the above install command:
-  
-  library(httr)
-  set_config(
-    use_proxy(url="18.91.12.23", port=8080, username="user",password="passwd")
-  )
-
-replacing the example parameter values with whatever applies for the
-system the package is being installed on
+fail.
 
 Kokebok for "git, Rstudio og github på Windows gjennom proxy" :
 (gjelder oppsett på SKDE. I andre regioner kan man måtte benytte andre proxy)
